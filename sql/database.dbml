@@ -2,6 +2,7 @@ Table product {
 	id int [pk, increment]
 	name text [not null]
 	description text
+	category text [not null]
 	price money [not null, note: 'Check >= 0.']
 	stock_count int [not null, note: 'Check >= 0.']
 }
@@ -28,6 +29,7 @@ Table cart {
 	account_id int [ref: > account.id]
 	name text [not null]
 	created_at timestamp [not null, default: `now()`]
+	ordered bool [not null, default: false]
 }
 
 Table order {
@@ -38,6 +40,7 @@ Table order {
 }
 
 Table orders_products {
+	id int [pk, increment]
 	order_id int [ref: > order.id]
 	product_id int [ref: > product.id]
 	count int [
@@ -45,13 +48,10 @@ Table orders_products {
 		default: 1,
 		note: 'Number of product items ordered. Check > 0.'
 	]
-
-	indexes {
-		(order_id, product_id) [pk]
-	}
 }
 
 Table carts_products {
+	id int [pk, increment]
 	cart_id int [ref: > cart.id]
 	product_id int [ref: > product.id]
 	count int [
@@ -59,8 +59,4 @@ Table carts_products {
 		default: 1,
 		note: 'Number of product items ordered. Check > 0.'
 	]
-
-	indexes {
-		(cart_id, product_id) [pk]
-	}
 }

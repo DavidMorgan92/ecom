@@ -2,6 +2,7 @@ CREATE TABLE "product" (
 	"id" SERIAL PRIMARY KEY,
 	"name" text NOT NULL,
 	"description" text,
+	"category" text NOT NULL,
 	"price" money NOT NULL,
 	"stock_count" int NOT NULL
 );
@@ -27,7 +28,8 @@ CREATE TABLE "cart" (
 	"id" SERIAL PRIMARY KEY,
 	"account_id" int,
 	"name" text NOT NULL,
-	"created_at" timestamp NOT NULL DEFAULT (now())
+	"created_at" timestamp NOT NULL DEFAULT (now()),
+	"ordered" bool NOT NULL DEFAULT false
 );
 
 CREATE TABLE "order" (
@@ -38,17 +40,17 @@ CREATE TABLE "order" (
 );
 
 CREATE TABLE "orders_products" (
+	"id" SERIAL PRIMARY KEY,
 	"order_id" int,
 	"product_id" int,
-	"count" int NOT NULL DEFAULT 1,
-	PRIMARY KEY ("order_id", "product_id")
+	"count" int NOT NULL DEFAULT 1
 );
 
 CREATE TABLE "carts_products" (
+	"id" SERIAL PRIMARY KEY,
 	"cart_id" int,
 	"product_id" int,
-	"count" int NOT NULL DEFAULT 1,
-	PRIMARY KEY ("cart_id", "product_id")
+	"count" int NOT NULL DEFAULT 1
 );
 
 ALTER TABLE "address" ADD FOREIGN KEY ("account_id") REFERENCES "account" ("id");
@@ -67,7 +69,6 @@ ALTER TABLE "carts_products" ADD FOREIGN KEY ("cart_id") REFERENCES "cart" ("id"
 
 ALTER TABLE "carts_products" ADD FOREIGN KEY ("product_id") REFERENCES "product" ("id");
 
-
 COMMENT ON COLUMN "product"."price" IS 'Check >= 0.';
 
 COMMENT ON COLUMN "product"."stock_count" IS 'Check >= 0.';
@@ -75,7 +76,6 @@ COMMENT ON COLUMN "product"."stock_count" IS 'Check >= 0.';
 COMMENT ON COLUMN "orders_products"."count" IS 'Number of product items ordered. Check > 0.';
 
 COMMENT ON COLUMN "carts_products"."count" IS 'Number of product items ordered. Check > 0.';
-
 
 ALTER TABLE product ADD CONSTRAINT price_gt_eq_0 CHECK (price >= 0::money);
 
