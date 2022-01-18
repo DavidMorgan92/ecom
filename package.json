@@ -5,7 +5,7 @@
 	"main": "server.js",
 	"scripts": {
 		"test": "mocha --watch",
-		"start": "nodemon --watch server.js"
+		"start": "nodemon server.js"
 	},
 	"author": "David Morgan",
 	"license": "ISC",
