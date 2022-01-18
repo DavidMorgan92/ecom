@@ -9,18 +9,14 @@ const PORT = process.env.PORT || 4001;
 const app = express();
 
 // Init Swagger
-const options = {
-	definition: {
-		openapi: '3.0.0',
-		info: {
-			title: 'ecom',
-			version: '1.0.0',
-		},
-	},
-	apis: []
+const swaggerDefinition = require('./swagger-definition');
+
+const swaggerJsdocOptions = {
+	definition: swaggerDefinition,
+	apis: ['./routes/*.js'],
 };
 
-const specs = swaggerJsdoc(options);
+const specs = swaggerJsdoc(swaggerJsdocOptions);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
 // Connect routers
