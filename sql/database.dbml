@@ -1,0 +1,66 @@
+Table product {
+	id int [pk, increment]
+	name text [not null]
+	description text
+	price money [not null, note: 'Check >= 0.']
+	stock_count int [not null, note: 'Check >= 0.']
+}
+
+Table account {
+	id int [pk, increment]
+	first_name text [not null]
+	last_name text [not null]
+	email text [unique, not null]
+	password_hash text [not null]
+}
+
+Table address {
+	id int [pk, increment]
+	account_id int [ref: > account.id]
+	house_name_number text [not null]
+	street_name text [not null]
+	town_city_name text [not null]
+	post_code text [not null]
+}
+
+Table cart {
+	id int [pk, increment]
+	account_id int [ref: > account.id]
+	name text [not null]
+	created_at timestamp [not null, default: `now()`]
+}
+
+Table order {
+	id int [pk, increment]
+	account_id int [ref: > account.id]
+	address_id int [ref: > address.id]
+	created_at timestamp [not null, default: `now()`]
+}
+
+Table orders_products {
+	order_id int [ref: > order.id]
+	product_id int [ref: > product.id]
+	count int [
+		not null,
+		default: 1,
+		note: 'Number of product items ordered. Check > 0.'
+	]
+
+	indexes {
+		(order_id, product_id) [pk]
+	}
+}
+
+Table carts_products {
+	cart_id int [ref: > cart.id]
+	product_id int [ref: > product.id]
+	count int [
+		not null,
+		default: 1,
+		note: 'Number of product items ordered. Check > 0.'
+	]
+
+	indexes {
+		(cart_id, product_id) [pk]
+	}
+}
