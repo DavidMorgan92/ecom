@@ -1,0 +1,19 @@
+{
+	"name": "ecom",
+	"version": "1.0.0",
+	"description": "E-Commerce App Codecademy portfolio project",
+	"main": "server.js",
+	"scripts": {
+		"test": "mocha --watch",
+		"start": "nodemon --watch server.js"
+	},
+	"author": "David Morgan",
+	"license": "ISC",
+	"devDependencies": {
+		"mocha": "^9.1.4",
+		"nodemon": "^2.0.15"
+	},
+	"dependencies": {
+		"express": "^4.17.2"
+	}
+}
