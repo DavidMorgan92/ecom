@@ -2,7 +2,7 @@
  * @swagger
  * components:
  *   schemas:
- *     UpdateAccount:
+ *     Account:
  *       type: object
  *       properties:
  *         first_name:
@@ -13,15 +13,11 @@
  *           type: string
  *           description: User's last name.
  *           example: Smith
- *     Account:
- *       allOf:
- *         - type: object
- *           properties:
- *             email:
- *               type: string
- *               description: User's email address.
- *               example: user@somewhere.com
- *         - $ref: '#/components/schemas/UpdateAccount'
+ *         email:
+ *           type: string
+ *           description: User's email address.
+ *           example: user@somewhere.com
+ *           readOnly: true
  */
 
 const express = require('express');
@@ -32,7 +28,9 @@ const account = express.Router();
  * @swagger
  * /account:
  *   get:
- *     summary: Retrieve account information for the authorised user.
+ *     tags:
+ *       - Account
+ *     summary: Retrieve account information belonging to the authorised user.
  *     responses:
  *       200:
  *         description: Account information.
@@ -52,14 +50,16 @@ account.get('/', (req, res) => {
  * @swagger
  * /account:
  *   put:
- *     summary: Update account information for the authorised user.
+ *     tags:
+ *       - Account
+ *     summary: Update account information belonging to the authorised user.
  *     description: Provide only the values that require changing.
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/UpdateAccount'
+ *             $ref: '#/components/schemas/Account'
  *     responses:
  *       200:
  *         description: Updated account information.
