@@ -2,16 +2,17 @@
 	"name": "ecom",
 	"version": "1.0.0",
 	"description": "E-Commerce App Codecademy portfolio project",
-	"main": "server.js",
+	"main": "index.js",
 	"scripts": {
-		"test": "mocha --watch",
-		"start": "nodemon server.js"
+		"test": "jest --watch",
+		"start": "nodemon index.js"
 	},
 	"author": "David Morgan",
 	"license": "ISC",
 	"devDependencies": {
-		"mocha": "^9.1.4",
-		"nodemon": "^2.0.15"
+		"jest": "^27.4.7",
+		"nodemon": "^2.0.15",
+		"supertest": "^6.2.2"
 	},
 	"dependencies": {
 		"express": "^4.17.2",
