@@ -1,19 +1,21 @@
 const request = require('supertest');
 const app = require('../../server');
 
-describe('/account', () => {
-	describe('get', () => {
+describe('/auth/login', () => {
+	describe('post', () => {
 		it('returns status 200', done => {
 			request(app)
-				.get('/account')
+				.post('/auth/login')
 				.expect(200, done);
 		});
 	});
+});
 
-	describe('put', () => {
+describe('/auth/register', () => {
+	describe('post', () => {
 		it('returns status 200', done => {
 			request(app)
-				.put('/account')
+				.post('/auth/register')
 				.expect(200, done);
 		});
 	});

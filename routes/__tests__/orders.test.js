@@ -1,19 +1,21 @@
 const request = require('supertest');
 const app = require('../../server');
 
-describe('/account', () => {
+describe('/orders', () => {
 	describe('get', () => {
 		it('returns status 200', done => {
 			request(app)
-				.get('/account')
+				.get('/orders')
 				.expect(200, done);
 		});
 	});
+});
 
-	describe('put', () => {
+describe('/orders/:orderId', () => {
+	describe('get', () => {
 		it('returns status 200', done => {
 			request(app)
-				.put('/account')
+				.get('/orders/1')
 				.expect(200, done);
 		});
 	});
