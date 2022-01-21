@@ -33,6 +33,7 @@ function registerAccountVerifyInput(firstName, lastName, email, password) {
  * @param {string} lastName User's last name
  * @param {string} email User's unique email address
  * @param {string} password User's plain text password
+ * @returns The newly created account object
  */
 async function registerAccount(firstName, lastName, email, password) {
 	// Verify input
@@ -40,10 +41,18 @@ async function registerAccount(firstName, lastName, email, password) {
 		throw { status: 400 };
 	}
 
-	// Insert values into database
-	const passwordHash = passwordService.hashPassword(password);
+	const query = `
+		INSERT INTO account (first_name, last_name, email, password_hash)
+		VALUES ($1, $2, $3, $4)
+		RETURNING *;
+	`;
+
+	const passwordHash = await passwordService.hashPassword(password);
 	const values = [firstName, lastName, email, passwordHash];
-	await db.query('INSERT INTO account (first_name, last_name, email, password_hash) VALUES ($1, $2, $3, $4)', values);
+
+	// Insert values into database
+	const result = await db.query(query, values);
+	return result.rows[0];
 }
 
 module.exports = {
