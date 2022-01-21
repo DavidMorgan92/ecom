@@ -16,6 +16,9 @@ const swaggerJsdocOptions = {
 const specs = swaggerJsdoc(swaggerJsdocOptions);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
+// Use body parser
+app.use(express.json());
+
 // Connect routers
 app.use('/products', require('./routes/products'));
 app.use('/orders', require('./routes/orders'));
