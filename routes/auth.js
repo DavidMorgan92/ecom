@@ -29,6 +29,7 @@
  */
 
 const express = require('express');
+const account = require('../services/account-service');
 
 const auth = express.Router();
 
@@ -75,9 +76,23 @@ auth.post('/login', (req, res) => {
  *       400:
  *         description: Malformed request body.
  */
-auth.post('/register', (req, res) => {
+auth.post('/register', async (req, res) => {
 	// Register a new user with email and password
-	res.sendStatus(200);
+	try {
+		const firstName = req.body.first_name;
+		const lastName = req.body.last_name;
+		const email = req.body.email;
+		const password = req.body.password;
+
+		await account.registerAccount(firstName, lastName, email, password);
+		res.sendStatus(200);
+	} catch (err) {
+		if (err.status === 400) {
+			res.sendStatus(400);
+		} else {
+			throw err;
+		}
+	}
 });
 
 module.exports = auth;
