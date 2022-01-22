@@ -8,6 +8,15 @@ async function registerAccount(firstName, lastName, email, password) {
 	}
 }
 
+async function getAccountInfo(id) {
+	return {
+		first_name: 'David',
+		last_name: 'Morgan',
+		email: 'david.morgan@gmail.com',
+	};
+}
+
 module.exports = {
 	registerAccount,
+	getAccountInfo,
 };
