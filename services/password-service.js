@@ -1,12 +1,12 @@
 const bcrypt = require('bcrypt');
 
 /**
- * Get a salted hash of the given plain text password
+ * Get a salted and hashed password
  * @param {string} password Plain text password
+ * @param {number} [saltRounds=10] Number of salt rounds
  * @returns Salted and hashed password
  */
-async function hashPassword(password) {
-	const saltRounds = 10;
+async function hashPassword(password, saltRounds = 10) {
 	const hash = await bcrypt.hash(password, saltRounds);
 	return hash;
 }

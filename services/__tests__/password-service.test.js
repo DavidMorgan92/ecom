@@ -5,7 +5,8 @@ describe('Password service', () => {
 	describe('verifyPassword', () => {
 		it('verifies correctly', async () => {
 			const password = 'Password01';
-			const hash = await bcrypt.hash(password, 10);
+			const saltRounds = 10;
+			const hash = await bcrypt.hash(password, saltRounds);
 
 			const verified = await passwordService.verifyPassword(password, hash);
 
