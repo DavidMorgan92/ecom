@@ -21,6 +21,7 @@
  */
 
 const express = require('express');
+const accountService = require('../services/account-service');
 
 const account = express.Router();
 
@@ -41,9 +42,12 @@ const account = express.Router();
  *       401:
  *         description: Unauthorized.
  */
-account.get('/', (req, res) => {
+account.get('/', async (req, res) => {
+	// Get user ID from authentication service
+	const userId = 1;
 	// Return the account of the authorised user
-	res.sendStatus(200);
+	const accountInfo = await accountService.getAccountInfo(userId);
+	res.status(200).send(accountInfo);
 });
 
 /**

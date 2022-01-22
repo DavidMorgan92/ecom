@@ -44,7 +44,7 @@ async function registerAccount(firstName, lastName, email, password) {
 	const query = `
 		INSERT INTO account (first_name, last_name, email, password_hash)
 		VALUES ($1, $2, $3, $4)
-		RETURNING *;
+		RETURNING first_name, last_name, email;
 	`;
 
 	const passwordHash = await passwordService.hashPassword(password);
@@ -55,7 +55,26 @@ async function registerAccount(firstName, lastName, email, password) {
 	return result.rows[0];
 }
 
+/**
+ * Get a user's account information
+ * @param {number} id User's ID
+ * @returns Object containing account information
+ */
+async function getAccountInfo(id) {
+	const query = `
+		SELECT first_name, last_name, email
+		FROM account
+		WHERE id = $1;
+	`;
+
+	const values = [id];
+
+	const result = await db.query(query, values);
+	return result.rows[0];
+}
+
 module.exports = {
 	registerAccountVerifyInput,
 	registerAccount,
+	getAccountInfo,
 };

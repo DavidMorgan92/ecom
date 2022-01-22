@@ -1,4 +1,5 @@
 const { Pool } = require('pg');
+const bcrypt = require('bcrypt');
 const accountService = require('../account-service');
 
 // Create a new pool with a connection limit of 1
@@ -23,8 +24,8 @@ jest.mock('../../db/index', () => {
 	};
 });
 
-afterAll(() => {
-	mockPool.end();
+afterAll(async () => {
+	await mockPool.end();
 });
 
 beforeEach(async () => {
@@ -36,16 +37,32 @@ afterEach(async () => {
 });
 
 describe('Account service', () => {
+	const id = 1;
+	const firstName = 'David';
+	const lastName = 'Morgan';
+	const email = 'david.morgan@gmail.com';
+	const password = 'Password01';
+
 	describe('registerAccount', () => {
 		it('creates an account', async () => {
-			const firstName = 'David';
-			const lastName = 'Morgan';
-			const email = 'david.morgan@gmail.com';
-			const password = 'Password01';
-
 			const result = await accountService.registerAccount(firstName, lastName, email, password);
 
-			expect(result).toHaveProperty('id');
+			expect(result).toMatchObject({
+				first_name: firstName,
+				last_name: lastName,
+				email: email,
+			});
+		});
+	});
+
+	describe('getAccountInfo', () => {
+		it('gets account information', async () => {
+			const passwordHash = await bcrypt.hash(password, 10);
+			const values = [id, firstName, lastName, email, passwordHash];
+			await mockPool.query('INSERT INTO account (id, first_name, last_name, email, password_hash) VALUES ($1, $2, $3, $4, $5)', values);
+
+			const result = await accountService.getAccountInfo(id);
+
 			expect(result).toMatchObject({
 				first_name: firstName,
 				last_name: lastName,
