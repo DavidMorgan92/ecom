@@ -19,12 +19,16 @@ describe('/auth/register', () => {
 			request(app)
 				.post('/auth/register')
 				.send({
-					first_name: 'David',
-					last_name: 'Morgan',
+					firstName: 'David',
+					lastName: 'Morgan',
 					email: 'david.morgan@gmail.com',
 					password: 'Password01',
 				})
-				.expect(200, done);
+				.expect(200, {
+					firstName: 'David',
+					lastName: 'Morgan',
+					email: 'david.morgan@gmail.com',
+				}, done);
 		});
 
 		it('returns status 400 with no input', done => {
@@ -37,8 +41,8 @@ describe('/auth/register', () => {
 			request(app)
 				.post('/auth/register')
 				.send({
-					first_name: 'David',
-					last_name: 'Morgan',
+					firstName: 'David',
+					lastName: 'Morgan',
 					email: '@gmail.com',
 					password: 'Password01',
 				})

@@ -76,9 +76,25 @@ account.get('/', async (req, res) => {
  *       401:
  *         description: Unauthorized.
  */
-account.put('/', (req, res) => {
-	// Update the account of the authorised user
-	res.sendStatus(200);
+account.put('/', async (req, res) => {
+	try {
+		const userId = 1;
+
+		const {
+			firstName,
+			lastName,
+		} = req.body;
+
+		const accountInfo = await accountService.updateAccountInfo(userId, firstName, lastName);
+		// Update the account of the authorised user
+		res.status(200).send(accountInfo);
+	} catch (err) {
+		if (err.status === 400) {
+			res.sendStatus(400);
+		} else {
+			throw err;
+		}
+	}
 });
 
 module.exports = account;

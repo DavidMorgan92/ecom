@@ -48,9 +48,9 @@ describe('Account service', () => {
 			const result = await accountService.registerAccount(firstName, lastName, email, password);
 
 			expect(result).toMatchObject({
-				first_name: firstName,
-				last_name: lastName,
-				email: email,
+				firstName,
+				lastName,
+				email,
 			});
 		});
 	});
@@ -64,9 +64,9 @@ describe('Account service', () => {
 			const result = await accountService.getAccountInfo(id);
 
 			expect(result).toMatchObject({
-				first_name: firstName,
-				last_name: lastName,
-				email: email,
+				firstName,
+				lastName,
+				email,
 			});
 		});
 	});

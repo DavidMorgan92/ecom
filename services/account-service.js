@@ -19,7 +19,7 @@ function emailIsValid(email) {
  * @param {string} password User's plain text password
  * @returns True if all inputs are valid
  */
-function registerAccountVerifyInput(firstName, lastName, email, password) {
+function registerAccountValidateInput(firstName, lastName, email, password) {
 	if (!firstName || !lastName || !email || !password || !emailIsValid(email)) {
 		return false;
 	}
@@ -36,8 +36,8 @@ function registerAccountVerifyInput(firstName, lastName, email, password) {
  * @returns The newly created account object
  */
 async function registerAccount(firstName, lastName, email, password) {
-	// Verify input
-	if (!registerAccountVerifyInput(firstName, lastName, email, password)) {
+	// Validate input
+	if (!registerAccountValidateInput(firstName, lastName, email, password)) {
 		throw { status: 400 };
 	}
 
@@ -52,7 +52,12 @@ async function registerAccount(firstName, lastName, email, password) {
 
 	// Insert values into database
 	const result = await db.query(query, values);
-	return result.rows[0];
+
+	return {
+		firstName: result.rows[0].first_name,
+		lastName: result.rows[0].last_name,
+		email: result.rows[0].email,
+	};
 }
 
 /**
@@ -70,11 +75,62 @@ async function getAccountInfo(id) {
 	const values = [id];
 
 	const result = await db.query(query, values);
-	return result.rows[0];
+
+	return {
+		firstName: result.rows[0].first_name,
+		lastName: result.rows[0].last_name,
+		email: result.rows[0].email,
+	};}
+
+/**
+ * Check if the given inputs for the updateAccountInfo function are valid
+ * @param {string} firstName New first name
+ * @param {string} lastName New last name
+ * @returns True if all inputs are valid
+ */
+function updateAccountInfoValidateInput(firstName, lastName) {
+	if (!firstName || !lastName) {
+		return false;
+	}
+
+	return true;
+}
+
+/**
+ * Update a user's account information
+ * @param {number} id User's ID
+ * @param {string} firstName New first name
+ * @param {string} lastName New last name
+ * @returns Object containing account information
+ */
+async function updateAccountInfo(id, firstName, lastName) {
+	// Verify input
+	if (!updateAccountInfoValidateInput(firstName, lastName)) {
+		throw { status: 400 };
+	}
+
+	const query = `
+		UPDATE account
+		SET first_name = $2, last_name = $3
+		WHERE id = $1
+		RETURNING first_name, last_name, email;
+	`;
+
+	const values = [id, firstName, lastName];
+
+	const result = await db.query(query, values);
+
+	return {
+		firstName: result.rows[0].first_name,
+		lastName: result.rows[0].last_name,
+		email: result.rows[0].email,
+	};
 }
 
 module.exports = {
-	registerAccountVerifyInput,
+	registerAccountValidateInput,
 	registerAccount,
 	getAccountInfo,
+	updateAccountInfoValidateInput,
+	updateAccountInfo,
 };

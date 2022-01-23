@@ -79,13 +79,15 @@ auth.post('/login', (req, res) => {
 auth.post('/register', async (req, res) => {
 	// Register a new user with email and password
 	try {
-		const firstName = req.body.first_name;
-		const lastName = req.body.last_name;
-		const email = req.body.email;
-		const password = req.body.password;
+		const {
+			firstName,
+			lastName,
+			email,
+			password,
+		} = req.body;
 
-		await account.registerAccount(firstName, lastName, email, password);
-		res.sendStatus(200);
+		const accountInfo = await account.registerAccount(firstName, lastName, email, password);
+		res.status(200).send(accountInfo);
 	} catch (err) {
 		if (err.status === 400) {
 			res.sendStatus(400);
