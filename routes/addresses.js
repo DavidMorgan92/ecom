@@ -29,6 +29,7 @@
  */
 
 const express = require('express');
+const addressService = require('../services/address-service');
 
 const addresses = express.Router();
 
@@ -44,14 +45,22 @@ const addresses = express.Router();
  *       schema:
  *         type: integer
  */
-addresses.param('addressId', (req, res, next, id) => {
-	const address = {}; // Get address from database
-	if (address) {
-		req.addressId = id;
-		req.address = address;
-		next();
-	} else {
-		res.status(404).send('Address not found');
+addresses.param('addressId', async (req, res, next, id) => {
+	// TODO: Pass authorised user ID and verify address belongs to that account
+	try {
+		const address = await addressService.getAddressById(id);
+
+		if (address) {
+			req.addressId = id;
+			req.address = address;
+			next();
+		} else {
+			res.status(404).send('Address not found');
+		}
+	} catch (err) {
+		if (err.status === 403) {
+			res.sendStatus(403);
+		}
 	}
 });
 
@@ -104,7 +113,7 @@ addresses.get('/', (req, res) => {
  */
 addresses.get('/:addressId', (req, res) => {
 	// Return the chosen address belonging to the authorised user
-	res.sendStatus(200);
+	res.send(req.address);
 });
 
 /**

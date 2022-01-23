@@ -1,6 +1,8 @@
 const request = require('supertest');
 const app = require('../../server');
 
+jest.mock('../../services/address-service');
+
 describe('/addresses', () => {
 	describe('get', () => {
 		it('returns status 200', done => {
