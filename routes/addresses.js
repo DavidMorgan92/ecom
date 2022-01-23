@@ -78,9 +78,12 @@ addresses.param('addressId', async (req, res, next, id) => {
  *       401:
  *         description: Unauthorized.
  */
-addresses.get('/', (req, res) => {
+addresses.get('/', async (req, res) => {
 	// Return all addresses belonging to the authorised user
-	res.sendStatus(200);
+	// TODO: Pass requesting user's ID to getAllAddresses
+	const requesterId = 1;
+	const addresses = await addressService.getAllAddresses(requesterId);
+	res.send(addresses);
 });
 
 /**
