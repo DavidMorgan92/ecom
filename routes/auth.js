@@ -74,7 +74,7 @@ auth.post('/login', (req, res) => {
  *       200:
  *         description: Successfully registered.
  *       400:
- *         description: Malformed request body.
+ *         description: Invalid input.
  */
 auth.post('/register', async (req, res) => {
 	// Register a new user with email and password

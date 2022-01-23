@@ -72,7 +72,7 @@ account.get('/', async (req, res) => {
  *             schema:
  *               $ref: '#/components/schemas/Account'
  *       400:
- *         description: Malformed request body.
+ *         description: Invalid input.
  *       401:
  *         description: Unauthorized.
  */

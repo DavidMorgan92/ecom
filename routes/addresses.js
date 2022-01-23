@@ -128,7 +128,7 @@ addresses.get('/:addressId', (req, res) => {
  *             schema:
  *               $ref: '#/components/schemas/Address'
  *       400:
- *         description: Malformed request body.
+ *         description: Invalid input.
  *       401:
  *         description: Unauthorized.
  */
@@ -160,7 +160,7 @@ addresses.post('/', (req, res) => {
  *             schema:
  *               $ref: '#/components/schemas/Address'
  *       400:
- *         description: Malformed request body.
+ *         description: Invalid input.
  *       401:
  *         description: Unauthorized.
  *       403:

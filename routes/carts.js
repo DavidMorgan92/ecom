@@ -132,7 +132,7 @@ carts.get('/:cartId', (req, res) => {
  *             schema:
  *               $ref: '#/components/schemas/Cart'
  *       400:
- *         description: Malformed request body.
+ *         description: Invalid input.
  *       401:
  *         description: Unauthorized.
  */
@@ -164,7 +164,7 @@ carts.post('/', (req, res) => {
  *             schema:
  *               $ref: '#/components/schemas/Cart'
  *       400:
- *         description: Malformed request body.
+ *         description: Invalid input.
  *       401:
  *         description: Unauthorized.
  *       403:
