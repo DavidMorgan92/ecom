@@ -2,23 +2,22 @@ const db = require('../db/index');
 
 /**
  * Get an address object from the database by its ID
+ * @param {number} requesterId The account ID of the user requesting
  * @param {number} id The address's ID
  * @returns The address object requested, or null if the object doesn't match
  */
-async function getAddressById(id) {
-	// TODO: Take calling user's ID as a parameter and check the address belongs to that user, throw status 403 otherwise
-
+async function getAddressById(requesterId, id) {
 	const query = `
 		SELECT id, house_name_number, street_name, town_city_name, post_code
 		FROM address
-		WHERE id = $1;
+		WHERE account_id = $1 AND id = $2;
 	`;
 
-	const values = [id];
+	const values = [requesterId, id];
 
 	const result = await db.query(query, values);
 
-	if (result.rowCount == 0) {
+	if (result.rowCount === 0) {
 		return null;
 	}
 

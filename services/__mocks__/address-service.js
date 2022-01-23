@@ -1,6 +1,10 @@
-async function getAddressById(id) {
+async function getAddressById(requesterId, id) {
+	if (id != 1) {
+		return null;
+	}
+
 	return {
-		id: id,
+		id: 1,
 		houseNameNumber: 'Pendennis',
 		streetName: 'Tredegar Road',
 		townCityName: 'Ebbw Vale',

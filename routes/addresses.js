@@ -46,21 +46,16 @@ const addresses = express.Router();
  *         type: integer
  */
 addresses.param('addressId', async (req, res, next, id) => {
-	// TODO: Pass authorised user ID and verify address belongs to that account
-	try {
-		const address = await addressService.getAddressById(id);
+	// TODO: Pass requesting user's ID to getAddressById
+	const requesterId = 1;
+	const address = await addressService.getAddressById(requesterId, id);
 
-		if (address) {
-			req.addressId = id;
-			req.address = address;
-			next();
-		} else {
-			res.status(404).send('Address not found');
-		}
-	} catch (err) {
-		if (err.status === 403) {
-			res.sendStatus(403);
-		}
+	if (address) {
+		req.addressId = id;
+		req.address = address;
+		next();
+	} else {
+		res.status(404).send('Address not found');
 	}
 });
 
@@ -95,6 +90,7 @@ addresses.get('/', (req, res) => {
  *     tags:
  *       - Addresses
  *     summary: Retrieve one address belonging to the authorised user.
+ *     description: Will simply return 404 Not Found if the requested address ID does exist but it doesn't belong to the authorised user.
  *     parameters:
  *       - $ref: '#/components/parameters/addressId'
  *     responses:
@@ -106,8 +102,6 @@ addresses.get('/', (req, res) => {
  *               $ref: '#/components/schemas/Address'
  *       401:
  *         description: Unauthorized.
- *       403:
- *         description: Address doesn't belong to the authorised user.
  *       404:
  *         description: Address not found.
  */

@@ -37,17 +37,18 @@ afterEach(async () => {
 
 describe('Address service', () => {
 	describe('getAddressById', () => {
+		const id = 1;
+		const accountId = 1;
+		const houseNameNumber = 'Pendennis';
+		const streetName = 'Tredegar Road';
+		const townCityName = 'Ebbw Vale';
+		const postCode = 'NP23 6LP';
+		const values = [id, accountId, houseNameNumber, streetName, townCityName, postCode];
+
 		it('gets address information', async () => {
-			const id = 1;
-			const accountId = 1;
-			const houseNameNumber = 'Pendennis';
-			const streetName = 'Tredegar Road';
-			const townCityName = 'Ebbw Vale';
-			const postCode = 'NP23 6LP';
-			const values = [id, accountId, houseNameNumber, streetName, townCityName, postCode];
 			await mockPool.query('INSERT INTO address VALUES ($1, $2, $3, $4, $5, $6)', values);
 
-			const result = await addressService.getAddressById(id);
+			const result = await addressService.getAddressById(accountId, id);
 
 			expect(result).toMatchObject({
 				id,
@@ -56,6 +57,22 @@ describe('Address service', () => {
 				townCityName,
 				postCode,
 			});
+		});
+
+		it('returns null if the requested address does not exist', async () => {
+			await mockPool.query('INSERT INTO address VALUES ($1, $2, $3, $4, $5, $6)', values);
+
+			const result = await addressService.getAddressById(accountId, 2);
+
+			expect(result).toBeNull();
+		});
+
+		it('returns null if the requesting user\'s ID doesn\'t match the address owner\'s ID', async () => {
+			await mockPool.query('INSERT INTO address VALUES ($1, $2, $3, $4, $5, $6)', values);
+
+			const result = await addressService.getAddressById(2, id);
+
+			expect(result).toBeNull();
 		});
 	});
 });

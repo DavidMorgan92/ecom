@@ -26,7 +26,19 @@ describe('/addresses/:addressId', () => {
 		it('returns status 200', done => {
 			request(app)
 				.get('/addresses/1')
-				.expect(200, done);
+				.expect(200, {
+					id: 1,
+					houseNameNumber: 'Pendennis',
+					streetName: 'Tredegar Road',
+					townCityName: 'Ebbw Vale',
+					postCode: 'NP23 6LP',
+				}, done);
+		});
+
+		it('returns status 404 if the address doesn\'t exist', done => {
+			request(app)
+				.get('/addresses/2')
+				.expect(404, done);
 		});
 	});
 
