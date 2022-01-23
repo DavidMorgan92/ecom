@@ -87,7 +87,7 @@ auth.post('/register', async (req, res) => {
 		} = req.body;
 
 		const accountInfo = await account.registerAccount(firstName, lastName, email, password);
-		res.status(200).send(accountInfo);
+		res.send(accountInfo);
 	} catch (err) {
 		if (err.status === 400) {
 			res.sendStatus(400);

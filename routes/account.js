@@ -47,7 +47,7 @@ account.get('/', async (req, res) => {
 	const userId = 1;
 	// Return the account of the authorised user
 	const accountInfo = await accountService.getAccountInfo(userId);
-	res.status(200).send(accountInfo);
+	res.send(accountInfo);
 });
 
 /**
@@ -87,7 +87,7 @@ account.put('/', async (req, res) => {
 
 		const accountInfo = await accountService.updateAccountInfo(userId, firstName, lastName);
 		// Update the account of the authorised user
-		res.status(200).send(accountInfo);
+		res.send(accountInfo);
 	} catch (err) {
 		if (err.status === 400) {
 			res.sendStatus(400);
