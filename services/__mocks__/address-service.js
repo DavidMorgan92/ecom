@@ -1,3 +1,5 @@
+const addressService = jest.requireActual('../address-service');
+
 async function getAllAddresses(requesterId) {
 	return [{
 		id: 1,
@@ -22,7 +24,22 @@ async function getAddressById(requesterId, id) {
 	};
 }
 
+async function createAddress(requesterId, houseNameNumber, streetName, townCityName, postCode) {
+	if (!addressService.createAddressValidateInput(requesterId, houseNameNumber, streetName, townCityName, postCode)) {
+		throw { status: 400 };
+	}
+
+	return {
+		id: 1,
+		houseNameNumber,
+		streetName,
+		townCityName,
+		postCode,
+	};
+}
+
 module.exports = {
 	getAllAddresses,
 	getAddressById,
+	createAddress,
 };

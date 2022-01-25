@@ -138,9 +138,28 @@ addresses.get('/:addressId', (req, res) => {
  *       401:
  *         description: Unauthorized.
  */
-addresses.post('/', (req, res) => {
+addresses.post('/', async (req, res) => {
 	// Create a new address belonging to the authorised user
-	res.sendStatus(201);
+	// TODO: Pass requesting user's ID to createAddress
+	try {
+		const requesterId = 1;
+		const {
+			houseNameNumber,
+			streetName,
+			townCityName,
+			postCode,
+		} = req.body;
+		
+		const address = await addressService.createAddress(requesterId, houseNameNumber, streetName, townCityName, postCode);
+
+		res.status(201).send(address);
+	} catch (err) {
+		if (err.status === 400) {
+			res.sendStatus(400);
+		} else {
+			throw err;
+		}
+	}
 });
 
 /**

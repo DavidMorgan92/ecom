@@ -115,4 +115,22 @@ describe('Address service', () => {
 			expect(result).toBeNull();
 		});
 	});
+
+	describe('createAddress', () => {
+		it('creates an address', async () => {
+			const address = {
+				houseNameNumber: 'Pendennis',
+				streetName: 'Tredegar Road',
+				townCityName: 'Ebbw Vale',
+				postCode: 'NP23 6LP',
+			};
+
+			const requesterId = 1;
+
+			const result = await addressService.createAddress(requesterId, address.houseNameNumber, address.streetName, address.townCityName, address.postCode);
+
+			expect(result).toMatchObject(address);
+			expect(result).toHaveProperty('id');
+		});
+	});
 });

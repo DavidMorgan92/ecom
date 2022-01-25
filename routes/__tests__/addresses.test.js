@@ -22,7 +22,25 @@ describe('/addresses', () => {
 		it('returns status 201', done => {
 			request(app)
 				.post('/addresses')
-				.expect(201, done);
+				.send({
+					houseNameNumber: 'Pendennis',
+					streetName: 'Tredegar Road',
+					townCityName: 'Ebbw Vale',
+					postCode: 'NP23 6LP',
+				})
+				.expect(201, {
+					id: 1,
+					houseNameNumber: 'Pendennis',
+					streetName: 'Tredegar Road',
+					townCityName: 'Ebbw Vale',
+					postCode: 'NP23 6LP',
+				}, done);
+		});
+
+		it('returns status 400 with no input', done => {
+			request(app)
+				.post('/addresses')
+				.expect(400, done);
 		});
 	});
 });

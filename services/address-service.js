@@ -1,5 +1,15 @@
 const db = require('../db/index');
 
+function mapDboAddressToApiAddress(address) {
+	return {
+		id: address.id,
+		houseNameNumber: address.house_name_number,
+		streetName: address.street_name,
+		townCityName: address.town_city_name,
+		postCode: address.post_code,
+	};
+}
+
 /**
  * Get all the requesting user's address objects
  * @param {number} requesterId The account ID of the user requesting
@@ -16,15 +26,7 @@ async function getAllAddresses(requesterId) {
 
 	const result = await db.query(query, values);
 
-	return result.rows.map(row => {
-		return {
-			id: row.id,
-			houseNameNumber: row.house_name_number,
-			streetName: row.street_name,
-			townCityName: row.town_city_name,
-			postCode: row.post_code,
-		};
-	});
+	return result.rows.map(mapDboAddressToApiAddress);
 }
 
 /**
@@ -48,16 +50,56 @@ async function getAddressById(requesterId, id) {
 		return null;
 	}
 
-	return {
-		id: result.rows[0].id,
-		houseNameNumber: result.rows[0].house_name_number,
-		streetName: result.rows[0].street_name,
-		townCityName: result.rows[0].town_city_name,
-		postCode: result.rows[0].post_code,
-	};
+	return mapDboAddressToApiAddress(result.rows[0]);
+}
+
+/**
+ * Check if the given inputs for the createAddress function are valid
+ * @param {number} requesterId The account ID of the user requesting
+ * @param {string} houseNameNumber House name/number
+ * @param {string} streetName Street name
+ * @param {string} townCityName Town/City name
+ * @param {string} postCode Post code
+ * @returns True if all inputs are valid
+ */
+function createAddressValidateInput(requesterId, houseNameNumber, streetName, townCityName, postCode) {
+	if (!requesterId || !houseNameNumber || !streetName || !townCityName || !postCode) {
+		return false;
+	}
+
+	return true;
+}
+
+/**
+ * Create an address belonging to the requesting user
+ * @param {number} requesterId The account ID of the user requesting
+ * @param {string} houseNameNumber House name/number
+ * @param {string} streetName Street name
+ * @param {string} townCityName Town/City name
+ * @param {string} postCode Post code
+ * @returns The newly created address object
+ */
+async function createAddress(requesterId, houseNameNumber, streetName, townCityName, postCode) {
+	if (!createAddressValidateInput(requesterId, houseNameNumber, streetName, townCityName, postCode)) {
+		throw { status: 400 };
+	}
+
+	const query = `
+		INSERT INTO address (account_id, house_name_number, street_name, town_city_name, post_code)
+		VALUES ($1, $2, $3, $4, $5)
+		RETURNING id, house_name_number, street_name, town_city_name, post_code;
+	`;
+
+	const values = [requesterId, houseNameNumber, streetName, townCityName, postCode];
+
+	const result = await db.query(query, values);
+
+	return mapDboAddressToApiAddress(result.rows[0]);
 }
 
 module.exports = {
 	getAllAddresses,
 	getAddressById,
+	createAddressValidateInput,
+	createAddress,
 };
