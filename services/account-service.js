@@ -1,6 +1,14 @@
 const db = require('../db/index');
 const passwordService = require('./password-service');
 
+function mapDboAccountToApiAccount(account) {
+	return {
+		firstName: account.first_name,
+		lastName: account.last_name,
+		email: account.email,
+	};
+}
+
 /**
  * Check if the given email address is valid
  * @param {string} email Email address to validate
@@ -53,11 +61,7 @@ async function registerAccount(firstName, lastName, email, password) {
 	// Insert values into database
 	const result = await db.query(query, values);
 
-	return {
-		firstName: result.rows[0].first_name,
-		lastName: result.rows[0].last_name,
-		email: result.rows[0].email,
-	};
+	return mapDboAccountToApiAccount(result.rows[0]);
 }
 
 /**
@@ -76,11 +80,8 @@ async function getAccountInfo(id) {
 
 	const result = await db.query(query, values);
 
-	return {
-		firstName: result.rows[0].first_name,
-		lastName: result.rows[0].last_name,
-		email: result.rows[0].email,
-	};}
+	return mapDboAccountToApiAccount(result.rows[0]);
+}
 
 /**
  * Check if the given inputs for the updateAccountInfo function are valid
@@ -120,11 +121,7 @@ async function updateAccountInfo(id, firstName, lastName) {
 
 	const result = await db.query(query, values);
 
-	return {
-		firstName: result.rows[0].first_name,
-		lastName: result.rows[0].last_name,
-		email: result.rows[0].email,
-	};
+	return mapDboAccountToApiAccount(result.rows[0]);
 }
 
 module.exports = {
