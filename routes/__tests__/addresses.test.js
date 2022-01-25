@@ -70,7 +70,32 @@ describe('/addresses/:addressId', () => {
 		it('returns status 200', done => {
 			request(app)
 				.put('/addresses/1')
-				.expect(200, done);
+				.send({
+					id: 1,
+					houseNameNumber: '3',
+					streetName: 'St John\'s Court',
+					townCityName: 'Merthyr Tydfil',
+					postCode: 'CF48 3LU',
+				})
+				.expect(200, {
+					id: 1,
+					houseNameNumber: '3',
+					streetName: 'St John\'s Court',
+					townCityName: 'Merthyr Tydfil',
+					postCode: 'CF48 3LU',
+				}, done);
+		});
+
+		it('returns status 400 with no input', done => {
+			request(app)
+				.put('/addresses/1')
+				.expect(400, done);
+		});
+
+		it('returns status 404 if the address doesn\'t exist', done => {
+			request(app)
+				.put('/addresses/2')
+				.expect(404, done);
 		});
 	});
 

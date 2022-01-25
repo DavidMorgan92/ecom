@@ -44,8 +44,8 @@ describe('Address service', () => {
 		it('gets all the addresses', async () => {
 			const accountId = 1;
 			const addresses = [
-				{id: 1, accountId: accountId, houseNameNumber: 'Pendennis', streetName: 'Tredegar Road', townCityName: 'Ebbw Vale', postCode: 'NP23 6LP'},
-				{id: 2, accountId: accountId, houseNameNumber: '3', streetName: 'St John\'s Court', townCityName: 'Merthyr Tydfil', postCode: 'CF48 3LU'},
+				{ id: 1, accountId: accountId, houseNameNumber: 'Pendennis', streetName: 'Tredegar Road', townCityName: 'Ebbw Vale', postCode: 'NP23 6LP' },
+				{ id: 2, accountId: accountId, houseNameNumber: '3', streetName: 'St John\'s Court', townCityName: 'Merthyr Tydfil', postCode: 'CF48 3LU' },
 			];
 
 			await insertMockAddress(addresses[0]);
@@ -62,8 +62,8 @@ describe('Address service', () => {
 		it('doesn\'t get addresses not belonging to the requesting user', async () => {
 			const accountId = 1;
 			const addresses = [
-				{id: 1, accountId: accountId, houseNameNumber: 'Pendennis', streetName: 'Tredegar Road', townCityName: 'Ebbw Vale', postCode: 'NP23 6LP'},
-				{id: 2, accountId: accountId, houseNameNumber: '3', streetName: 'St John\'s Court', townCityName: 'Merthyr Tydfil', postCode: 'CF48 3LU'},
+				{ id: 1, accountId: accountId, houseNameNumber: 'Pendennis', streetName: 'Tredegar Road', townCityName: 'Ebbw Vale', postCode: 'NP23 6LP' },
+				{ id: 2, accountId: accountId, houseNameNumber: '3', streetName: 'St John\'s Court', townCityName: 'Merthyr Tydfil', postCode: 'CF48 3LU' },
 			];
 
 			await insertMockAddress(addresses[0]);
@@ -131,6 +131,33 @@ describe('Address service', () => {
 
 			expect(result).toMatchObject(address);
 			expect(result).toHaveProperty('id');
+		});
+	});
+
+	describe('updateAddress', () => {
+		it('updates an address', async () => {
+			await insertMockAddress({
+				id: 1,
+				accountId: 1,
+				houseNameNumber: 'Pendennis',
+				streetName: 'Tredegar Road',
+				townCityName: 'Ebbw Vale',
+				postCode: 'NP23 6LP',
+			});
+
+			const address = {
+				id: 1,
+				houseNameNumber: '3',
+				streetName: 'St John\'s Court',
+				townCityName: 'Merthyr Tydfil',
+				postCode: 'CF48 3LU',
+			};
+
+			const requesterId = 1;
+
+			const result = await addressService.updateAddress(requesterId, address.id, address.houseNameNumber, address.streetName, address.townCityName, address.postCode);
+
+			expect(result).toMatchObject(address);
 		});
 	});
 });

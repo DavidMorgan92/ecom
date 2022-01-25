@@ -169,6 +169,7 @@ addresses.post('/', async (req, res) => {
  *     tags:
  *       - Addresses
  *     summary: Update an address belonging to the authorised user.
+ *     description: Will simply return 404 Not Found if the requested address ID does exist but it doesn't belong to the authorised user.
  *     parameters:
  *       - $ref: '#/components/parameters/addressId'
  *     requestBody:
@@ -188,14 +189,32 @@ addresses.post('/', async (req, res) => {
  *         description: Invalid input.
  *       401:
  *         description: Unauthorized.
- *       403:
- *         description: Address doesn't belong to the authorised user.
  *       404:
  *         description: Address not found.
  */
-addresses.put('/:addressId', (req, res) => {
+addresses.put('/:addressId', async (req, res) => {
 	// Update an address belonging to the authorised user
-	res.sendStatus(200);
+	// TODO: Pass requesting user's ID to updateAddress
+	try {
+		const requesterId = 1;
+		const {
+			id,
+			houseNameNumber,
+			streetName,
+			townCityName,
+			postCode,
+		} = req.body;
+
+		const address = await addressService.updateAddress(requesterId, id, houseNameNumber, streetName, townCityName, postCode);
+
+		res.send(address);
+	} catch (err) {
+		if (err.status === 400) {
+			res.sendStatus(400);
+		} else {
+			throw err;
+		}
+	}
 });
 
 /**

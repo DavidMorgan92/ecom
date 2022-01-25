@@ -38,8 +38,23 @@ async function createAddress(requesterId, houseNameNumber, streetName, townCityN
 	};
 }
 
+async function updateAddress(requesterId, addressId, houseNameNumber, streetName, townCityName, postCode) {
+	if (!addressService.updateAddressValidateInput(requesterId, addressId, houseNameNumber, streetName, townCityName, postCode)) {
+		throw { status: 400 };
+	}
+
+	return {
+		id: addressId,
+		houseNameNumber,
+		streetName,
+		townCityName,
+		postCode,
+	};
+}
+
 module.exports = {
 	getAllAddresses,
 	getAddressById,
 	createAddress,
+	updateAddress,
 };

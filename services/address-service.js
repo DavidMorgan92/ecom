@@ -97,9 +97,58 @@ async function createAddress(requesterId, houseNameNumber, streetName, townCityN
 	return mapDboAddressToApiAddress(result.rows[0]);
 }
 
+/**
+ * Check if the given inputs for the createAddress function are valid
+ * @param {number} requesterId The account ID of the user requesting
+ * @param {number} addressId Address ID
+ * @param {string} houseNameNumber House name/number
+ * @param {string} streetName Street name
+ * @param {string} townCityName Town/City name
+ * @param {string} postCode Post code
+ * @returns True if all inputs are valid
+ */
+function updateAddressValidateInput(requesterId, addressId, houseNameNumber, streetName, townCityName, postCode) {
+	if (!requesterId || !addressId || !houseNameNumber || !streetName || !townCityName || !postCode) {
+		return false;
+	}
+
+	return true;
+}
+
+/**
+ * Update an address belonging to the requesting user
+ * @param {number} requesterId The account ID of the user requesting
+ * @param {number} addressId Address ID
+ * @param {string} houseNameNumber House name/number
+ * @param {string} streetName Street name
+ * @param {string} townCityName Town/City name
+ * @param {string} postCode Post code
+ * @returns The updated address object
+ */
+async function updateAddress(requesterId, addressId, houseNameNumber, streetName, townCityName, postCode) {
+	if (!updateAddressValidateInput(requesterId, addressId, houseNameNumber, streetName, townCityName, postCode)) {
+		throw { status: 400 };
+	}
+
+	const query = `
+		UPDATE address
+		SET house_name_number = $3, street_name = $4, town_city_name = $5, post_code = $6
+		WHERE account_id = $1 AND id = $2
+		RETURNING id, house_name_number, street_name, town_city_name, post_code;
+	`;
+
+	const values = [requesterId, addressId, houseNameNumber, streetName, townCityName, postCode];
+
+	const result = await db.query(query, values);
+
+	return mapDboAddressToApiAddress(result.rows[0]);
+}
+
 module.exports = {
 	getAllAddresses,
 	getAddressById,
 	createAddressValidateInput,
 	createAddress,
+	updateAddressValidateInput,
+	updateAddress,
 };
