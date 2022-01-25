@@ -5,11 +5,11 @@
  *     Account:
  *       type: object
  *       properties:
- *         first_name:
+ *         firstName:
  *           type: string
  *           description: User's first name.
  *           example: Benjamin
- *         last_name:
+ *         lastName:
  *           type: string
  *           description: User's last name.
  *           example: Smith

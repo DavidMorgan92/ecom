@@ -10,7 +10,7 @@
  *           description: Cart ID.
  *           example: 123
  *           readOnly: true
- *         created_at:
+ *         createdAt:
  *           type: string
  *           format: date-time
  *           description: Date/time cart was created.

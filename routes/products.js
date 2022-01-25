@@ -25,14 +25,14 @@
  *           type: number
  *           description: Product price.
  *           example: 1.23
- *         stock_count:
+ *         stockCount:
  *           type: integer
  *           description: Number of items in stock.
  *           example: 23
  *     Item:
  *       type: object
  *       properties:
- *         product_id:
+ *         productId:
  *           type: integer
  *           description: Product ID.
  *           example: 123

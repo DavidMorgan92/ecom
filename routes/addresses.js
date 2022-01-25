@@ -10,19 +10,19 @@
  *           description: Address ID.
  *           example: 123
  *           readOnly: true
- *         house_name_number:
+ *         houseNameNumber:
  *           type: string
  *           description: House name/number.
  *           example: 742
- *         street_name:
+ *         streetName:
  *           type: string
  *           description: Street name.
  *           example: Evergreen Terrace
- *         town_city_name:
+ *         townCityName:
  *           type: string
  *           description: Town/city name.
  *           example: Springfield
- *         post_code:
+ *         postCode:
  *           type: string
  *           description: Post code.
  *           example: AA00 0AA

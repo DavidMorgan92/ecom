@@ -9,7 +9,7 @@
  *           type: integer
  *           description: Cart ID.
  *           example: 123
- *         created_at:
+ *         createdAt:
  *           type: string
  *           format: date-time
  *           description: Date/time order was created.
