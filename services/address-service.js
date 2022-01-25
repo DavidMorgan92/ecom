@@ -144,6 +144,26 @@ async function updateAddress(requesterId, addressId, houseNameNumber, streetName
 	return mapDboAddressToApiAddress(result.rows[0]);
 }
 
+/**
+ * Delete an address belonging to the requesting user
+ * @param {number} requesterId The account ID of the user requesting
+ * @param {number} addressId Address ID
+ * @returns True if the operation succeeded
+ */
+async function deleteAddress(requesterId, addressId) {
+	const query = `
+		DELETE FROM address
+		WHERE account_id = $1 AND id = $2;
+	`;
+
+	const values = [requesterId, addressId];
+
+	const result = await db.query(query, values);
+
+	// Return true if at least one row was changed
+	return result.rowCount > 0;
+}
+
 module.exports = {
 	getAllAddresses,
 	getAddressById,
@@ -151,4 +171,5 @@ module.exports = {
 	createAddress,
 	updateAddressValidateInput,
 	updateAddress,
+	deleteAddress,
 };

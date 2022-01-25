@@ -36,7 +36,8 @@ afterEach(async () => {
 });
 
 async function insertMockAddress(address) {
-	await mockPool.query('INSERT INTO address VALUES ($1, $2, $3, $4, $5, $6)', Object.values(address));
+	const values = [address.id, address.accountId, address.houseNameNumber, address.streetName, address.townCityName, address.postCode];
+	await mockPool.query('INSERT INTO address VALUES ($1, $2, $3, $4, $5, $6)', values);
 }
 
 describe('Address service', () => {
@@ -158,6 +159,25 @@ describe('Address service', () => {
 			const result = await addressService.updateAddress(requesterId, address.id, address.houseNameNumber, address.streetName, address.townCityName, address.postCode);
 
 			expect(result).toMatchObject(address);
+		});
+	});
+
+	describe('deleteAddress', () => {
+		it('deletes an address', async () => {
+			await insertMockAddress({
+				id: 1,
+				accountId: 1,
+				houseNameNumber: 'Pendennis',
+				streetName: 'Tredegar Road',
+				townCityName: 'Ebbw Vale',
+				postCode: 'NP23 6LP',
+			});
+
+			const requesterId = 1;
+
+			const result = await addressService.deleteAddress(requesterId, 1);
+
+			expect(result).toBe(true);
 		});
 	});
 });

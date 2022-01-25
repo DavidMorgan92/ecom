@@ -198,14 +198,13 @@ addresses.put('/:addressId', async (req, res) => {
 	try {
 		const requesterId = 1;
 		const {
-			id,
 			houseNameNumber,
 			streetName,
 			townCityName,
 			postCode,
 		} = req.body;
 
-		const address = await addressService.updateAddress(requesterId, id, houseNameNumber, streetName, townCityName, postCode);
+		const address = await addressService.updateAddress(requesterId, req.addressId, houseNameNumber, streetName, townCityName, postCode);
 
 		res.send(address);
 	} catch (err) {
@@ -224,6 +223,7 @@ addresses.put('/:addressId', async (req, res) => {
  *     tags:
  *       - Addresses
  *     summary: Delete an address belonging to the authorised user.
+ *     description: Will simply return 404 Not Found if the requested address ID does exist but it doesn't belong to the authorised user.
  *     parameters:
  *       - $ref: '#/components/parameters/addressId'
  *     responses:
@@ -231,14 +231,20 @@ addresses.put('/:addressId', async (req, res) => {
  *         description: Address deleted.
  *       401:
  *         description: Unauthorized.
- *       403:
- *         description: Address doesn't belong to the authorised user.
  *       404:
  *         description: Address not found.
  */
-addresses.delete('/:addressId', (req, res) => {
+addresses.delete('/:addressId', async (req, res) => {
 	// Delete an address belonging to the authorised user
-	res.sendStatus(204);
+	// TODO: Pass requesting user's ID to deleteAddress
+	const requesterId = 1;
+	const succeeded = await addressService.deleteAddress(requesterId, req.addressId);
+
+	if (succeeded) {
+		res.sendStatus(204);
+	} else {
+		res.sendStatus(404);
+	}
 });
 
 module.exports = addresses;

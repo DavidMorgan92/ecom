@@ -2,7 +2,7 @@ const addressService = jest.requireActual('../address-service');
 
 async function getAllAddresses(requesterId) {
 	return [{
-		id: 1,
+		id: '1',
 		houseNameNumber: 'Pendennis',
 		streetName: 'Tredegar Road',
 		townCityName: 'Ebbw Vale',
@@ -16,7 +16,7 @@ async function getAddressById(requesterId, id) {
 	}
 
 	return {
-		id: 1,
+		id: '1',
 		houseNameNumber: 'Pendennis',
 		streetName: 'Tredegar Road',
 		townCityName: 'Ebbw Vale',
@@ -30,7 +30,7 @@ async function createAddress(requesterId, houseNameNumber, streetName, townCityN
 	}
 
 	return {
-		id: 1,
+		id: '1',
 		houseNameNumber,
 		streetName,
 		townCityName,
@@ -44,7 +44,7 @@ async function updateAddress(requesterId, addressId, houseNameNumber, streetName
 	}
 
 	return {
-		id: addressId,
+		id: addressId.toString(),
 		houseNameNumber,
 		streetName,
 		townCityName,
@@ -52,9 +52,18 @@ async function updateAddress(requesterId, addressId, houseNameNumber, streetName
 	};
 }
 
+async function deleteAddress(requesterId, addressId) {
+	if (addressId != 1) {
+		return false;
+	}
+
+	return true;
+}
+
 module.exports = {
 	getAllAddresses,
 	getAddressById,
 	createAddress,
 	updateAddress,
+	deleteAddress,
 };
