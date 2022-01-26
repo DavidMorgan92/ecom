@@ -67,7 +67,7 @@ describe('/orders/:orderId', () => {
 				}, done);
 		});
 
-		it('returns status 404 if the address doesn\'t exist', done => {
+		it('returns status 404 if the order doesn\'t exist', done => {
 			request(app)
 				.get('/orders/2')
 				.expect(404, done);
