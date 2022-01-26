@@ -48,6 +48,7 @@
  */
 
 const express = require('express');
+const productService = require('../services/product-service');
 
 const products = express.Router();
 
@@ -63,8 +64,9 @@ const products = express.Router();
  *       schema:
  *         type: integer
  */
-products.param('productId', (req, res, next, id) => {
-	const product = {}; // Get product from database
+products.param('productId', async (req, res, next, id) => {
+	const product = await productService.getProductById(id);
+
 	if (product) {
 		req.productId = id;
 		req.product = product;
@@ -141,7 +143,7 @@ products.get('/', (req, res) => {
  */
 products.get('/:productId', (req, res) => {
 	// Return the chosen product
-	res.sendStatus(200);
+	res.send(req.product);
 });
 
 module.exports = products;

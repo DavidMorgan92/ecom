@@ -1,6 +1,8 @@
 const request = require('supertest');
 const app = require('../../server');
 
+jest.mock('../../services/product-service');
+
 describe('/products', () => {
 	describe('get', () => {
 		it('returns status 200', done => {
@@ -76,7 +78,20 @@ describe('/products/:productId', () => {
 		it('returns status 200', done => {
 			request(app)
 				.get('/products/1')
-				.expect(200, done);
+				.expect(200, {
+					id: 1,
+					name: 'Toothbrush',
+					description: 'Bristly',
+					category: 'Health & Beauty',
+					pricePennies: '123',
+					stockCount: 23,
+				}, done);
+		});
+
+		it('returns status 404 if the product doesn\'t exist', done => {
+			request(app)
+				.get('/products/2')
+				.expect(404, done);
 		});
 	});
 });
