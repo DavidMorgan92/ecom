@@ -51,7 +51,7 @@ async function getAllOrders(requesterId) {
 				(
 					SELECT row_to_json(z) FROM
 					(
-						SELECT p.id, p.name, p.description, p.category, p.price, p.stock_count
+						SELECT p.id, p.name, p.description, p.category, p.price_pennies, p.stock_count
 						FROM product p
 						WHERE op.product_id = p.id
 					) z

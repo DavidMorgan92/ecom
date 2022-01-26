@@ -3,7 +3,7 @@ Table product {
 	name text [not null]
 	description text
 	category text [not null]
-	price money [not null, note: 'Check >= 0.']
+	price_pennies bigint [not null, note: 'Check >= 0.']
 	stock_count int [not null, note: 'Check >= 0.']
 }
 

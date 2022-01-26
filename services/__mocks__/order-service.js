@@ -17,7 +17,7 @@ async function getAllOrders(requesterId) {
 					name: 'Toothbrush',
 					description: 'Bristly',
 					category: 'Health & Beauty',
-					price: '£1.23',
+					pricePennies: 123,
 					stockCount: 23,
 				},
 			},

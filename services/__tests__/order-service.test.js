@@ -48,8 +48,8 @@ describe('Order service', () => {
 			await db.query('INSERT INTO address VALUES ($1, $2, $3, $4, $5, $6)', [1, null, 'Pendennis', 'Tredegar Road', 'Ebbw Vale', 'NP23 6LP']);
 			await db.query('INSERT INTO "order" VALUES ($1, $2, $3, $4)', [1, 1, 1, '2004-10-19 10:23:54']);
 			await db.query('INSERT INTO "order" VALUES ($1, $2, $3, $4)', [2, 1, 1, '2004-10-20 10:23:54']);
-			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [1, 'Toothbrush', 'Bristly', 'Health & Beauty', 1.23, 23]);
-			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [2, 'Hairbrush', 'Bristly', 'Health & Beauty', 2.34, 12]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [1, 'Toothbrush', 'Bristly', 'Health & Beauty', 123, 23]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [2, 'Hairbrush', 'Bristly', 'Health & Beauty', 234, 12]);
 			await db.query('INSERT INTO orders_products VALUES ($1, $2, $3)', [1, 1, 1]);
 			await db.query('INSERT INTO orders_products VALUES ($1, $2, $3)', [2, 2, 1]);
 
@@ -76,7 +76,7 @@ describe('Order service', () => {
 								name: 'Toothbrush',
 								description: 'Bristly',
 								category: 'Health & Beauty',
-								price: '£1.23',
+								pricePennies: 123,
 								stockCount: 23,
 							},
 						},
@@ -100,7 +100,7 @@ describe('Order service', () => {
 								name: 'Hairbrush',
 								description: 'Bristly',
 								category: 'Health & Beauty',
-								price: '£2.34',
+								pricePennies: 234,
 								stockCount: 12,
 							},
 						},

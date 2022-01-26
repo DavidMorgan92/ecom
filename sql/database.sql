@@ -3,7 +3,7 @@ CREATE TABLE "product" (
 	"name" text NOT NULL,
 	"description" text,
 	"category" text NOT NULL,
-	"price" money NOT NULL,
+	"price_pennies" bigint NOT NULL,
 	"stock_count" int NOT NULL
 );
 
@@ -70,7 +70,7 @@ ALTER TABLE "carts_products" ADD FOREIGN KEY ("cart_id") REFERENCES "cart" ("id"
 ALTER TABLE "carts_products" ADD FOREIGN KEY ("product_id") REFERENCES "product" ("id");
 
 
-COMMENT ON COLUMN "product"."price" IS 'Check >= 0.';
+COMMENT ON COLUMN "product"."price_pennies" IS 'Check >= 0.';
 
 COMMENT ON COLUMN "product"."stock_count" IS 'Check >= 0.';
 
@@ -79,7 +79,7 @@ COMMENT ON COLUMN "orders_products"."count" IS 'Number of product items ordered.
 COMMENT ON COLUMN "carts_products"."count" IS 'Number of product items ordered. Check > 0.';
 
 
-ALTER TABLE product ADD CONSTRAINT price_gt_eq_0 CHECK (price >= 0::money);
+ALTER TABLE product ADD CONSTRAINT price_pennies_gt_eq_0 CHECK (price_pennies >= 0);
 
 ALTER TABLE product ADD CONSTRAINT stock_gt_eq_0 CHECK (stock_count >= 0);
 

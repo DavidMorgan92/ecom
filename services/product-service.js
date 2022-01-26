@@ -4,7 +4,7 @@ function mapDboProductToApiProduct(product) {
 		name: product.name,
 		description: product.description,
 		category: product.category,
-		price: product.price,
+		pricePennies: product.price_pennies,
 		stockCount: product.stock_count,
 	};
 }
