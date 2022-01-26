@@ -1,5 +1,10 @@
 const db = require('../db/index');
 
+/**
+ * Convert a database representation of an address into an API representation
+ * @param {object} address The address object as returned from the database
+ * @returns An object that represents the address at the API level
+ */
 function mapDboAddressToApiAddress(address) {
 	return {
 		id: address.id,
@@ -165,6 +170,7 @@ async function deleteAddress(requesterId, addressId) {
 }
 
 module.exports = {
+	mapDboAddressToApiAddress,
 	getAllAddresses,
 	getAddressById,
 	createAddressValidateInput,

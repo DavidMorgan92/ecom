@@ -25,6 +25,7 @@
  */
 
 const express = require('express');
+const orderService = require('../services/order-service');
 
 const orders = express.Router();
 
@@ -70,9 +71,12 @@ orders.param('orderId', (req, res, next, id) => {
  *       401:
  *         description: Unauthorized.
  */
-orders.get('/', (req, res) => {
+orders.get('/', async (req, res) => {
 	// Return all orders for the authorised user
-	res.sendStatus(200);
+	// TODO: Pass requesting user's ID to getAllOrders
+	const requesterId = 1;
+	const orders = await orderService.getAllOrders(requesterId);
+	res.send(orders);
 });
 
 /**
