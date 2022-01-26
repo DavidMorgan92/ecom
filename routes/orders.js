@@ -41,8 +41,11 @@ const orders = express.Router();
  *       schema:
  *         type: integer
  */
-orders.param('orderId', (req, res, next, id) => {
-	const order = {}; // Get order from database
+orders.param('orderId', async (req, res, next, id) => {
+	// TODO: Pass requesting user's ID to getOrderById
+	const requesterId = 1;
+	const order = await orderService.getOrderById(requesterId, id);
+
 	if (order) {
 		req.orderId = id;
 		req.order = order;
@@ -86,6 +89,7 @@ orders.get('/', async (req, res) => {
  *     tags:
  *       - Orders
  *     summary: Retrieve one order belonging to the authorised user.
+ *     description: Will simply return 404 Not Found if the requested order ID does exist but it doesn't belong to the authorised user.
  *     parameters:
  *       - $ref: '#/components/parameters/orderId'
  *     responses:
@@ -97,14 +101,12 @@ orders.get('/', async (req, res) => {
  *               $ref: '#/components/schemas/Order'
  *       401:
  *         description: Unauthorized.
- *       403:
- *         description: Order doesn't belong to the authorised user.
  *       404:
  *         description: Order not found.
  */
 orders.get('/:orderId', (req, res) => {
 	// Return the chosen order for the authorised user
-	res.sendStatus(200);
+	res.send(req.order);
 });
 
 module.exports = orders;

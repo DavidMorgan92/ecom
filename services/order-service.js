@@ -71,6 +71,55 @@ async function getAllOrders(requesterId) {
 	return result.rows.map(mapDboOrderToApiOrder);
 }
 
+/**
+ * Get an order object from the database by its ID
+ * @param {number} requesterId The account ID of the user requesting
+ * @param {number} orderId The order's ID
+ * @returns The address object requested, or null if the object doesn't match
+ */
+async function getOrderById(requesterId, orderId) {
+	const query = `
+		SELECT o.id, o.created_at,
+		(
+			SELECT row_to_json(x) FROM
+			(
+				SELECT a.id, a.house_name_number, a.street_name, a.town_city_name, a.post_code
+				FROM address a
+				WHERE a.id = o.address_id
+			) x
+		) AS address,
+		(
+			SELECT array_to_json(array_agg(y)) FROM
+			(
+				SELECT op.count,
+				(
+					SELECT row_to_json(z) FROM
+					(
+						SELECT p.id, p.name, p.description, p.category, p.price_pennies, p.stock_count
+						FROM product p
+						WHERE op.product_id = p.id
+					) z
+				) AS product
+				FROM orders_products op
+				WHERE op.order_id = o.id
+			) y
+		) AS items
+		FROM "order" o
+		WHERE o.account_id = $1 AND o.id = $2;
+	`;
+
+	const values = [requesterId, orderId];
+
+	const result = await db.query(query, values);
+
+	if (result.rowCount === 0) {
+		return null;
+	}
+
+	return mapDboOrderToApiOrder(result.rows[0]);
+}
+
 module.exports = {
 	getAllOrders,
+	getOrderById,
 };
