@@ -33,6 +33,7 @@
  */
 
 const express = require('express');
+const cartService = require('../services/cart-service');
 
 const carts = express.Router();
 
@@ -78,9 +79,12 @@ carts.param('cartId', (req, res, next, id) => {
  *       401:
  *         description: Unauthorized.
  */
-carts.get('/', (req, res) => {
+carts.get('/', async (req, res) => {
 	// Return all carts belonging to the authorised user
-	res.sendStatus(200);
+	// TODO: Pass requesting user's ID to getAllCarts
+	const requesterId = 1;
+	const carts = await cartService.getAllCarts(requesterId);
+	res.send(carts);
 });
 
 /**
