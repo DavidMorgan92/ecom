@@ -65,7 +65,7 @@ ALTER TABLE "orders_products" ADD FOREIGN KEY ("order_id") REFERENCES "order" ("
 
 ALTER TABLE "orders_products" ADD FOREIGN KEY ("product_id") REFERENCES "product" ("id");
 
-ALTER TABLE "carts_products" ADD FOREIGN KEY ("cart_id") REFERENCES "cart" ("id");
+ALTER TABLE "carts_products" ADD FOREIGN KEY ("cart_id") REFERENCES "cart" ("id") ON DELETE CASCADE;
 
 ALTER TABLE "carts_products" ADD FOREIGN KEY ("product_id") REFERENCES "product" ("id");
 

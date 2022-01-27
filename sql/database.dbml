@@ -54,7 +54,7 @@ Table orders_products {
 }
 
 Table carts_products {
-	cart_id int [ref: > cart.id]
+	cart_id int
 	product_id int [ref: > product.id]
 	count int [
 		not null,
@@ -66,3 +66,5 @@ Table carts_products {
 		(cart_id, product_id) [pk]
 	}
 }
+
+ref: carts_products.cart_id > cart.id [delete: cascade]
