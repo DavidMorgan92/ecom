@@ -187,9 +187,30 @@ async function createCart(requesterId, name, items) {
 	}
 }
 
+/**
+ * Delete a cart belonging to the requesting user
+ * @param {number} requesterId The account ID of the user requesting
+ * @param {number} cartId The cart's ID
+ * @returns True if the operation succeeded
+ */
+async function deleteCart(requesterId, cartId) {
+	const query = `
+		DELETE FROM cart
+		WHERE account_id = $1 AND id = $2;
+	`;
+
+	const values = [requesterId, cartId];
+
+	const result = await db.query(query, values);
+
+	// Return true if at least one row was changed
+	return result.rowCount > 0;
+}
+
 module.exports = {
 	getAllCarts,
 	getCartById,
 	createCartValidateInput,
 	createCart,
+	deleteCart,
 };

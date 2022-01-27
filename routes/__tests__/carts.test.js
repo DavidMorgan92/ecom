@@ -134,6 +134,12 @@ describe('/carts/:cartId', () => {
 				.delete('/carts/1')
 				.expect(204, done);
 		});
+
+		it('returns status 404 if the cart doesn\'t exist', done => {
+			request(app)
+				.put('/carts/2')
+				.expect(404, done);
+		});
 	});
 });
 

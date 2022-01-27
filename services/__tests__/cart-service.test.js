@@ -217,4 +217,36 @@ describe('Cart service', () => {
 			expect(result).toHaveProperty('createdAt');
 		});
 	});
+
+	describe('deleteCart', () => {
+		it('deletes a cart', async () => {
+			await db.query('INSERT INTO cart VALUES ($1, $2, $3, $4, $5)', [1, 1, 'My Cart', '2004-10-19 10:23:54', false]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [1, 'Toothbrush', 'Bristly', 'Health & Beauty', 123, 23]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [2, 'Hairbrush', 'Bristly', 'Health & Beauty', 234, 12]);
+			await db.query('INSERT INTO carts_products VALUES ($1, $2, $3)', [1, 1, 1]);
+			await db.query('INSERT INTO carts_products VALUES ($1, $2, $3)', [1, 2, 1]);
+
+			const requesterId = 1;
+
+			const result = await cartService.deleteCart(requesterId, 1);
+
+			expect(result).toBe(true);
+		});
+
+		it('cascade deletes from carts_products', async () => {
+			await db.query('INSERT INTO cart VALUES ($1, $2, $3, $4, $5)', [1, 1, 'My Cart', '2004-10-19 10:23:54', false]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [1, 'Toothbrush', 'Bristly', 'Health & Beauty', 123, 23]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [2, 'Hairbrush', 'Bristly', 'Health & Beauty', 234, 12]);
+			await db.query('INSERT INTO carts_products VALUES ($1, $2, $3)', [1, 1, 1]);
+			await db.query('INSERT INTO carts_products VALUES ($1, $2, $3)', [1, 2, 1]);
+
+			const requesterId = 1;
+
+			await cartService.deleteCart(requesterId, 1);
+
+			const result = await db.query('SELECT * FROM carts_products WHERE cart_id = 1');
+
+			expect(result.rows.length).toEqual(0);
+		});
+	});
 });

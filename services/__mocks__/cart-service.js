@@ -85,8 +85,17 @@ async function createCart(requesterId, name, items) {
 	};
 }
 
+async function deleteCart(requesterId, cartId) {
+	if (cartId != 1) {
+		return false;
+	}
+
+	return true;
+}
+
 module.exports = {
 	getAllCarts,
 	getCartById,
 	createCart,
+	deleteCart,
 };

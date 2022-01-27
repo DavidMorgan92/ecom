@@ -217,9 +217,17 @@ carts.put('/:cartId', (req, res) => {
  *       404:
  *         description: Cart not found.
  */
-carts.delete('/:cartId', (req, res) => {
+carts.delete('/:cartId', async (req, res) => {
 	// Delete a cart belonging to the authorised user
-	res.sendStatus(204);
+	// TODO: Pass requesting user's ID to deleteCart
+	const requesterId = 1;
+	const succeeded = await cartService.deleteCart(requesterId, req.cartId);
+
+	if (succeeded) {
+		res.sendStatus(204);
+	} else {
+		res.sendStatus(404);
+	}
 });
 
 /**
