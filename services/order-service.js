@@ -12,7 +12,7 @@ function mapDboOrderToApiOrder(order) {
 		id: order.id,
 		createdAt: order.created_at,
 		address: mapDboAddressToApiAddress(order.address),
-		items: order.items.map(mapDboOrderItemToApiOrderItem),
+		items: order.items ? order.items.map(mapDboOrderItemToApiOrderItem) : [],
 	};
 }
 

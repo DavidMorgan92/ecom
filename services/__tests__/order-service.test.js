@@ -108,6 +108,30 @@ describe('Order service', () => {
 				},
 			]);
 		});
+
+		it('works if an order has no items', async () => {
+			await db.query('INSERT INTO address VALUES ($1, $2, $3, $4, $5, $6)', [1, null, 'Pendennis', 'Tredegar Road', 'Ebbw Vale', 'NP23 6LP']);
+			await db.query('INSERT INTO "order" VALUES ($1, $2, $3, $4)', [1, 1, 1, '2004-10-19 10:23:54']);
+
+			const requesterId = 1;
+
+			const result = await orderService.getAllOrders(requesterId);
+
+			expect(result).toMatchObject([
+				{
+					id: 1,
+					createdAt: new Date('2004-10-19 10:23:54'),
+					address: {
+						id: 1,
+						houseNameNumber: 'Pendennis',
+						streetName: 'Tredegar Road',
+						townCityName: 'Ebbw Vale',
+						postCode: 'NP23 6LP',
+					},
+					items: [],
+				},
+			]);
+		});
 	});
 
 	describe('getOrderById', () => {
