@@ -49,8 +49,11 @@ const carts = express.Router();
  *       schema:
  *         type: integer
  */
-carts.param('cartId', (req, res, next, id) => {
-	const cart = {}; // Get cart from database
+carts.param('cartId', async (req, res, next, id) => {
+	// TODO: Pass requesting user's ID to getCartById
+	const requesterId = 1;
+	const cart = await cartService.getCartById(requesterId, id);
+
 	if (cart) {
 		req.cartId = id;
 		req.cart = cart;
@@ -94,6 +97,7 @@ carts.get('/', async (req, res) => {
  *     tags:
  *       - Carts
  *     summary: Retrieve one cart belonging to the authorised user.
+ *     description: Will simply return 404 Not Found if the requested cart ID does exist but it doesn't belong to the authorised user.
  *     parameters:
  *       - $ref: '#/components/parameters/cartId'
  *     responses:
@@ -105,14 +109,12 @@ carts.get('/', async (req, res) => {
  *               $ref: '#/components/schemas/Cart'
  *       401:
  *         description: Unauthorized.
- *       403:
- *         description: Cart doesn't belong to the authorised user.
  *       404:
  *         description: Cart not found.
  */
 carts.get('/:cartId', (req, res) => {
 	// Return the chosen cart belonging to the authorised user
-	res.sendStatus(200);
+	res.send(req.cart);
 });
 
 /**
@@ -152,6 +154,7 @@ carts.post('/', (req, res) => {
  *     tags:
  *       - Carts
  *     summary: Update a cart belonging to the authorised user.
+ *     description: Will simply return 404 Not Found if the requested cart ID does exist but it doesn't belong to the authorised user.
  *     parameters:
  *       - $ref: '#/components/parameters/cartId'
  *     requestBody:
@@ -171,8 +174,6 @@ carts.post('/', (req, res) => {
  *         description: Invalid input.
  *       401:
  *         description: Unauthorized.
- *       403:
- *         description: Cart doesn't belong to the authorised user.
  *       404:
  *         description: Cart not found.
  */
@@ -188,6 +189,7 @@ carts.put('/:cartId', (req, res) => {
  *     tags:
  *       - Carts
  *     summary: Delete a cart belonging to the authorised user.
+ *     description: Will simply return 404 Not Found if the requested cart ID does exist but it doesn't belong to the authorised user.
  *     parameters:
  *       - $ref: '#/components/parameters/cartId'
  *     responses:
@@ -195,8 +197,6 @@ carts.put('/:cartId', (req, res) => {
  *         description: Cart deleted.
  *       401:
  *         description: Unauthorized.
- *       403:
- *         description: Cart doesn't belong to the authorised user.
  *       404:
  *         description: Cart not found.
  */
@@ -212,7 +212,7 @@ carts.delete('/:cartId', (req, res) => {
  *     tags:
  *       - Carts
  *     summary: Order the items in the cart.
- *     description: Dispatch the order in the cart belonging to the authorised user.
+ *     description: Dispatch the order in the cart belonging to the authorised user. Will simply return 404 Not Found if the requested cart ID does exist but it doesn't belong to the authorised user.
  *     parameters:
  *       - $ref: '#/components/parameters/cartId'
  *     responses:
@@ -226,8 +226,6 @@ carts.delete('/:cartId', (req, res) => {
  *         description: Cart has already been ordered.
  *       401:
  *         description: Unauthorized.
- *       403:
- *         description: Cart doesn't belong to the authorised user.
  *       404:
  *         description: Cart not found.
  */

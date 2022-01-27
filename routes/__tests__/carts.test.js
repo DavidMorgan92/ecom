@@ -44,7 +44,31 @@ describe('/carts/:cartId', () => {
 		it('returns status 200', done => {
 			request(app)
 				.get('/carts/1')
-				.expect(200, done);
+				.expect(200, {
+					id: 1,
+					createdAt: '2004-10-19T09:23:54.000Z',
+					name: 'My Cart',
+					ordered: false,
+					items: [
+						{
+							count: 1,
+							product: {
+								id: 1,
+								name: 'Toothbrush',
+								description: 'Bristly',
+								category: 'Health & Beauty',
+								pricePennies: 123,
+								stockCount: 23,
+							},
+						},
+					],
+				}, done);
+		});
+
+		it('returns status 404 if the cart doesn\'t exist', done => {
+			request(app)
+				.get('/carts/2')
+				.expect(404, done);
 		});
 	});
 
