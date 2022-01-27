@@ -82,7 +82,79 @@ async function getCartById(requesterId, cartId) {
 	return mapDboCartToApiCart(result.rows[0]);
 }
 
+function createCartValidateInput(requesterId, name, items) {
+	if (!name || !items) {
+		return false;
+	}
+
+	for (const item of items) {
+		if (!item.productId || !item.count) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
+async function createCart(requesterId, name, items) {
+	if (!createCartValidateInput(requesterId, name, items)) {
+		throw { status: 400 };
+	}
+
+	const client = await db.getClient();
+
+	try {
+		await client.query('BEGIN');
+
+		const cartQuery = `
+			INSERT INTO cart (account_id, name)
+			VALUES ($1, $2)
+			RETURNING id, created_at, ordered, name;
+		`;
+
+		const cartValues = [requesterId, name];
+
+		const cartResult = await client.query(cartQuery, cartValues);
+
+		const cart = mapDboCartToApiCart(cartResult.rows[0]);
+
+		for (const item of items) {
+			const itemQuery = `
+				INSERT INTO carts_products (cart_id, product_id, count)
+				VALUES ($1, $2, $3)
+				RETURNING count,
+				(
+					SELECT row_to_json(x) FROM
+					(
+						SELECT p.id, p.name, p.description, p.category, p.price_pennies, p.stock_count
+						FROM product p
+						WHERE product_id = p.id
+					) x
+				) AS product;
+			`;
+
+			const itemValues = [cart.id, item.productId, item.count];
+
+			const itemResult = await client.query(itemQuery, itemValues);
+
+			const newItem = mapDboCartItemToApiCartItem(itemResult.rows[0]);
+			cart.items.push(newItem);
+		}
+
+		await client.query('COMMIT');
+
+		return cart;
+	} catch (err) {
+		await client.query('ROLLBACK');
+		throw err;
+	} finally {
+		client.release();
+	}
+}
+
 module.exports = {
 	getAllCarts,
 	getCartById,
+	createCartValidateInput,
+	createCart,
 };

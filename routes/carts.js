@@ -142,9 +142,26 @@ carts.get('/:cartId', (req, res) => {
  *       401:
  *         description: Unauthorized.
  */
-carts.post('/', (req, res) => {
+carts.post('/', async (req, res) => {
 	// Create a new cart belonging to the authorised user
-	res.sendStatus(201);
+	// TODO: Pass requesting user's ID to createCart
+	try {
+		const requesterId = 1;
+		const {
+			name,
+			items,
+		} = req.body;
+
+		const cart = await cartService.createCart(requesterId, name, items);
+
+		res.status(201).send(cart);
+	} catch (err) {
+		if (err.status === 400) {
+			res.sendStatus(400);
+		} else {
+			throw err;
+		}
+	}
 });
 
 /**
