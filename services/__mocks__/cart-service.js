@@ -93,9 +93,14 @@ async function deleteCart(requesterId, cartId) {
 	return true;
 }
 
+async function checkoutCart(requesterId, cartId, addressId) {
+	return 1;
+}
+
 module.exports = {
 	getAllCarts,
 	getCartById,
 	createCart,
 	deleteCart,
+	checkoutCart,
 };

@@ -207,10 +207,88 @@ async function deleteCart(requesterId, cartId) {
 	return result.rowCount > 0;
 }
 
+/**
+ * Order the items in the given cart belonging to the requesting user, and have them sent to the given address.
+ * @param {number} requesterId The account ID of the user requesting
+ * @param {number} cartId The cart's ID
+ * @param {number} addressId The ID of the address to which to send the order
+ * @returns The ID of the order
+ */
+async function checkoutCart(requesterId, cartId, addressId) {
+	// Create order with same items as the cart
+	const cart = await getCartById(requesterId, cartId);
+
+	const client = await db.getClient();
+
+	try {
+		// Check cart has not already been ordered
+		if (cart.ordered) {
+			throw { status: 400, message: 'Cart already ordered' };
+		}
+
+		// Check cart items' stock levels
+		for (const item of cart.items) {
+			const result = await client.query('SELECT stock_count FROM product WHERE id = $1', [item.product.id]);
+			const stockCount = result.rows[0].stock_count;
+			if (item.count > stockCount) {
+				throw { status: 400, message: `Cart item "${item.product.name}" does not have enough stock left` };
+			}
+		}
+
+		await client.query('BEGIN');
+
+		// Create an order record
+		const orderId = (await client.query(`
+			INSERT INTO "order" (account_id, address_id)
+			VALUES ($1, $2)
+			RETURNING id;
+		`,
+		[requesterId, addressId]))
+			.rows[0].id;
+
+		// Create an orders_products record for each cart item
+		for (const item of cart.items) {
+			await client.query(`
+				INSERT INTO orders_products (order_id, product_id, count)
+				VALUES ($1, $2, $3);
+			`,
+			[orderId, item.product.id, item.count]);
+		}
+
+		// Mark cart as ordered
+		await client.query(`
+			UPDATE cart
+			SET ordered = TRUE
+			WHERE id = $1;
+		`,
+		[cartId]);
+
+		// Reduce stock count for each item ordered
+		for (const item of cart.items) {
+			await client.query(`
+				UPDATE product
+				SET stock_count = stock_count - $2
+				WHERE id = $1;
+			`,
+			[item.product.id, item.count]);
+		}
+
+		await client.query('COMMIT');
+
+		return orderId;
+	} catch (err) {
+		await client.query('ROLLBACK');
+		throw err;
+	} finally {
+		client.release();
+	}
+}
+
 module.exports = {
 	getAllCarts,
 	getCartById,
 	createCartValidateInput,
 	createCart,
 	deleteCart,
+	checkoutCart,
 };

@@ -32,12 +32,18 @@ beforeEach(async () => {
 	await mockPool.query('CREATE TEMPORARY TABLE cart (LIKE cart INCLUDING ALL)');
 	await mockPool.query('CREATE TEMPORARY TABLE carts_products (LIKE carts_products INCLUDING ALL)');
 	await mockPool.query('CREATE TEMPORARY TABLE product (LIKE product INCLUDING ALL)');
+	await mockPool.query('CREATE TEMPORARY TABLE address (LIKE address INCLUDING ALL)');
+	await mockPool.query('CREATE TEMPORARY TABLE "order" (LIKE "order" INCLUDING ALL)');
+	await mockPool.query('CREATE TEMPORARY TABLE orders_products (LIKE orders_products INCLUDING ALL)');
 });
 
 afterEach(async () => {
 	await mockPool.query('DROP TABLE IF EXISTS pg_temp.cart');
 	await mockPool.query('DROP TABLE IF EXISTS pg_temp.carts_products');
 	await mockPool.query('DROP TABLE IF EXISTS pg_temp.product');
+	await mockPool.query('DROP TABLE IF EXISTS pg_temp.address');
+	await mockPool.query('DROP TABLE IF EXISTS pg_temp."order"');
+	await mockPool.query('DROP TABLE IF EXISTS pg_temp.orders_products');
 });
 
 describe('Cart service', () => {
@@ -248,5 +254,32 @@ describe('Cart service', () => {
 
 			expect(result.rows.length).toEqual(0);
 		}); */
+	});
+
+	describe('checkoutCart', () => {
+		it('checks out a cart', async () => {
+			await db.query('INSERT INTO cart VALUES ($1, $2, $3, $4, $5)', [1, 1, 'My Cart', '2004-10-19 10:23:54', false]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [1, 'Toothbrush', 'Bristly', 'Health & Beauty', 123, 23]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [2, 'Hairbrush', 'Bristly', 'Health & Beauty', 234, 12]);
+			await db.query('INSERT INTO carts_products VALUES ($1, $2, $3)', [1, 1, 1]);
+			await db.query('INSERT INTO carts_products VALUES ($1, $2, $3)', [1, 2, 1]);
+			await db.query('INSERT INTO address VALUES ($1, $2, $3, $4, $5, $6)', [1, 1, 'Pendennis', 'Tredegar Road', 'Ebbw Vale', 'NP23 6LP']);
+
+			const requesterId = 1;
+			const addressId = 1;
+
+			const orderId = await cartService.checkoutCart(requesterId, 1, addressId);
+
+			expect(orderId).toEqual(expect.any(Number));
+
+			const isOrdered = (await db.query('SELECT ordered FROM cart WHERE id = 1')).rows[0].ordered;
+			expect(isOrdered).toBe(true);
+
+			const product1stock = (await db.query('SELECT stock_count FROM product WHERE id = 1')).rows[0].stock_count;
+			expect(product1stock).toEqual(22);
+
+			const product2stock = (await db.query('SELECT stock_count FROM product WHERE id = 2')).rows[0].stock_count;
+			expect(product2stock).toEqual(11);
+		});
 	});
 });

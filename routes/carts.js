@@ -30,6 +30,19 @@
  *           description: List of shopping cart items.
  *           items:
  *             $ref: '#/components/schemas/Item'
+ *     Checkout:
+ *       type: object
+ *       properties:
+ *         addressId:
+ *           type: integer
+ *           description: ID of the address to deliver to.
+ *           example: 123
+ *           writeOnly: true
+ *         orderId:
+ *           type: integer
+ *           description: ID of the order that was created.
+ *           example: 123
+ *           readyOnly: true
  */
 
 const express = require('express');
@@ -240,23 +253,47 @@ carts.delete('/:cartId', async (req, res) => {
  *     description: Dispatch the order in the cart belonging to the authorised user. Will simply return 404 Not Found if the requested cart ID does exist but it doesn't belong to the authorised user.
  *     parameters:
  *       - $ref: '#/components/parameters/cartId'
+ *     requesteBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Checkout'
  *     responses:
  *       200:
  *         description: Cart ordered.
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Cart'
+ *               $ref: '#/components/schemas/Checkout'
  *       400:
- *         description: Cart has already been ordered.
+ *         description: Cart has already been ordered or items don't have enough stock.
  *       401:
  *         description: Unauthorized.
  *       404:
  *         description: Cart not found.
  */
-carts.post('/:cartId/checkout', (req, res) => {
+carts.post('/:cartId/checkout', async (req, res) => {
 	// Dispatch the order in the cart belonging to the authorised user
-	res.sendStatus(200);
+	// TODO: Pass requesting user's ID to checkoutCart
+	try {
+		const requesterId = 1;
+		const {
+			addressId,
+		} = req.body;
+
+		const orderId = await cartService.checkoutCart(requesterId, req.cartId, addressId);
+
+		res.send({
+			orderId,
+		});
+	} catch (err) {
+		if (err.status === 400) {
+			res.sendStatus(400);
+		} else {
+			throw err;
+		}
+	}
 });
 
 module.exports = carts;

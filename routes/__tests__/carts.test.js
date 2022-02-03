@@ -148,7 +148,10 @@ describe('/carts/:cartId/checkout', () => {
 		it('returns status 200', done => {
 			request(app)
 				.post('/carts/1/checkout')
-				.expect(200, done);
+				.send({ addressId: 1 })
+				.expect(200, {
+					orderId: 1,
+				}, done);
 		});
 	});
 });
