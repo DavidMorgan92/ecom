@@ -282,4 +282,40 @@ describe('Cart service', () => {
 			expect(product2stock).toEqual(11);
 		});
 	});
+
+	describe('consolidateItems', () => {
+		it('consolidates items', () => {
+			const items = [
+				{
+					count: 1,
+					productId: 1,
+				},
+				{
+					count: 2,
+					productId: 2,
+				},
+				{
+					count: 3,
+					productId: 2,
+				},
+				{
+					count: 3,
+					productId: 1,
+				},
+			];
+
+			const result = cartService.consolidateItems(items);
+
+			expect(result).toMatchObject([
+				{
+					count: 4,
+					productId: 1,
+				},
+				{
+					count: 5,
+					productId: 2,
+				},
+			]);
+		});
+	});
 });

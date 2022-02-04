@@ -125,6 +125,36 @@ function createCartValidateInput(requesterId, name, items) {
 }
 
 /**
+ * Ensures that a product ID is not duplicated in the list of items
+ * @param {object[]} items List of items to consolidate
+ * @returns Consolidated list of items
+ */
+function consolidateItems(items) {
+	const newItems = [];
+
+	for (const item of items) {
+		if (newItems.find(i => i.productId === item.productId)) {
+			continue;
+		}
+
+		let totalCount = 0;
+
+		items.forEach(value => {
+			if (value.productId === item.productId) {
+				totalCount += value.count;
+			}
+		});
+
+		newItems.push({
+			count: totalCount,
+			productId: item.productId,
+		});
+	}
+
+	return newItems;
+}
+
+/**
  * Create a cart belonging to the requesting user
  * @param {number} requesterId The account ID of the user requesting
  * @param {string} name The cart's name
@@ -137,6 +167,8 @@ async function createCart(requesterId, name, items) {
 	}
 
 	const client = await db.getClient();
+
+	const consolidatedItems = consolidateItems(items);
 
 	try {
 		await client.query('BEGIN');
@@ -153,7 +185,7 @@ async function createCart(requesterId, name, items) {
 
 		const cart = mapDboCartToApiCart(cartResult.rows[0]);
 
-		for (const item of items) {
+		for (const item of consolidatedItems) {
 			const itemQuery = `
 				INSERT INTO carts_products (cart_id, product_id, count)
 				VALUES ($1, $2, $3)
@@ -291,4 +323,5 @@ module.exports = {
 	createCart,
 	deleteCart,
 	checkoutCart,
+	consolidateItems,
 };
