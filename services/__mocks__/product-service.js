@@ -13,6 +13,10 @@ async function getProductById(id) {
 	};
 }
 
+async function getMultipleProductsById(ids) {
+}
+
 module.exports = {
 	getProductById,
+	getMultipleProductsById,
 };

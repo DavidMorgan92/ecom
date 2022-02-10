@@ -119,7 +119,17 @@ products.param('productId', async (req, res, next, id) => {
  */
 products.get('/', (req, res) => {
 	// Return all products, optionally filtered
-	res.sendStatus(200);
+	let products = [];
+
+	if (req.query.id) {
+		let ids = req.query.id;
+		if (!Array.isArray(req.query.id)) {
+			ids = [req.query.id];
+		}
+		products = productService.getMultipleProductsById(ids);
+	}
+
+	res.send(products);
 });
 
 /**

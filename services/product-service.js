@@ -39,7 +39,27 @@ async function getProductById(id) {
 	return mapDboProductToApiProduct(result.rows[0]);
 }
 
+/**
+ * Get multiple products with an array of IDs
+ * @param {number[]} ids Array of product IDs
+ * @returns Array of product objects
+ */
+async function getMultipleProductsById(ids) {
+	const query = `
+		SELECT id, name, description, category, price_pennies, stock_count
+		FROM product
+		WHERE id = ANY($1);
+	`;
+
+	const values = [ids];
+
+	const result = await db.query(query, values);
+
+	return result.rows.map(mapDboProductToApiProduct);
+}
+
 module.exports = {
 	mapDboProductToApiProduct,
 	getProductById,
+	getMultipleProductsById,
 };
