@@ -81,4 +81,139 @@ describe('Product service', () => {
 			]);
 		});
 	});
+
+	describe('getProductsByCategoryAndName', () => {
+		it('returns null if no parameter is given', async () => {
+			const result = await productService.getProductsByCategoryAndName();
+
+			expect(result).toBe(null);
+		});
+
+		it('gets products by category', async () => {
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [1, 'Toothbrush', 'Bristly', 'Health & Beauty', 123, 23]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [2, 'Hairbrush', 'Bristly', 'Health & Beauty', 234, 12]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [3, 'Toiletbrush', 'Bristly', 'Bathroom', 321, 21]);
+
+			const result = await productService.getProductsByCategoryAndName('Health & Beauty', null);
+
+			expect(result).toMatchObject([
+				{
+					id: 1,
+					name: 'Toothbrush',
+					description: 'Bristly',
+					category: 'Health & Beauty',
+					pricePennies: '123',
+					stockCount: 23,
+				},
+				{
+					id: 2,
+					name: 'Hairbrush',
+					description: 'Bristly',
+					category: 'Health & Beauty',
+					pricePennies: '234',
+					stockCount: 12,
+				},
+			]);
+		});
+
+		it('gets products by partial category', async () => {
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [1, 'Toothbrush', 'Bristly', 'Health & Beauty', 123, 23]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [2, 'Hairbrush', 'Bristly', 'Health & Beauty', 234, 12]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [3, 'Toiletbrush', 'Bristly', 'Bathroom', 321, 21]);
+
+			const result = await productService.getProductsByCategoryAndName('Beauty', null);
+
+			expect(result).toMatchObject([
+				{
+					id: 1,
+					name: 'Toothbrush',
+					description: 'Bristly',
+					category: 'Health & Beauty',
+					pricePennies: '123',
+					stockCount: 23,
+				},
+				{
+					id: 2,
+					name: 'Hairbrush',
+					description: 'Bristly',
+					category: 'Health & Beauty',
+					pricePennies: '234',
+					stockCount: 12,
+				},
+			]);
+		});
+
+		it('gets products by name', async () => {
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [1, 'Toothbrush', 'Bristly', 'Health & Beauty', 123, 23]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [2, 'Hairbrush', 'Bristly', 'Health & Beauty', 234, 12]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [3, 'Toiletbrush', 'Bristly', 'Bathroom', 321, 21]);
+
+			const result = await productService.getProductsByCategoryAndName(null, 'Toiletbrush');
+
+			expect(result).toMatchObject([
+				{
+					id: 3,
+					name: 'Toiletbrush',
+					description: 'Bristly',
+					category: 'Bathroom',
+					pricePennies: '321',
+					stockCount: 21,
+				},
+			]);
+		});
+	
+		it('gets products by partial name', async () => {
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [1, 'Toothbrush', 'Bristly', 'Health & Beauty', 123, 23]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [2, 'Hairbrush', 'Bristly', 'Health & Beauty', 234, 12]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [3, 'Toiletbrush', 'Bristly', 'Bathroom', 321, 21]);
+	
+			const result = await productService.getProductsByCategoryAndName(null, 'brush');
+	
+			expect(result).toMatchObject([
+				{
+					id: 1,
+					name: 'Toothbrush',
+					description: 'Bristly',
+					category: 'Health & Beauty',
+					pricePennies: '123',
+					stockCount: 23,
+				},
+				{
+					id: 2,
+					name: 'Hairbrush',
+					description: 'Bristly',
+					category: 'Health & Beauty',
+					pricePennies: '234',
+					stockCount: 12,
+				},
+				{
+					id: 3,
+					name: 'Toiletbrush',
+					description: 'Bristly',
+					category: 'Bathroom',
+					pricePennies: '321',
+					stockCount: 21,
+				},
+			]);
+		});
+
+		it('get products by category and name', async () => {
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [1, 'Toothbrush', 'Bristly', 'Health & Beauty', 123, 23]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [2, 'Hairbrush', 'Bristly', 'Health & Beauty', 234, 12]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [3, 'Toiletbrush', 'Bristly', 'Bathroom', 321, 21]);
+	
+			const result = await productService.getProductsByCategoryAndName('Bathroom', 'brush');
+	
+			expect(result).toMatchObject([
+				{
+					id: 3,
+					name: 'Toiletbrush',
+					description: 'Bristly',
+					category: 'Bathroom',
+					pricePennies: '321',
+					stockCount: 21,
+				},
+			]);
+		});
+	});
 });

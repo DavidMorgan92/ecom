@@ -58,8 +58,55 @@ async function getMultipleProductsById(ids) {
 	return result.rows.map(mapDboProductToApiProduct);
 }
 
+/**
+ * Return a list of products matching the search parameters.
+ * If both category and name are given then products with category and name like %param% are returned.
+ * If only category or name is given then products are returned with only the given parameter checked.
+ * If no parameter is given null is returned.
+ * @param {string} category Name of category to search
+ * @param {string} name Name of product to search
+ * @returns List of products matching the search terms
+ */
+async function getProductsByCategoryAndName(category, name) {
+	let query = '';
+	let values = [];
+
+	if (category && name) {
+		query = `
+			SELECT id, name, description, category, price_pennies, stock_count
+			FROM product
+			WHERE category LIKE '%' || $1 || '%' AND name LIKE '%' || $2 || '%';
+		`;
+
+		values = [category, name];
+	} else if (category) {
+		query = `
+			SELECT id, name, description, category, price_pennies, stock_count
+			FROM product
+			WHERE category LIKE '%' || $1 || '%';
+		`;
+
+		values = [category];
+	} else if (name) {
+		query = `
+			SELECT id, name, description, category, price_pennies, stock_count
+			FROM product
+			WHERE name LIKE '%' || $1 || '%';
+		`;
+
+		values = [name];
+	} else {
+		return null;
+	}
+
+	const result = await db.query(query, values);
+
+	return result.rows.map(mapDboProductToApiProduct);
+}
+
 module.exports = {
 	mapDboProductToApiProduct,
 	getProductById,
 	getMultipleProductsById,
+	getProductsByCategoryAndName,
 };

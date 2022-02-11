@@ -117,7 +117,7 @@ products.param('productId', async (req, res, next, id) => {
  *               items:
  *                 $ref: '#/components/schemas/Product'
  */
-products.get('/', (req, res) => {
+products.get('/', async (req, res) => {
 	// Return all products, optionally filtered
 	let products = [];
 
@@ -126,7 +126,9 @@ products.get('/', (req, res) => {
 		if (!Array.isArray(req.query.id)) {
 			ids = [req.query.id];
 		}
-		products = productService.getMultipleProductsById(ids);
+		products = await productService.getMultipleProductsById(ids);
+	} else if (req.query.name || req.query.category) {
+		products = await productService.getProductsByCategoryAndName(req.query.category, req.query.name);
 	}
 
 	res.send(products);
