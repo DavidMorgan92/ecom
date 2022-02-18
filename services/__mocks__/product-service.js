@@ -38,11 +38,26 @@ async function getMultipleProductsById(ids) {
 }
 
 async function getProductsByCategoryAndName(category, name) {
+	let prods = null;
 
+	if (category && name) {
+		prods = products.filter(p => p.category.includes(category) && p.name.includes(name));
+	} else if (category) {
+		prods = products.filter(p => p.category.includes(category));
+	} else if (name) {
+		prods = products.filter(p => p.name.includes(name));
+	}
+
+	return prods;
+}
+
+async function getAllProducts() {
+	return products;
 }
 
 module.exports = {
 	getProductById,
 	getMultipleProductsById,
 	getProductsByCategoryAndName,
+	getAllProducts,
 };

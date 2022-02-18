@@ -104,9 +104,21 @@ async function getProductsByCategoryAndName(category, name) {
 	return result.rows.map(mapDboProductToApiProduct);
 }
 
+async function getAllProducts() {
+	const query = `
+		SELECT id, name, description, category, price_pennies, stock_count
+		FROM product;
+	`;
+
+	const result = await db.query(query);
+
+	return result.rows.map(mapDboProductToApiProduct);
+}
+
 module.exports = {
 	mapDboProductToApiProduct,
 	getProductById,
 	getMultipleProductsById,
 	getProductsByCategoryAndName,
+	getAllProducts,
 };

@@ -129,6 +129,8 @@ products.get('/', async (req, res) => {
 		products = await productService.getMultipleProductsById(ids);
 	} else if (req.query.name || req.query.category) {
 		products = await productService.getProductsByCategoryAndName(req.query.category, req.query.name);
+	} else {
+		products = await productService.getAllProducts();
 	}
 
 	res.send(products);

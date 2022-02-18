@@ -5,47 +5,159 @@ jest.mock('../../services/product-service');
 
 describe('/products', () => {
 	describe('get', () => {
-		it('returns status 200', done => {
+		it('returns all products', done => {
 			request(app)
 				.get('/products')
-				.expect(200, done);
+				.expect(200, [
+					{
+						id: 1,
+						name: 'Toothbrush',
+						description: 'Bristly',
+						category: 'Health & Beauty',
+						pricePennies: '123',
+						stockCount: 23,
+					},
+					{
+						id: 2,
+						name: 'Hairbrush',
+						description: 'Bristly',
+						category: 'Health & Beauty',
+						pricePennies: '234',
+						stockCount: 12,
+					},
+					{
+						id: 3,
+						name: 'Toiletbrush',
+						description: 'Bristly',
+						category: 'Bathroom',
+						pricePennies: '321',
+						stockCount: 21,
+					},
+				], done);
 		});
 	});
 });
 
 describe('/products?name=', () => {
 	describe('get', () => {
-		it('returns status 200', done => {
+		it('returns products with matching name', done => {
 			request(app)
-				.get('/products?name="Toothbrush"')
-				.expect(200, done);
+				.get('/products?name=Toothbrush')
+				.expect(200, [{
+					id: 1,
+					name: 'Toothbrush',
+					description: 'Bristly',
+					category: 'Health & Beauty',
+					pricePennies: '123',
+					stockCount: 23,
+				}], done);
+		});
+
+		it('returns products with partially matching names', done => {
+			request(app)
+				.get('/products?name=brush')
+				.expect(200, [
+					{
+						id: 1,
+						name: 'Toothbrush',
+						description: 'Bristly',
+						category: 'Health & Beauty',
+						pricePennies: '123',
+						stockCount: 23,
+					},
+					{
+						id: 2,
+						name: 'Hairbrush',
+						description: 'Bristly',
+						category: 'Health & Beauty',
+						pricePennies: '234',
+						stockCount: 12,
+					},
+					{
+						id: 3,
+						name: 'Toiletbrush',
+						description: 'Bristly',
+						category: 'Bathroom',
+						pricePennies: '321',
+						stockCount: 21,
+					},
+				], done);
 		});
 	});
 });
 
 describe('/products?category=', () => {
 	describe('get', () => {
-		it('returns status 200', done => {
+		it('returns products with matching category', done => {
 			request(app)
-				.get('/products?category="Health %26 Beauty"')
-				.expect(200, done);
+				.get('/products?category=Health %26 Beauty')
+				.expect(200, [
+					{
+						id: 1,
+						name: 'Toothbrush',
+						description: 'Bristly',
+						category: 'Health & Beauty',
+						pricePennies: '123',
+						stockCount: 23,
+					},
+					{
+						id: 2,
+						name: 'Hairbrush',
+						description: 'Bristly',
+						category: 'Health & Beauty',
+						pricePennies: '234',
+						stockCount: 12,
+					},
+				], done);
+		});
+
+		it('returns products with partially matching category', done => {
+			request(app)
+				.get('/products?category=Health')
+				.expect(200, [
+					{
+						id: 1,
+						name: 'Toothbrush',
+						description: 'Bristly',
+						category: 'Health & Beauty',
+						pricePennies: '123',
+						stockCount: 23,
+					},
+					{
+						id: 2,
+						name: 'Hairbrush',
+						description: 'Bristly',
+						category: 'Health & Beauty',
+						pricePennies: '234',
+						stockCount: 12,
+					},
+				], done);
 		});
 	});
 });
 
 describe('/products?name=&category=', () => {
 	describe('get', () => {
-		it('returns status 200', done => {
+		it('returns products with matching name and category', done => {
 			request(app)
-				.get('/products?name="Toothbrush"&category="Health %26 Beauty"')
-				.expect(200, done);
+				.get('/products?name=Toothbrush&category=Health %26 Beauty')
+				.expect(200, [
+					{
+						id: 1,
+						name: 'Toothbrush',
+						description: 'Bristly',
+						category: 'Health & Beauty',
+						pricePennies: '123',
+						stockCount: 23,
+					},
+				], done);
 		});
 	});
 });
 
 describe('/products?id=', () => {
 	describe('get', () => {
-		it('returns status 200', done => {
+		it('returns product with matching ID', done => {
 			request(app)
 				.get('/products?id=1')
 				.expect(200, [{
@@ -62,7 +174,7 @@ describe('/products?id=', () => {
 
 describe('/products?id=&id=&id=', () => {
 	describe('get', () => {
-		it('returns status 200', done => {
+		it('returns products with matching IDs', done => {
 			request(app)
 				.get('/products?id=1&id=2&id=3')
 				.expect(200, [
@@ -97,17 +209,24 @@ describe('/products?id=&id=&id=', () => {
 
 describe('/products?name=&category=&id=', () => {
 	describe('get', () => {
-		it('returns status 200', done => {
+		it('returns product with matching ID, overriding name and category search', done => {
 			request(app)
-				.get('/products?name="Toothbrush"&category="Health %26 Beauty"&id=1')
-				.expect(200, done);
+				.get('/products?name=Toothbrush&category=Health %26 Beauty&id=3')
+				.expect(200, [{
+					id: 3,
+					name: 'Toiletbrush',
+					description: 'Bristly',
+					category: 'Bathroom',
+					pricePennies: '321',
+					stockCount: 21,
+				}], done);
 		});
 	});
 });
 
 describe('/products/:productId', () => {
 	describe('get', () => {
-		it('returns status 200', done => {
+		it('returns product with matching ID', done => {
 			request(app)
 				.get('/products/1')
 				.expect(200, {

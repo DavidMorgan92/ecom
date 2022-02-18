@@ -216,4 +216,41 @@ describe('Product service', () => {
 			]);
 		});
 	});
+
+	describe('getAllProducts', () => {
+		it('gets all products', async () => {
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [1, 'Toothbrush', 'Bristly', 'Health & Beauty', 123, 23]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [2, 'Hairbrush', 'Bristly', 'Health & Beauty', 234, 12]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [3, 'Toiletbrush', 'Bristly', 'Bathroom', 321, 21]);
+
+			const result = await productService.getAllProducts();
+
+			expect(result).toMatchObject([
+				{
+					id: 1,
+					name: 'Toothbrush',
+					description: 'Bristly',
+					category: 'Health & Beauty',
+					pricePennies: '123',
+					stockCount: 23,
+				},
+				{
+					id: 2,
+					name: 'Hairbrush',
+					description: 'Bristly',
+					category: 'Health & Beauty',
+					pricePennies: '234',
+					stockCount: 12,
+				},
+				{
+					id: 3,
+					name: 'Toiletbrush',
+					description: 'Bristly',
+					category: 'Bathroom',
+					pricePennies: '321',
+					stockCount: 21,
+				},
+			]);
+		});
+	});
 });
