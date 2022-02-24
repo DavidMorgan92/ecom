@@ -207,9 +207,26 @@ carts.post('/', async (req, res) => {
  *       404:
  *         description: Cart not found.
  */
-carts.put('/:cartId', (req, res) => {
+carts.put('/:cartId', async (req, res) => {
 	// Update a cart belonging to the authorised user
-	res.sendStatus(200);
+	// TODO: Pass requesting user's ID to updateCart
+	try {
+		const requesterId = 1;
+		const {
+			name,
+			items,
+		} = req.body;
+
+		const cart = await cartService.updateCart(requesterId, req.cartId, name, items);
+
+		res.send(cart);
+	} catch (err) {
+		if (err.status === 400) {
+			res.sendStatus(400);
+		} else {
+			throw err;
+		}
+	}
 });
 
 /**

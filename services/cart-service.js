@@ -220,6 +220,197 @@ async function createCart(requesterId, name, items) {
 }
 
 /**
+ * Check if the given inputs for the updateCart function are valid
+ * @param {number} requesterId The account ID of the user requesting
+ * @param {number} cartId The ID of the cart to update
+ * @param {string} name The cart's new name
+ * @param {object[]} items The items now contained in the cart. Pass a falsy value to only update the name.
+ * @returns True if all inputs are valid
+ */
+function updateCartValidateInput(requesterId, cartId, name, items) {
+	if (!name) {
+		return false;
+	}
+
+	// Falsy items is valid but not iterable
+	if (!items) {
+		return true;
+	}
+
+	for (const item of items) {
+		if (!item.productId || !item.count) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
+/**
+ * Update a cart belonging to the requesting user
+ * @param {number} requesterId The account ID of the user requesting
+ * @param {number} cartId The ID of the cart to update
+ * @param {string} name The cart's new name
+ * @param {object[]} items The items now contained in the cart. Pass a falsy value to only update the name.
+ * @returns The updated cart object
+ */
+async function updateCart(requesterId, cartId, name, items) {
+	if (!updateCartValidateInput(requesterId, cartId, name, items)) {
+		throw { status: 400 };
+	}
+
+	const client = await db.getClient();
+
+	try {
+		await client.query('BEGIN');
+
+		// Update cart's name
+		const cartQuery = `
+			UPDATE cart
+			SET name = $3
+			WHERE account_id = $1 AND id = $2
+			RETURNING id, created_at, ordered, name;
+		`;
+
+		const cartValues = [requesterId, cartId, name];
+
+		const cartResult = await client.query(cartQuery, cartValues);
+
+		const cart = mapDboCartToApiCart(cartResult.rows[0]);
+
+		// If a new list of items is given
+		if (items) {
+			// Sort input items by product ID
+			const consolidatedItems = consolidateItems(items);
+
+			// Update cart's items
+			// Get existing items and sort them by product ID
+			const existingItemsQuery = `
+				SELECT cart_id, product_id, count
+				FROM carts_products
+				WHERE cart_id = $1;
+			`;
+
+			const existingItemsValues = [cartId];
+
+			const existingItemsResult = await client.query(existingItemsQuery, existingItemsValues);
+
+			const existingItems = existingItemsResult.rows;
+
+			// Compare existing items and new items and create/update/delete as appropriate
+			for (const existingItem of existingItems) {
+				const item = consolidatedItems.find(i => i.productId === existingItem.product_id);
+
+				// If existing item is in the new item list
+				if (item) {
+					// If the count is different, update the existing record
+					if (item.count !== existingItem.count) {
+						const updateCountQuery = `
+							UPDATE carts_products
+							SET count = $3
+							WHERE cart_id = $1 AND product_id = $2
+							RETURNING count,
+							(
+								SELECT row_to_json(x) FROM
+								(
+									SELECT p.id, p.name, p.description, p.category, p.price_pennies, p.stock_count
+									FROM product p
+									WHERE product_id = p.id
+								) x
+							) AS product;
+						`;
+
+						const updateResult = await client.query(updateCountQuery, [cartId, existingItem.product_id, item.count]);
+
+						// Add updated item to cart for return
+						cart.items.push(mapDboCartItemToApiCartItem(updateResult.rows[0]));
+					} else {
+						// If the count has not been updated, add the existing item to the cart for returning
+						const itemQuery = `
+							SELECT cp.count,
+							(
+								SELECT row_to_json(y) FROM
+								(
+									SELECT p.id, p.name, p.description, p.category, p.price_pennies, p.stock_count
+									FROM product p
+									WHERE cp.product_id = p.id
+								) y
+							) AS product
+							FROM carts_products cp
+							WHERE cp.cart_id = $1 AND cp.product_id = $2;
+						`;
+
+						const itemResult = await client.query(itemQuery, [cartId, existingItem.product_id]);
+						cart.items.push(mapDboCartItemToApiCartItem(itemResult.rows[0]));
+					}
+				} else {
+					// If the existing item is not in the new item list, delete the record
+					const deleteQuery = `
+						DELETE FROM carts_products
+						WHERE cart_id = $1 AND product_id = $2;
+					`;
+
+					await client.query(deleteQuery, [cartId, existingItem.product_id]);
+				}
+			}
+
+			for (const newItem of consolidatedItems) {
+				const existingItem = existingItems.find(i => i.product_id === newItem.productId);
+
+				// If no existing item exists that matches the new item, insert the new item
+				if (!existingItem) {
+					const insertQuery = `
+						INSERT INTO carts_products (cart_id, product_id, count)
+						VALUES ($1, $2, $3)
+						RETURNING count,
+						(
+							SELECT row_to_json(x) FROM
+							(
+								SELECT p.id, p.name, p.description, p.category, p.price_pennies, p.stock_count
+								FROM product p
+								WHERE product_id = p.id
+							) x
+						) AS product;
+					`;
+
+					const insertResult = await client.query(insertQuery, [cartId, newItem.productId, newItem.count]);
+
+					// Add inserted item to cart for return
+					cart.items.push(mapDboCartItemToApiCartItem(insertResult.rows[0]));
+				}
+			}
+		} else {
+			// If no items were given to the function to update then we should fetch them for the returned cart
+			const itemsQuery = `
+				SELECT cp.count,
+				(
+					SELECT row_to_json(y) FROM
+					(
+						SELECT p.id, p.name, p.description, p.category, p.price_pennies, p.stock_count
+						FROM product p
+						WHERE cp.product_id = p.id
+					) y
+				) AS product
+				FROM carts_products cp
+				WHERE cp.cart_id = $1;
+			`;
+
+			const itemsResult = await client.query(itemsQuery, [cartId]);
+			cart.items = itemsResult.rows.map(mapDboCartItemToApiCartItem);
+		}
+
+		await client.query('COMMIT');
+
+		return cart;
+	} catch (err) {
+		await client.query('ROLLBACK');
+		throw err;
+	} finally {
+		client.release();
+	}
+}
+
+/**
  * Delete a cart belonging to the requesting user
  * @param {number} requesterId The account ID of the user requesting
  * @param {number} cartId The cart's ID
@@ -321,6 +512,8 @@ module.exports = {
 	getCartById,
 	createCartValidateInput,
 	createCart,
+	updateCartValidateInput,
+	updateCart,
 	deleteCart,
 	checkoutCart,
 	consolidateItems,

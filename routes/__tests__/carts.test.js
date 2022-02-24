@@ -124,6 +124,76 @@ describe('/carts/:cartId', () => {
 		it('returns status 200', done => {
 			request(app)
 				.put('/carts/1')
+				.send({
+					name: 'New Cart Name',
+					items: [
+						{
+							productId: 1,
+							count: 1,
+						},
+						{
+							productId: 2,
+							count: 1,
+						},
+					],
+				})
+				.expect(200, {
+					id: 1,
+					createdAt: '2004-10-19T09:23:54.000Z',
+					name: 'New Cart Name',
+					ordered: false,
+					items: [
+						{
+							count: 1,
+							product: {
+								id: 1,
+								name: 'Toothbrush',
+								description: 'Bristly',
+								category: 'Health & Beauty',
+								pricePennies: 123,
+								stockCount: 23,
+							},
+						},
+						{
+							count: 1,
+							product: {
+								id: 2,
+								name: 'Hairbrush',
+								description: 'Bristly',
+								category: 'Health & Beauty',
+								pricePennies: 234,
+								stockCount: 12,
+							},
+						},
+					],
+				}, done);
+		});
+
+		it('returns status 400 if name is blank', done => {
+			request(app)
+				.put('/carts/1')
+				.send({
+					name: '',
+					items: [
+						{
+							productId: 1,
+							count: 1,
+						},
+						{
+							productId: 2,
+							count: 1,
+						},
+					],
+				})
+				.expect(400, done);
+		});
+
+		it('returns 200 if items is falsy', done => {
+			request(app)
+				.put('/carts/1')
+				.send({
+					name: 'My Cart',
+				})
 				.expect(200, done);
 		});
 	});
