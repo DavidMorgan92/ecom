@@ -29,6 +29,7 @@
  */
 
 const express = require('express');
+const asyncHandler = require('express-async-handler');
 const account = require('../services/account-service');
 const authService = require('../services/auth-service');
 
@@ -78,7 +79,7 @@ auth.post('/login', authService.authenticate, (err, req, res, next) => {
  *       400:
  *         description: Invalid input.
  */
-auth.post('/register', async (req, res) => {
+auth.post('/register', asyncHandler(async (req, res) => {
 	// Register a new user with email and password
 	try {
 		const {
@@ -97,6 +98,6 @@ auth.post('/register', async (req, res) => {
 			throw err;
 		}
 	}
-});
+}));
 
 module.exports = auth;

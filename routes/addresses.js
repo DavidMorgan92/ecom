@@ -29,6 +29,7 @@
  */
 
 const express = require('express');
+const asyncHandler = require('express-async-handler');
 const addressService = require('../services/address-service');
 
 const addresses = express.Router();
@@ -45,7 +46,7 @@ const addresses = express.Router();
  *       schema:
  *         type: integer
  */
-addresses.param('addressId', async (req, res, next, id) => {
+addresses.param('addressId', asyncHandler(async (req, res, next, id) => {
 	const requesterId = req.session.passport.user.id;
 	const address = await addressService.getAddressById(requesterId, id);
 
@@ -56,7 +57,7 @@ addresses.param('addressId', async (req, res, next, id) => {
 	} else {
 		res.status(404).send('Address not found');
 	}
-});
+}));
 
 /**
  * @swagger
@@ -77,12 +78,12 @@ addresses.param('addressId', async (req, res, next, id) => {
  *       401:
  *         description: Unauthorized.
  */
-addresses.get('/', async (req, res) => {
+addresses.get('/', asyncHandler(async (req, res) => {
 	// Return all addresses belonging to the authorised user
 	const requesterId = req.session.passport.user.id;
 	const addresses = await addressService.getAllAddresses(requesterId);
 	res.send(addresses);
-});
+}));
 
 /**
  * @swagger
@@ -136,7 +137,7 @@ addresses.get('/:addressId', (req, res) => {
  *       401:
  *         description: Unauthorized.
  */
-addresses.post('/', async (req, res) => {
+addresses.post('/', asyncHandler(async (req, res) => {
 	// Create a new address belonging to the authorised user
 	try {
 		const requesterId = req.session.passport.user.id;
@@ -157,7 +158,7 @@ addresses.post('/', async (req, res) => {
 			throw err;
 		}
 	}
-});
+}));
 
 /**
  * @swagger
@@ -189,7 +190,7 @@ addresses.post('/', async (req, res) => {
  *       404:
  *         description: Address not found.
  */
-addresses.put('/:addressId', async (req, res) => {
+addresses.put('/:addressId', asyncHandler(async (req, res) => {
 	// Update an address belonging to the authorised user
 	try {
 		const requesterId = req.session.passport.user.id;
@@ -210,7 +211,7 @@ addresses.put('/:addressId', async (req, res) => {
 			throw err;
 		}
 	}
-});
+}));
 
 /**
  * @swagger
@@ -230,7 +231,7 @@ addresses.put('/:addressId', async (req, res) => {
  *       404:
  *         description: Address not found.
  */
-addresses.delete('/:addressId', async (req, res) => {
+addresses.delete('/:addressId', asyncHandler(async (req, res) => {
 	// Delete an address belonging to the authorised user
 	const requesterId = req.session.passport.user.id;
 	const succeeded = await addressService.deleteAddress(requesterId, req.addressId);
@@ -240,6 +241,6 @@ addresses.delete('/:addressId', async (req, res) => {
 	} else {
 		res.sendStatus(404);
 	}
-});
+}));
 
 module.exports = addresses;

@@ -48,6 +48,7 @@
  */
 
 const express = require('express');
+const asyncHandler = require('express-async-handler');
 const productService = require('../services/product-service');
 
 const products = express.Router();
@@ -64,7 +65,7 @@ const products = express.Router();
  *       schema:
  *         type: integer
  */
-products.param('productId', async (req, res, next, id) => {
+products.param('productId', asyncHandler(async (req, res, next, id) => {
 	const product = await productService.getProductById(id);
 
 	if (product) {
@@ -74,7 +75,7 @@ products.param('productId', async (req, res, next, id) => {
 	} else {
 		res.status(404).send('Product not found');
 	}
-});
+}));
 
 /**
  * @swagger
@@ -117,7 +118,7 @@ products.param('productId', async (req, res, next, id) => {
  *               items:
  *                 $ref: '#/components/schemas/Product'
  */
-products.get('/', async (req, res) => {
+products.get('/', asyncHandler(async (req, res) => {
 	// Return all products, optionally filtered
 	let products = [];
 
@@ -134,7 +135,7 @@ products.get('/', async (req, res) => {
 	}
 
 	res.send(products);
-});
+}));
 
 /**
  * @swagger

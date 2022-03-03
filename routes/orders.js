@@ -25,6 +25,7 @@
  */
 
 const express = require('express');
+const asyncHandler = require('express-async-handler');
 const orderService = require('../services/order-service');
 
 const orders = express.Router();
@@ -41,7 +42,7 @@ const orders = express.Router();
  *       schema:
  *         type: integer
  */
-orders.param('orderId', async (req, res, next, id) => {
+orders.param('orderId', asyncHandler(async (req, res, next, id) => {
 	const requesterId = req.session.passport.user.id;
 	const order = await orderService.getOrderById(requesterId, id);
 
@@ -52,7 +53,7 @@ orders.param('orderId', async (req, res, next, id) => {
 	} else {
 		res.status(404).send('Order not found');
 	}
-});
+}));
 
 /**
  * @swagger
@@ -73,12 +74,12 @@ orders.param('orderId', async (req, res, next, id) => {
  *       401:
  *         description: Unauthorized.
  */
-orders.get('/', async (req, res) => {
+orders.get('/', asyncHandler(async (req, res) => {
 	// Return all orders for the authorised user
 	const requesterId = req.session.passport.user.id;
 	const orders = await orderService.getAllOrders(requesterId);
 	res.send(orders);
-});
+}));
 
 /**
  * @swagger
