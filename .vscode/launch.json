@@ -14,6 +14,21 @@
 			"console": "integratedTerminal",
 			"internalConsoleOptions": "neverOpen",
 			"port": 9229
+		},
+		{
+			"name": "Debug E2E Tests",
+			"type": "node",
+			"request": "launch",
+			"runtimeArgs": [
+				"--inspect-brk",
+				"${workspaceRoot}/node_modules/jest/bin/jest.js",
+				"--testPathPattern=\"e2e/.*\\.e2e\\.test\\.js\"",
+				"--runInBand",
+				"--testTimeout=1000000000"
+			],
+			"console": "integratedTerminal",
+			"internalConsoleOptions": "neverOpen",
+			"port": 9229
 		}
 	]
 }
