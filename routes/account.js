@@ -21,6 +21,7 @@
  */
 
 const express = require('express');
+const asyncHandler = require('express-async-handler');
 const accountService = require('../services/account-service');
 
 const account = express.Router();
@@ -42,13 +43,13 @@ const account = express.Router();
  *       401:
  *         description: Unauthorized.
  */
-account.get('/', async (req, res) => {
+account.get('/', asyncHandler(async (req, res) => {
 	// Get user ID from authentication service
 	const userId = req.session.passport.user.id;
 	// Return the account of the authorised user
 	const accountInfo = await accountService.getAccountInfo(userId);
 	res.send(accountInfo);
-});
+}));
 
 /**
  * @swagger
@@ -76,7 +77,7 @@ account.get('/', async (req, res) => {
  *       401:
  *         description: Unauthorized.
  */
-account.put('/', async (req, res) => {
+account.put('/', asyncHandler(async (req, res) => {
 	try {
 		const userId = req.session.passport.user.id;
 
@@ -95,6 +96,6 @@ account.put('/', async (req, res) => {
 			throw err;
 		}
 	}
-});
+}));
 
 module.exports = account;

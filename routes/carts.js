@@ -46,6 +46,7 @@
  */
 
 const express = require('express');
+const asyncHandler = require('express-async-handler');
 const cartService = require('../services/cart-service');
 
 const carts = express.Router();
@@ -62,7 +63,7 @@ const carts = express.Router();
  *       schema:
  *         type: integer
  */
-carts.param('cartId', async (req, res, next, id) => {
+carts.param('cartId', asyncHandler(async (req, res, next, id) => {
 	const requesterId = req.session.passport.user.id;
 	const cart = await cartService.getCartById(requesterId, id);
 
@@ -73,7 +74,7 @@ carts.param('cartId', async (req, res, next, id) => {
 	} else {
 		res.status(404).send('Cart not found');
 	}
-});
+}));
 
 /**
  * @swagger
@@ -94,12 +95,12 @@ carts.param('cartId', async (req, res, next, id) => {
  *       401:
  *         description: Unauthorized.
  */
-carts.get('/', async (req, res) => {
+carts.get('/', asyncHandler(async (req, res) => {
 	// Return all carts belonging to the authorised user
 	const requesterId = req.session.passport.user.id;
 	const carts = await cartService.getAllCarts(requesterId);
 	res.send(carts);
-});
+}));
 
 /**
  * @swagger
@@ -153,7 +154,7 @@ carts.get('/:cartId', (req, res) => {
  *       401:
  *         description: Unauthorized.
  */
-carts.post('/', async (req, res) => {
+carts.post('/', asyncHandler(async (req, res) => {
 	// Create a new cart belonging to the authorised user
 	try {
 		const requesterId = req.session.passport.user.id;
@@ -172,7 +173,7 @@ carts.post('/', async (req, res) => {
 			throw err;
 		}
 	}
-});
+}));
 
 /**
  * @swagger
@@ -204,7 +205,7 @@ carts.post('/', async (req, res) => {
  *       404:
  *         description: Cart not found.
  */
-carts.put('/:cartId', async (req, res) => {
+carts.put('/:cartId', asyncHandler(async (req, res) => {
 	// Update a cart belonging to the authorised user
 	try {
 		const requesterId = req.session.passport.user.id;
@@ -223,7 +224,7 @@ carts.put('/:cartId', async (req, res) => {
 			throw err;
 		}
 	}
-});
+}));
 
 /**
  * @swagger
@@ -243,7 +244,7 @@ carts.put('/:cartId', async (req, res) => {
  *       404:
  *         description: Cart not found.
  */
-carts.delete('/:cartId', async (req, res) => {
+carts.delete('/:cartId', asyncHandler(async (req, res) => {
 	// Delete a cart belonging to the authorised user
 	const requesterId = req.session.passport.user.id;
 	const succeeded = await cartService.deleteCart(requesterId, req.cartId);
@@ -253,7 +254,7 @@ carts.delete('/:cartId', async (req, res) => {
 	} else {
 		res.sendStatus(404);
 	}
-});
+}));
 
 /**
  * @swagger
@@ -285,7 +286,7 @@ carts.delete('/:cartId', async (req, res) => {
  *       404:
  *         description: Cart not found.
  */
-carts.post('/:cartId/checkout', async (req, res) => {
+carts.post('/:cartId/checkout', asyncHandler(async (req, res) => {
 	// Dispatch the order in the cart belonging to the authorised user
 	try {
 		const requesterId = req.session.passport.user.id;
@@ -305,6 +306,6 @@ carts.post('/:cartId/checkout', async (req, res) => {
 			throw err;
 		}
 	}
-});
+}));
 
 module.exports = carts;
