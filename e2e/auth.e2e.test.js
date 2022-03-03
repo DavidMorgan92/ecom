@@ -116,5 +116,41 @@ describe('/auth/register', () => {
 				})
 				.expect(500);
 		});
+
+		it('Does not allow a user to register a new account with an invalid email address', async () => {
+			await request(app)
+				.post('/auth/register')
+				.send({
+					firstName: 'David',
+					lastName: 'Morgan',
+					email: 'david.morgangmail.com',
+					password: 'Password01',
+				})
+				.expect(400);
+		});
+
+		it('Does not allow a user to register a new account without an email address', async () => {
+			await request(app)
+				.post('/auth/register')
+				.send({
+					firstName: 'David',
+					lastName: 'Morgan',
+					email: '',
+					password: 'Password01',
+				})
+				.expect(400);
+		});
+
+		it('Does not allow a user to register a new account without a password', async () => {
+			await request(app)
+				.post('/auth/register')
+				.send({
+					firstName: 'David',
+					lastName: 'Morgan',
+					email: 'david.morgangmail.com',
+					password: '',
+				})
+				.expect(400);
+		});
 	});
 });
