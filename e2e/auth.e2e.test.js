@@ -37,12 +37,16 @@ afterEach(async () => {
 	await mockPool.query('DROP TABLE IF EXISTS pg_temp.account');
 });
 
+async function createTestUser() {
+	const passwordHash = await bcrypt.hash('Password01', 10);
+	const values = [1, 'David', 'Morgan', 'david.morgan@gmail.com', passwordHash];
+	await mockPool.query('INSERT INTO account (id, first_name, last_name, email, password_hash) VALUES ($1, $2, $3, $4, $5)', values);
+}
+
 describe('/auth/login', () => {
 	describe('post', () => {
 		it('Allows user to log in', async () => {
-			const passwordHash = await bcrypt.hash('Password01', 10);
-			const values = [1, 'David', 'Morgan', 'david.morgan@gmail.com', passwordHash];
-			await mockPool.query('INSERT INTO account (id, first_name, last_name, email, password_hash) VALUES ($1, $2, $3, $4, $5)', values);
+			await createTestUser();
 
 			await request(app)
 				.post('/auth/login')
@@ -54,9 +58,7 @@ describe('/auth/login', () => {
 		});
 
 		it('Rejects login with incorrect email', async () => {
-			const passwordHash = await bcrypt.hash('Password01', 10);
-			const values = [1, 'David', 'Morgan', 'david.morgan@gmail.com', passwordHash];
-			await mockPool.query('INSERT INTO account (id, first_name, last_name, email, password_hash) VALUES ($1, $2, $3, $4, $5)', values);
+			await createTestUser();
 
 			await request(app)
 				.post('/auth/login')
@@ -68,9 +70,7 @@ describe('/auth/login', () => {
 		});
 
 		it('Rejects login with incorrect password', async () => {
-			const passwordHash = await bcrypt.hash('Password01', 10);
-			const values = [1, 'David', 'Morgan', 'david.morgan@gmail.com', passwordHash];
-			await mockPool.query('INSERT INTO account (id, first_name, last_name, email, password_hash) VALUES ($1, $2, $3, $4, $5)', values);
+			await createTestUser();
 
 			await request(app)
 				.post('/auth/login')
@@ -102,9 +102,7 @@ describe('/auth/register', () => {
 		});
 
 		it('Does not allow a user to register a new account with an existing email address', async () => {
-			const passwordHash = await bcrypt.hash('Password01', 10);
-			const values = [1, 'David', 'Morgan', 'david.morgan@gmail.com', passwordHash];
-			await mockPool.query('INSERT INTO account (id, first_name, last_name, email, password_hash) VALUES ($1, $2, $3, $4, $5)', values);
+			await createTestUser();
 
 			await request(app)
 				.post('/auth/register')
