@@ -44,7 +44,7 @@ const account = express.Router();
  */
 account.get('/', async (req, res) => {
 	// Get user ID from authentication service
-	const userId = 1;
+	const userId = req.session.passport.user.id;
 	// Return the account of the authorised user
 	const accountInfo = await accountService.getAccountInfo(userId);
 	res.send(accountInfo);
@@ -78,15 +78,15 @@ account.get('/', async (req, res) => {
  */
 account.put('/', async (req, res) => {
 	try {
-		const userId = 1;
+		const userId = req.session.passport.user.id;
 
 		const {
 			firstName,
 			lastName,
 		} = req.body;
 
-		const accountInfo = await accountService.updateAccountInfo(userId, firstName, lastName);
 		// Update the account of the authorised user
+		const accountInfo = await accountService.updateAccountInfo(userId, firstName, lastName);
 		res.send(accountInfo);
 	} catch (err) {
 		if (err.status === 400) {

@@ -42,8 +42,7 @@ const orders = express.Router();
  *         type: integer
  */
 orders.param('orderId', async (req, res, next, id) => {
-	// TODO: Pass requesting user's ID to getOrderById
-	const requesterId = 1;
+	const requesterId = req.session.passport.user.id;
 	const order = await orderService.getOrderById(requesterId, id);
 
 	if (order) {
@@ -76,8 +75,7 @@ orders.param('orderId', async (req, res, next, id) => {
  */
 orders.get('/', async (req, res) => {
 	// Return all orders for the authorised user
-	// TODO: Pass requesting user's ID to getAllOrders
-	const requesterId = 1;
+	const requesterId = req.session.passport.user.id;
 	const orders = await orderService.getAllOrders(requesterId);
 	res.send(orders);
 });

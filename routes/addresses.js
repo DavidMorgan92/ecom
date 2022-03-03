@@ -46,8 +46,7 @@ const addresses = express.Router();
  *         type: integer
  */
 addresses.param('addressId', async (req, res, next, id) => {
-	// TODO: Pass requesting user's ID to getAddressById
-	const requesterId = 1;
+	const requesterId = req.session.passport.user.id;
 	const address = await addressService.getAddressById(requesterId, id);
 
 	if (address) {
@@ -80,8 +79,7 @@ addresses.param('addressId', async (req, res, next, id) => {
  */
 addresses.get('/', async (req, res) => {
 	// Return all addresses belonging to the authorised user
-	// TODO: Pass requesting user's ID to getAllAddresses
-	const requesterId = 1;
+	const requesterId = req.session.passport.user.id;
 	const addresses = await addressService.getAllAddresses(requesterId);
 	res.send(addresses);
 });
@@ -140,9 +138,8 @@ addresses.get('/:addressId', (req, res) => {
  */
 addresses.post('/', async (req, res) => {
 	// Create a new address belonging to the authorised user
-	// TODO: Pass requesting user's ID to createAddress
 	try {
-		const requesterId = 1;
+		const requesterId = req.session.passport.user.id;
 		const {
 			houseNameNumber,
 			streetName,
@@ -194,9 +191,8 @@ addresses.post('/', async (req, res) => {
  */
 addresses.put('/:addressId', async (req, res) => {
 	// Update an address belonging to the authorised user
-	// TODO: Pass requesting user's ID to updateAddress
 	try {
-		const requesterId = 1;
+		const requesterId = req.session.passport.user.id;
 		const {
 			houseNameNumber,
 			streetName,
@@ -236,8 +232,7 @@ addresses.put('/:addressId', async (req, res) => {
  */
 addresses.delete('/:addressId', async (req, res) => {
 	// Delete an address belonging to the authorised user
-	// TODO: Pass requesting user's ID to deleteAddress
-	const requesterId = 1;
+	const requesterId = req.session.passport.user.id;
 	const succeeded = await addressService.deleteAddress(requesterId, req.addressId);
 
 	if (succeeded) {

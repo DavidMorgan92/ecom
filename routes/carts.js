@@ -63,8 +63,7 @@ const carts = express.Router();
  *         type: integer
  */
 carts.param('cartId', async (req, res, next, id) => {
-	// TODO: Pass requesting user's ID to getCartById
-	const requesterId = 1;
+	const requesterId = req.session.passport.user.id;
 	const cart = await cartService.getCartById(requesterId, id);
 
 	if (cart) {
@@ -97,8 +96,7 @@ carts.param('cartId', async (req, res, next, id) => {
  */
 carts.get('/', async (req, res) => {
 	// Return all carts belonging to the authorised user
-	// TODO: Pass requesting user's ID to getAllCarts
-	const requesterId = 1;
+	const requesterId = req.session.passport.user.id;
 	const carts = await cartService.getAllCarts(requesterId);
 	res.send(carts);
 });
@@ -157,9 +155,8 @@ carts.get('/:cartId', (req, res) => {
  */
 carts.post('/', async (req, res) => {
 	// Create a new cart belonging to the authorised user
-	// TODO: Pass requesting user's ID to createCart
 	try {
-		const requesterId = 1;
+		const requesterId = req.session.passport.user.id;
 		const {
 			name,
 			items,
@@ -209,9 +206,8 @@ carts.post('/', async (req, res) => {
  */
 carts.put('/:cartId', async (req, res) => {
 	// Update a cart belonging to the authorised user
-	// TODO: Pass requesting user's ID to updateCart
 	try {
-		const requesterId = 1;
+		const requesterId = req.session.passport.user.id;
 		const {
 			name,
 			items,
@@ -249,8 +245,7 @@ carts.put('/:cartId', async (req, res) => {
  */
 carts.delete('/:cartId', async (req, res) => {
 	// Delete a cart belonging to the authorised user
-	// TODO: Pass requesting user's ID to deleteCart
-	const requesterId = 1;
+	const requesterId = req.session.passport.user.id;
 	const succeeded = await cartService.deleteCart(requesterId, req.cartId);
 
 	if (succeeded) {
@@ -292,9 +287,8 @@ carts.delete('/:cartId', async (req, res) => {
  */
 carts.post('/:cartId/checkout', async (req, res) => {
 	// Dispatch the order in the cart belonging to the authorised user
-	// TODO: Pass requesting user's ID to checkoutCart
 	try {
-		const requesterId = 1;
+		const requesterId = req.session.passport.user.id;
 		const {
 			addressId,
 		} = req.body;
