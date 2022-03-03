@@ -52,7 +52,7 @@ describe('/auth/login', () => {
 				.post('/auth/login')
 				.send({
 					email: 'david.morgan@gmail.com',
-					password: 'Password01'
+					password: 'Password01',
 				})
 				.expect(200);
 		});
@@ -64,7 +64,7 @@ describe('/auth/login', () => {
 				.post('/auth/login')
 				.send({
 					email: 'david.morgan@mail.com',
-					password: 'Password01'
+					password: 'Password01',
 				})
 				.expect(401);
 		});
@@ -76,7 +76,7 @@ describe('/auth/login', () => {
 				.post('/auth/login')
 				.send({
 					email: 'david.morgan@gmail.com',
-					password: 'Password1'
+					password: 'Password1',
 				})
 				.expect(401);
 		});
