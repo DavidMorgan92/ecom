@@ -73,9 +73,14 @@ function authenticate(req, res, next) {
 	})(req, res, next);
 }
 
+function protectedRoute(req, res, next) {
+	next();
+}
+
 module.exports = {
 	serializeUser,
 	deserializeUser,
 	authenticateUser,
 	authenticate,
+	protectedRoute,
 };

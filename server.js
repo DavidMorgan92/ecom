@@ -48,10 +48,10 @@ app.use(passport.session());
 
 // Connect routers
 app.use('/products', require('./routes/products'));
-app.use('/orders', require('./routes/orders'));
-app.use('/carts', require('./routes/carts'));
-app.use('/addresses', require('./routes/addresses'));
-app.use('/account', require('./routes/account'));
+app.use('/orders', authService.protectedRoute, require('./routes/orders'));
+app.use('/carts', authService.protectedRoute, require('./routes/carts'));
+app.use('/addresses', authService.protectedRoute, require('./routes/addresses'));
+app.use('/account', authService.protectedRoute, require('./routes/account'));
 app.use('/auth', require('./routes/auth'));
 
 // Export server

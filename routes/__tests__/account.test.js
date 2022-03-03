@@ -2,6 +2,7 @@ const request = require('supertest');
 const app = require('../../server');
 
 jest.mock('../../services/account-service');
+jest.mock('../../services/auth-service');
 
 describe('/account', () => {
 	describe('get', () => {

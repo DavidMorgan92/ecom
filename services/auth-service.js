@@ -80,8 +80,7 @@ async function authenticateUser(email, password, done) {
 }
 
 /**
- * Express middleware to require authentication of a route
- * @returns Result of authentication
+ * Express middleware to authenticate and login a user
  */
 function authenticate(req, res, next) {
 	return passport.authenticate('local', (err, user, info) => {
@@ -103,9 +102,21 @@ function authenticate(req, res, next) {
 	})(req, res, next);
 }
 
+/**
+ * Express middleware to require authentication of a route
+ */
+function protectedRoute(req, res, next) {
+	if (req.isUnauthenticated()) {
+		return res.sendStatus(401);
+	}
+
+	next();
+}
+
 module.exports = {
 	serializeUser,
 	deserializeUser,
 	authenticateUser,
 	authenticate,
+	protectedRoute,
 };
