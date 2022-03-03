@@ -8,6 +8,7 @@ async function getUser(email) {
 		return null;
 
 	return {
+		id: 1,
 		first_name: 'David',
 		last_name: 'Morgan',
 		email: 'david.morgan@gmail.com',
@@ -16,12 +17,15 @@ async function getUser(email) {
 }
 
 function serializeUser(user, done) {
-	done(null, user.email);
+	done(null, {
+		id: user.id,
+		email: user.email,
+	});
 }
 
-async function deserializeUser(email, done) {
+async function deserializeUser(userInfo, done) {
 	try {
-		const user = await getUser(email);
+		const user = await getUser(userInfo.email);
 
 		if (!user) {
 			return done(new Error('User not found'));
@@ -73,7 +77,11 @@ function authenticate(req, res, next) {
 	})(req, res, next);
 }
 
-function protectedRoute(req, res, next) {
+async function protectedRoute(req, res, next) {
+	req.session.passport = {
+		user: await getUser('david.morgan@gmail.com'),
+	};
+
 	next();
 }
 

@@ -9,7 +9,7 @@ const passwordService = require('./password-service');
  */
 async function getUser(email) {
 	const query = `
-		SELECT first_name, last_name, email, password_hash
+		SELECT id, first_name, last_name, email, password_hash
 		FROM account
 		WHERE email = $1;
 	`;
@@ -28,8 +28,11 @@ async function getUser(email) {
  * @param {object} user User object
  * @param {function} done Callback
  */
-function serializeUser(user, done) {
-	done(null, user.email);
+ function serializeUser(user, done) {
+	done(null, {
+		id: user.id,
+		email: user.email,
+	});
 }
 
 /**
@@ -38,9 +41,9 @@ function serializeUser(user, done) {
  * @param {function} done Callback
  * @returns Result of callback if user is not found
  */
-async function deserializeUser(email, done) {
+ async function deserializeUser(userInfo, done) {
 	try {
-		const user = await getUser(email);
+		const user = await getUser(userInfo.email);
 
 		if (!user) {
 			return done(new Error('User not found'));
