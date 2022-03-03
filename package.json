@@ -5,6 +5,7 @@
 	"main": "index.js",
 	"scripts": {
 		"test": "jest --watch",
+		"test:e2e": "jest --watch --testPathPattern=\"e2e/.*\\.e2e\\.test\\.js\"",
 		"start": "nodemon index.js"
 	},
 	"author": "David Morgan",
