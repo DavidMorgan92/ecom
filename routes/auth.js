@@ -30,6 +30,7 @@
 
 const express = require('express');
 const account = require('../services/account-service');
+const authService = require('../services/auth-service');
 
 const auth = express.Router();
 
@@ -52,9 +53,10 @@ const auth = express.Router();
  *       401:
  *         description: Unsuccessful login.
  */
-auth.post('/login', (req, res) => {
-	// Login a user with email and password
-	res.sendStatus(200);
+auth.post('/login', authService.authenticate, (err, req, res, next) => {
+	if (err) {
+		next(err);
+	}
 });
 
 /**

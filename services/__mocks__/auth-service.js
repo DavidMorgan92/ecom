@@ -1,43 +1,24 @@
+// TODO: Change mocking so that repeating code isn't required. (Use rewire?)
+
 const passport = require('passport');
-const db = require('../db/index');
-const passwordService = require('./password-service');
+const passwordService = require('../password-service');
 
-/**
- * Get a user from the database including password hash
- * @param {string} email User's email address
- * @returns User database object
- */
 async function getUser(email) {
-	const query = `
-		SELECT first_name, last_name, email, password_hash
-		FROM account
-		WHERE email = $1;
-	`;
-
-	const result = await db.query(query, [email]);
-
-	if (result.rowCount === 0) {
+	if (email !== 'david.morgan@gmail.com')
 		return null;
-	}
 
-	return result.rows[0];
+	return {
+		first_name: 'David',
+		last_name: 'Morgan',
+		email: 'david.morgan@gmail.com',
+		password_hash: await passwordService.hashPassword('Password01'),
+	};
 }
 
-/**
- * Serialization method for passport
- * @param {object} user User object
- * @param {function} done Callback
- */
 function serializeUser(user, done) {
 	done(null, user.email);
 }
 
-/**
- * Deserialization method for passport
- * @param {string} email User's email address
- * @param {function} done Callback
- * @returns Result of callback if user is not found
- */
 async function deserializeUser(email, done) {
 	try {
 		const user = await getUser(email);
@@ -52,13 +33,6 @@ async function deserializeUser(email, done) {
 	}
 }
 
-/**
- * Authentication method for passport
- * @param {string} email User's email address
- * @param {string} password User's plain text password
- * @param {function} done Callback
- * @returns Result of callback
- */
 async function authenticateUser(email, password, done) {
 	try {
 		const user = await getUser(email);
@@ -79,10 +53,6 @@ async function authenticateUser(email, password, done) {
 	}
 }
 
-/**
- * Express middleware to require authentication of a route
- * @returns Result of authentication
- */
 function authenticate(req, res, next) {
 	return passport.authenticate('local', (err, user, info) => {
 		if (err) {
