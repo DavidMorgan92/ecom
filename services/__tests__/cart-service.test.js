@@ -12,7 +12,7 @@ const mockPool = new Pool({
 	idleTimeoutMillis: 0, // Disable auto-disconnection of idle clients to make sure we always hit the same temporal schema
 });
 
-jest.mock('../../db/index', () => {
+jest.mock('../../db', () => {
 	return {
 		async query(text, params) {
 			return await mockPool.query(text, params);
@@ -29,21 +29,21 @@ afterAll(async () => {
 });
 
 beforeEach(async () => {
-	await mockPool.query('CREATE TEMPORARY TABLE cart (LIKE cart INCLUDING ALL)');
-	await mockPool.query('CREATE TEMPORARY TABLE carts_products (LIKE carts_products INCLUDING ALL)');
-	await mockPool.query('CREATE TEMPORARY TABLE product (LIKE product INCLUDING ALL)');
-	await mockPool.query('CREATE TEMPORARY TABLE address (LIKE address INCLUDING ALL)');
-	await mockPool.query('CREATE TEMPORARY TABLE "order" (LIKE "order" INCLUDING ALL)');
-	await mockPool.query('CREATE TEMPORARY TABLE orders_products (LIKE orders_products INCLUDING ALL)');
+	await db.query('CREATE TEMPORARY TABLE cart (LIKE cart INCLUDING ALL)');
+	await db.query('CREATE TEMPORARY TABLE carts_products (LIKE carts_products INCLUDING ALL)');
+	await db.query('CREATE TEMPORARY TABLE product (LIKE product INCLUDING ALL)');
+	await db.query('CREATE TEMPORARY TABLE address (LIKE address INCLUDING ALL)');
+	await db.query('CREATE TEMPORARY TABLE "order" (LIKE "order" INCLUDING ALL)');
+	await db.query('CREATE TEMPORARY TABLE orders_products (LIKE orders_products INCLUDING ALL)');
 });
 
 afterEach(async () => {
-	await mockPool.query('DROP TABLE IF EXISTS pg_temp.cart');
-	await mockPool.query('DROP TABLE IF EXISTS pg_temp.carts_products');
-	await mockPool.query('DROP TABLE IF EXISTS pg_temp.product');
-	await mockPool.query('DROP TABLE IF EXISTS pg_temp.address');
-	await mockPool.query('DROP TABLE IF EXISTS pg_temp."order"');
-	await mockPool.query('DROP TABLE IF EXISTS pg_temp.orders_products');
+	await db.query('DROP TABLE IF EXISTS pg_temp.cart');
+	await db.query('DROP TABLE IF EXISTS pg_temp.carts_products');
+	await db.query('DROP TABLE IF EXISTS pg_temp.product');
+	await db.query('DROP TABLE IF EXISTS pg_temp.address');
+	await db.query('DROP TABLE IF EXISTS pg_temp."order"');
+	await db.query('DROP TABLE IF EXISTS pg_temp.orders_products');
 });
 
 describe('Cart service', () => {

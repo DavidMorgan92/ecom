@@ -2,6 +2,7 @@ const { Pool } = require('pg');
 const bcrypt = require('bcrypt');
 const request = require('supertest');
 const app = require('../server');
+const db = require('../db');
 
 // Create a new pool with a connection limit of 1
 const mockPool = new Pool({
@@ -13,7 +14,7 @@ const mockPool = new Pool({
 	idleTimeoutMillis: 0, // Disable auto-disconnection of idle clients to make sure we always hit the same temporal schema
 });
 
-jest.mock('../db/index', () => {
+jest.mock('../db', () => {
 	return {
 		async query(text, params) {
 			return await mockPool.query(text, params);
@@ -30,17 +31,17 @@ afterAll(async () => {
 });
 
 beforeEach(async () => {
-	await mockPool.query('CREATE TEMPORARY TABLE account (LIKE account INCLUDING ALL)');
+	await db.query('CREATE TEMPORARY TABLE account (LIKE account INCLUDING ALL)');
 });
 
 afterEach(async () => {
-	await mockPool.query('DROP TABLE IF EXISTS pg_temp.account');
+	await db.query('DROP TABLE IF EXISTS pg_temp.account');
 });
 
 async function createTestUser() {
 	const passwordHash = await bcrypt.hash('Password01', 10);
 	const values = [1, 'David', 'Morgan', 'david.morgan@gmail.com', passwordHash];
-	await mockPool.query('INSERT INTO account (id, first_name, last_name, email, password_hash) VALUES ($1, $2, $3, $4, $5)', values);
+	await db.query('INSERT INTO account (id, first_name, last_name, email, password_hash) VALUES ($1, $2, $3, $4, $5)', values);
 }
 
 describe('/auth/login', () => {

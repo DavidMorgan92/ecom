@@ -1,5 +1,6 @@
 const { Pool } = require('pg');
 const bcrypt = require('bcrypt');
+const db = require('../../db');
 const accountService = require('../account-service');
 
 // Create a new pool with a connection limit of 1
@@ -12,7 +13,7 @@ const mockPool = new Pool({
 	idleTimeoutMillis: 0, // Disable auto-disconnection of idle clients to make sure we always hit the same temporal schema
 });
 
-jest.mock('../../db/index', () => {
+jest.mock('../../db', () => {
 	return {
 		async query(text, params) {
 			return await mockPool.query(text, params);
@@ -29,11 +30,11 @@ afterAll(async () => {
 });
 
 beforeEach(async () => {
-	await mockPool.query('CREATE TEMPORARY TABLE account (LIKE account INCLUDING ALL)');
+	await db.query('CREATE TEMPORARY TABLE account (LIKE account INCLUDING ALL)');
 });
 
 afterEach(async () => {
-	await mockPool.query('DROP TABLE IF EXISTS pg_temp.account');
+	await db.query('DROP TABLE IF EXISTS pg_temp.account');
 });
 
 describe('Account service', () => {
@@ -59,7 +60,7 @@ describe('Account service', () => {
 		it('gets account information', async () => {
 			const passwordHash = await bcrypt.hash(password, 10);
 			const values = [id, firstName, lastName, email, passwordHash];
-			await mockPool.query('INSERT INTO account (id, first_name, last_name, email, password_hash) VALUES ($1, $2, $3, $4, $5)', values);
+			await db.query('INSERT INTO account (id, first_name, last_name, email, password_hash) VALUES ($1, $2, $3, $4, $5)', values);
 
 			const result = await accountService.getAccountInfo(id);
 

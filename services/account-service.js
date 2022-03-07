@@ -1,4 +1,4 @@
-const db = require('../db/index');
+const db = require('../db');
 const passwordService = require('./password-service');
 
 function mapDboAccountToApiAccount(account) {

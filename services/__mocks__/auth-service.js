@@ -1,4 +1,4 @@
-// TODO: Change mocking so that repeating code isn't required. (Use rewire?)
+// TODO: Change mocking so that repeating serialize and authenticate code isn't required. (Use rewire?)
 
 const passport = require('passport');
 const passwordService = require('../password-service');

@@ -1,4 +1,4 @@
-const db = require('../db/index');
+const db = require('../db');
 const { mapDboAddressToApiAddress } = require('./address-service');
 const { mapDboProductToApiProduct } = require('./product-service');
 

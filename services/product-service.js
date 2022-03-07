@@ -1,4 +1,4 @@
-const db = require('../db/index');
+const db = require('../db');
 
 /**
  * Convert a database representation of a product into an API representation

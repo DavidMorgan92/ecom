@@ -12,7 +12,7 @@ const mockPool = new Pool({
 	idleTimeoutMillis: 0, // Disable auto-disconnection of idle clients to make sure we always hit the same temporal schema
 });
 
-jest.mock('../../db/index', () => {
+jest.mock('../../db', () => {
 	return {
 		async query(text, params) {
 			return await mockPool.query(text, params);
@@ -29,11 +29,11 @@ afterAll(async () => {
 });
 
 beforeEach(async () => {
-	await mockPool.query('CREATE TEMPORARY TABLE product (LIKE product INCLUDING ALL)');
+	await db.query('CREATE TEMPORARY TABLE product (LIKE product INCLUDING ALL)');
 });
 
 afterEach(async () => {
-	await mockPool.query('DROP TABLE IF EXISTS pg_temp.product');
+	await db.query('DROP TABLE IF EXISTS pg_temp.product');
 });
 
 describe('Product service', () => {

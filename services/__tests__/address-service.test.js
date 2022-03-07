@@ -1,4 +1,5 @@
 const { Pool } = require('pg');
+const db = require('../../db');
 const addressService = require('../address-service');
 
 // Create a new pool with a connection limit of 1
@@ -11,7 +12,7 @@ const mockPool = new Pool({
 	idleTimeoutMillis: 0, // Disable auto-disconnection of idle clients to make sure we always hit the same temporal schema
 });
 
-jest.mock('../../db/index', () => {
+jest.mock('../../db', () => {
 	return {
 		async query(text, params) {
 			return await mockPool.query(text, params);
@@ -28,16 +29,16 @@ afterAll(async () => {
 });
 
 beforeEach(async () => {
-	await mockPool.query('CREATE TEMPORARY TABLE address (LIKE address INCLUDING ALL)');
+	await db.query('CREATE TEMPORARY TABLE address (LIKE address INCLUDING ALL)');
 });
 
 afterEach(async () => {
-	await mockPool.query('DROP TABLE IF EXISTS pg_temp.address');
+	await db.query('DROP TABLE IF EXISTS pg_temp.address');
 });
 
 async function insertMockAddress(address) {
 	const values = [address.id, address.accountId, address.houseNameNumber, address.streetName, address.townCityName, address.postCode];
-	await mockPool.query('INSERT INTO address VALUES ($1, $2, $3, $4, $5, $6)', values);
+	await db.query('INSERT INTO address VALUES ($1, $2, $3, $4, $5, $6)', values);
 }
 
 describe('Address service', () => {
