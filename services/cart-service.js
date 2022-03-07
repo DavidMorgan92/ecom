@@ -458,6 +458,12 @@ async function checkoutCart(requesterId, cartId, addressId) {
 			}
 		}
 
+		// Check the address exists and belongs to the requesting user
+		const result = await client.query('SELECT id FROM address WHERE id = $1 AND account_id = $2', [addressId, requesterId]);
+		if (result.rowCount === 0) {
+			throw { status: 400, message: 'Given address ID not found' };
+		}
+
 		await client.query('BEGIN');
 
 		// Create an order record
