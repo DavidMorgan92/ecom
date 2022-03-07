@@ -2,7 +2,6 @@ const { Pool } = require('pg');
 const bcrypt = require('bcrypt');
 const request = require('supertest');
 const app = require('../server');
-const { response } = require('../server');
 
 // Create a new pool with a connection limit of 1
 const mockPool = new Pool({
