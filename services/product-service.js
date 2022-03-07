@@ -71,11 +71,18 @@ async function getProductsByCategoryAndName(category, name) {
 	let query = '';
 	let values = [];
 
+	/**
+	 * TODO:
+	 * Lower function is used to make searches case insensitive
+	 * Could be slow due to not working with indexes
+	 * Consider another approach
+	 */
+
 	if (category && name) {
 		query = `
 			SELECT id, name, description, category, price_pennies, stock_count
 			FROM product
-			WHERE category LIKE '%' || $1 || '%' AND name LIKE '%' || $2 || '%';
+			WHERE LOWER(category) LIKE '%' || LOWER($1) || '%' AND LOWER(name) LIKE '%' || LOWER($2) || '%';
 		`;
 
 		values = [category, name];
@@ -83,7 +90,7 @@ async function getProductsByCategoryAndName(category, name) {
 		query = `
 			SELECT id, name, description, category, price_pennies, stock_count
 			FROM product
-			WHERE category LIKE '%' || $1 || '%';
+			WHERE LOWER(category) LIKE '%' || LOWER($1) || '%';
 		`;
 
 		values = [category];
@@ -91,7 +98,7 @@ async function getProductsByCategoryAndName(category, name) {
 		query = `
 			SELECT id, name, description, category, price_pennies, stock_count
 			FROM product
-			WHERE name LIKE '%' || $1 || '%';
+			WHERE LOWER(name) LIKE '%' || LOWER($1) || '%';
 		`;
 
 		values = [name];
