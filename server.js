@@ -25,8 +25,7 @@ app.use(express.json());
 
 // Use session
 app.use(expressSession({
-	// TODO: Hide secret
-	secret: 'secret',
+	secret: process.env.SESSION_SECRET,
 	resave: false,
 	saveUninitialized: false,
 }));
