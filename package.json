@@ -6,7 +6,8 @@
 	"scripts": {
 		"test": "jest --watch",
 		"test:e2e": "jest --watch --testPathPattern=\".*\\.e2e\\.test\\.js\"",
-		"start": "nodemon index.js"
+		"start": "node index.js",
+		"start:watch": "nodemon index.js"
 	},
 	"jest": {
 		"setupFiles": ["./jest-env-setup.js"]
