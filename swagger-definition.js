@@ -13,5 +13,9 @@ module.exports = {
 			url: 'http://localhost:4001',
 			description: 'Development server',
 		},
+		{
+			url: 'https://fathomless-brushlands-45761.herokuapp.com',
+			description: 'Production server',
+		},
 	],
 };
