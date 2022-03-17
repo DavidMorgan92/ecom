@@ -50,6 +50,7 @@
 const express = require('express');
 const asyncHandler = require('express-async-handler');
 const productService = require('../services/product-service');
+const authService = require('../services/auth-service');
 
 const products = express.Router();
 
@@ -65,17 +66,20 @@ const products = express.Router();
  *       schema:
  *         type: integer
  */
-products.param('productId', asyncHandler(async (req, res, next, id) => {
-	const product = await productService.getProductById(id);
+products.param(
+	'productId',
+	asyncHandler(async (req, res, next, id) => {
+		const product = await productService.getProductById(id);
 
-	if (product) {
-		req.productId = id;
-		req.product = product;
-		next();
-	} else {
-		res.status(404).send('Product not found');
-	}
-}));
+		if (product) {
+			req.productId = id;
+			req.product = product;
+			next();
+		} else {
+			res.status(404).send('Product not found');
+		}
+	})
+);
 
 /**
  * @swagger
@@ -118,24 +122,30 @@ products.param('productId', asyncHandler(async (req, res, next, id) => {
  *               items:
  *                 $ref: '#/components/schemas/Product'
  */
-products.get('/', asyncHandler(async (req, res) => {
-	// Return all products, optionally filtered
-	let products = [];
+products.get(
+	'/',
+	asyncHandler(async (req, res) => {
+		// Return all products, optionally filtered
+		let products = [];
 
-	if (req.query.id) {
-		let ids = req.query.id;
-		if (!Array.isArray(req.query.id)) {
-			ids = [req.query.id];
+		if (req.query.id) {
+			let ids = req.query.id;
+			if (!Array.isArray(req.query.id)) {
+				ids = [req.query.id];
+			}
+			products = await productService.getMultipleProductsById(ids);
+		} else if (req.query.name || req.query.category) {
+			products = await productService.getProductsByCategoryAndName(
+				req.query.category,
+				req.query.name
+			);
+		} else {
+			products = await productService.getAllProducts();
 		}
-		products = await productService.getMultipleProductsById(ids);
-	} else if (req.query.name || req.query.category) {
-		products = await productService.getProductsByCategoryAndName(req.query.category, req.query.name);
-	} else {
-		products = await productService.getAllProducts();
-	}
 
-	res.send(products);
-}));
+		res.send(products);
+	})
+);
 
 /**
  * @swagger
@@ -160,5 +170,33 @@ products.get('/:productId', (req, res) => {
 	// Return the chosen product
 	res.send(req.product);
 });
+
+products.post(
+	'/',
+	authService.protectedRoute,
+	authService.adminRoute,
+	asyncHandler(async (req, res) => {
+		try {
+			const { name, description, category, pricePennies, stockCount } =
+				req.body;
+
+			const product = await productService.createProduct(
+				name,
+				description,
+				category,
+				pricePennies,
+				stockCount
+			);
+
+			res.status(201).send(product);
+		} catch (err) {
+			if (err.status === 400) {
+				res.sendStatus(400);
+			} else {
+				throw err;
+			}
+		}
+	})
+);
 
 module.exports = products;

@@ -2,6 +2,7 @@ const request = require('supertest');
 const app = require('../../server');
 
 jest.mock('../../services/product-service');
+jest.mock('../../services/auth-service');
 
 describe('/products', () => {
 	describe('get', () => {
@@ -34,6 +35,38 @@ describe('/products', () => {
 						stockCount: 21,
 					},
 				], done);
+		});
+	});
+
+	describe('post', () => {
+		it('creates a product', async () => {
+			const response = await request(app)
+				.post('/products')
+				.send({
+					name: 'Sardines',
+					description: 'Canned fish',
+					category: 'Food',
+					pricePennies: '300',
+					stockCount: 10,
+				});
+
+			expect(response.status).toEqual(201);
+			expect(response.body).toMatchObject({
+				name: 'Sardines',
+				description: 'Canned fish',
+				category: 'Food',
+				pricePennies: '300',
+				stockCount: 10,
+			});
+
+			expect(response.body).toHaveProperty('id');
+			expect(response.body.id).toEqual(expect.any(Number));
+		});
+
+		it('returns status 400 with no input', done => {
+			request(app)
+				.post('/products')
+				.expect(400, done);
 		});
 	});
 });
@@ -241,7 +274,7 @@ describe('/products/:productId', () => {
 
 		it('returns status 404 if the product doesn\'t exist', done => {
 			request(app)
-				.get('/products/4')
+				.get('/products/1000')
 				.expect(404, done);
 		});
 	});
