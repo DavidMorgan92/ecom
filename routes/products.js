@@ -9,6 +9,7 @@
  *           type: integer
  *           description: Product ID.
  *           example: 123
+ *           readOnly: true
  *         name:
  *           type: string
  *           description: Product name.
@@ -21,10 +22,10 @@
  *           type: string
  *           description: Product category.
  *           example: Health & Beauty
- *         price:
- *           type: number
- *           description: Product price.
- *           example: 1.23
+ *         pricePennies:
+ *           type: string
+ *           description: Product price as big int in pennies.
+ *           example: 123
  *         stockCount:
  *           type: integer
  *           description: Number of items in stock.
@@ -171,6 +172,33 @@ products.get('/:productId', (req, res) => {
 	res.send(req.product);
 });
 
+/**
+ * @swagger
+ * /products:
+ *   post:
+ *     tags:
+ *       - Products
+ *     summary: Create a new product.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Product'
+ *     responses:
+ *       201:
+ *         description: Product created.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Product'
+ *       400:
+ *         description: Invalid input.
+ *       401:
+ *         description: Unauthorized.
+ *       403:
+ *         description: Forbidden.
+ */
 products.post(
 	'/',
 	authService.protectedRoute,
