@@ -614,6 +614,34 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Create Product",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Sardines\",\r\n    \"description\": \"Canned fish\",\r\n    \"category\": \"Food\",\r\n    \"pricePennies\": \"100\",\r\n    \"stockCount\": 10\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4001/products",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4001",
+							"path": [
+								"products"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		}
