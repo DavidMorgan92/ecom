@@ -25,3 +25,7 @@ Future improvements could include but are not limited to:
 3. Avoiding use of the LOWER function in the database query [here](https://github.com/DavidMorgan92/ecom/blob/c58546d810ce6a63f86320d62ba24d6c342ebac6/services/product-service.js#L70) to improve performance.
 4. Implement array of secret session keys so that keys can be periodically updated without immediately invalidating old sessions.
 5. Improve API error reporting.
+
+## Next steps
+
+I've implemented a method for creating products through the API by posting to /products. This requires the user to be logged in as an admin, so I've created a boolean is_admin column in the database in the account table. The only way to change this value is by editing the database directly. Admin users can create products but other users are not allowed to use this route.
