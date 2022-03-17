@@ -3,17 +3,33 @@
 const passport = require('passport');
 const passwordService = require('../password-service');
 
-async function getUser(email) {
-	if (email !== 'david.morgan@gmail.com')
-		return null;
-
-	return {
+const users = [
+	{
 		id: 1,
 		first_name: 'David',
 		last_name: 'Morgan',
 		email: 'david.morgan@gmail.com',
-		password_hash: await passwordService.hashPassword('Password01'),
-	};
+		is_admin: false,
+	},
+	{
+		id: 2,
+		first_name: 'Admin',
+		last_name: 'Admin',
+		email: 'admin@gmail.com',
+		is_admin: true,
+	},
+];
+
+async function getUser(email) {
+	const user = users.find(u => u.email === email);
+
+	if (!user)
+		return null;
+
+	// Give mock users the same password
+	user.password_hash = await passwordService.hashPassword('Password01');
+
+	return user;
 }
 
 function serializeUser(user, done) {
@@ -85,10 +101,19 @@ async function protectedRoute(req, res, next) {
 	next();
 }
 
+async function adminRoute(req, res, next) {
+	req.session.passport = {
+		user: await getUser('admin@gmail.com'),
+	};
+
+	next();
+}
+
 module.exports = {
 	serializeUser,
 	deserializeUser,
 	authenticateUser,
 	authenticate,
 	protectedRoute,
+	adminRoute,
 };

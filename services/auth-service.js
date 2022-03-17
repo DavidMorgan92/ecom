@@ -9,7 +9,7 @@ const passwordService = require('./password-service');
  */
 async function getUser(email) {
 	const query = `
-		SELECT id, first_name, last_name, email, password_hash
+		SELECT id, email, password_hash, is_admin
 		FROM account
 		WHERE email = $1;
 	`;
@@ -28,10 +28,11 @@ async function getUser(email) {
  * @param {object} user User object
  * @param {function} done Callback
  */
- function serializeUser(user, done) {
+function serializeUser(user, done) {
 	done(null, {
 		id: user.id,
 		email: user.email,
+		isAdmin: user.is_admin,
 	});
 }
 
@@ -41,7 +42,7 @@ async function getUser(email) {
  * @param {function} done Callback
  * @returns Result of callback if user is not found
  */
- async function deserializeUser(userInfo, done) {
+async function deserializeUser(userInfo, done) {
 	try {
 		const user = await getUser(userInfo.email);
 
@@ -70,7 +71,10 @@ async function authenticateUser(email, password, done) {
 			return done(null, false, { message: 'No user with the given email' });
 		}
 
-		const match = await passwordService.verifyPassword(password, user.password_hash);
+		const match = await passwordService.verifyPassword(
+			password,
+			user.password_hash
+		);
 
 		if (!match) {
 			return done(null, false, { message: 'Password does not match' });
@@ -116,10 +120,22 @@ function protectedRoute(req, res, next) {
 	next();
 }
 
+/**
+ * Express middleware to require a user be an admin to access the route
+ */
+function adminRoute(req, res, next) {
+	if (!req.session.passport.user.isAdmin) {
+		return res.sendStatus(403);
+	}
+
+	next();
+}
+
 module.exports = {
 	serializeUser,
 	deserializeUser,
 	authenticateUser,
 	authenticate,
 	protectedRoute,
+	adminRoute,
 };
