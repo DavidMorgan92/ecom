@@ -12,7 +12,8 @@ CREATE TABLE "account" (
 	"first_name" text NOT NULL,
 	"last_name" text NOT NULL,
 	"email" text UNIQUE NOT NULL,
-	"password_hash" text NOT NULL
+	"password_hash" text NOT NULL,
+	"is_admin" bool NOT NULL DEFAULT false
 );
 
 CREATE TABLE "address" (

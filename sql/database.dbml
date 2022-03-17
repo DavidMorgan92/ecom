@@ -13,6 +13,7 @@ Table account {
 	last_name text [not null]
 	email text [unique, not null]
 	password_hash text [not null]
+	is_admin boolean [not null, default: false]
 }
 
 Table address {
