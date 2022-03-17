@@ -293,13 +293,18 @@ async function updateCart(requesterId, cartId, name, items) {
 
 			const existingItemsValues = [cartId];
 
-			const existingItemsResult = await client.query(existingItemsQuery, existingItemsValues);
+			const existingItemsResult = await client.query(
+				existingItemsQuery,
+				existingItemsValues,
+			);
 
 			const existingItems = existingItemsResult.rows;
 
 			// Compare existing items and new items and create/update/delete as appropriate
 			for (const existingItem of existingItems) {
-				const item = consolidatedItems.find(i => i.productId === existingItem.product_id);
+				const item = consolidatedItems.find(
+					i => i.productId === existingItem.product_id,
+				);
 
 				// If existing item is in the new item list
 				if (item) {
@@ -320,7 +325,11 @@ async function updateCart(requesterId, cartId, name, items) {
 							) AS product;
 						`;
 
-						const updateResult = await client.query(updateCountQuery, [cartId, existingItem.product_id, item.count]);
+						const updateResult = await client.query(updateCountQuery, [
+							cartId,
+							existingItem.product_id,
+							item.count,
+						]);
 
 						// Add updated item to cart for return
 						cart.items.push(mapDboCartItemToApiCartItem(updateResult.rows[0]));
@@ -340,7 +349,10 @@ async function updateCart(requesterId, cartId, name, items) {
 							WHERE cp.cart_id = $1 AND cp.product_id = $2;
 						`;
 
-						const itemResult = await client.query(itemQuery, [cartId, existingItem.product_id]);
+						const itemResult = await client.query(itemQuery, [
+							cartId,
+							existingItem.product_id,
+						]);
 						cart.items.push(mapDboCartItemToApiCartItem(itemResult.rows[0]));
 					}
 				} else {
@@ -355,7 +367,9 @@ async function updateCart(requesterId, cartId, name, items) {
 			}
 
 			for (const newItem of consolidatedItems) {
-				const existingItem = existingItems.find(i => i.product_id === newItem.productId);
+				const existingItem = existingItems.find(
+					i => i.product_id === newItem.productId,
+				);
 
 				// If no existing item exists that matches the new item, insert the new item
 				if (!existingItem) {
@@ -373,7 +387,11 @@ async function updateCart(requesterId, cartId, name, items) {
 						) AS product;
 					`;
 
-					const insertResult = await client.query(insertQuery, [cartId, newItem.productId, newItem.count]);
+					const insertResult = await client.query(insertQuery, [
+						cartId,
+						newItem.productId,
+						newItem.count,
+					]);
 
 					// Add inserted item to cart for return
 					cart.items.push(mapDboCartItemToApiCartItem(insertResult.rows[0]));
@@ -451,15 +469,24 @@ async function checkoutCart(requesterId, cartId, addressId) {
 
 		// Check cart items' stock levels
 		for (const item of cart.items) {
-			const result = await client.query('SELECT stock_count FROM product WHERE id = $1', [item.product.id]);
+			const result = await client.query(
+				'SELECT stock_count FROM product WHERE id = $1',
+				[item.product.id],
+			);
 			const stockCount = result.rows[0].stock_count;
 			if (item.count > stockCount) {
-				throw { status: 400, message: `Cart item "${item.product.name}" does not have enough stock left` };
+				throw {
+					status: 400,
+					message: `Cart item "${item.product.name}" does not have enough stock left`,
+				};
 			}
 		}
 
 		// Check the address exists and belongs to the requesting user
-		const result = await client.query('SELECT id FROM address WHERE id = $1 AND account_id = $2', [addressId, requesterId]);
+		const result = await client.query(
+			'SELECT id FROM address WHERE id = $1 AND account_id = $2',
+			[addressId, requesterId],
+		);
 		if (result.rowCount === 0) {
 			throw { status: 400, message: 'Given address ID not found' };
 		}
@@ -467,39 +494,48 @@ async function checkoutCart(requesterId, cartId, addressId) {
 		await client.query('BEGIN');
 
 		// Create an order record
-		const orderId = (await client.query(`
+		const orderId = (
+			await client.query(
+				`
 			INSERT INTO "order" (account_id, address_id)
 			VALUES ($1, $2)
 			RETURNING id;
 		`,
-		[requesterId, addressId]))
-			.rows[0].id;
+				[requesterId, addressId],
+			)
+		).rows[0].id;
 
 		// Create an orders_products record for each cart item
 		for (const item of cart.items) {
-			await client.query(`
+			await client.query(
+				`
 				INSERT INTO orders_products (order_id, product_id, count)
 				VALUES ($1, $2, $3);
 			`,
-			[orderId, item.product.id, item.count]);
+				[orderId, item.product.id, item.count],
+			);
 		}
 
 		// Mark cart as ordered
-		await client.query(`
+		await client.query(
+			`
 			UPDATE cart
 			SET ordered = TRUE
 			WHERE id = $1;
 		`,
-		[cartId]);
+			[cartId],
+		);
 
 		// Reduce stock count for each item ordered
 		for (const item of cart.items) {
-			await client.query(`
+			await client.query(
+				`
 				UPDATE product
 				SET stock_count = stock_count - $2
 				WHERE id = $1;
 			`,
-			[item.product.id, item.count]);
+				[item.product.id, item.count],
+			);
 		}
 
 		await client.query('COMMIT');

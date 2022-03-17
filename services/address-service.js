@@ -67,8 +67,20 @@ async function getAddressById(requesterId, id) {
  * @param {string} postCode Post code
  * @returns True if all inputs are valid
  */
-function createAddressValidateInput(requesterId, houseNameNumber, streetName, townCityName, postCode) {
-	if (!requesterId || !houseNameNumber || !streetName || !townCityName || !postCode) {
+function createAddressValidateInput(
+	requesterId,
+	houseNameNumber,
+	streetName,
+	townCityName,
+	postCode,
+) {
+	if (
+		!requesterId ||
+		!houseNameNumber ||
+		!streetName ||
+		!townCityName ||
+		!postCode
+	) {
 		return false;
 	}
 
@@ -84,8 +96,22 @@ function createAddressValidateInput(requesterId, houseNameNumber, streetName, to
  * @param {string} postCode Post code
  * @returns The newly created address object
  */
-async function createAddress(requesterId, houseNameNumber, streetName, townCityName, postCode) {
-	if (!createAddressValidateInput(requesterId, houseNameNumber, streetName, townCityName, postCode)) {
+async function createAddress(
+	requesterId,
+	houseNameNumber,
+	streetName,
+	townCityName,
+	postCode,
+) {
+	if (
+		!createAddressValidateInput(
+			requesterId,
+			houseNameNumber,
+			streetName,
+			townCityName,
+			postCode,
+		)
+	) {
 		throw { status: 400 };
 	}
 
@@ -95,7 +121,13 @@ async function createAddress(requesterId, houseNameNumber, streetName, townCityN
 		RETURNING id, house_name_number, street_name, town_city_name, post_code;
 	`;
 
-	const values = [requesterId, houseNameNumber, streetName, townCityName, postCode];
+	const values = [
+		requesterId,
+		houseNameNumber,
+		streetName,
+		townCityName,
+		postCode,
+	];
 
 	const result = await db.query(query, values);
 
@@ -112,8 +144,22 @@ async function createAddress(requesterId, houseNameNumber, streetName, townCityN
  * @param {string} postCode Post code
  * @returns True if all inputs are valid
  */
-function updateAddressValidateInput(requesterId, addressId, houseNameNumber, streetName, townCityName, postCode) {
-	if (!requesterId || !addressId || !houseNameNumber || !streetName || !townCityName || !postCode) {
+function updateAddressValidateInput(
+	requesterId,
+	addressId,
+	houseNameNumber,
+	streetName,
+	townCityName,
+	postCode,
+) {
+	if (
+		!requesterId ||
+		!addressId ||
+		!houseNameNumber ||
+		!streetName ||
+		!townCityName ||
+		!postCode
+	) {
 		return false;
 	}
 
@@ -130,8 +176,24 @@ function updateAddressValidateInput(requesterId, addressId, houseNameNumber, str
  * @param {string} postCode Post code
  * @returns The updated address object
  */
-async function updateAddress(requesterId, addressId, houseNameNumber, streetName, townCityName, postCode) {
-	if (!updateAddressValidateInput(requesterId, addressId, houseNameNumber, streetName, townCityName, postCode)) {
+async function updateAddress(
+	requesterId,
+	addressId,
+	houseNameNumber,
+	streetName,
+	townCityName,
+	postCode,
+) {
+	if (
+		!updateAddressValidateInput(
+			requesterId,
+			addressId,
+			houseNameNumber,
+			streetName,
+			townCityName,
+			postCode,
+		)
+	) {
 		throw { status: 400 };
 	}
 
@@ -142,7 +204,14 @@ async function updateAddress(requesterId, addressId, houseNameNumber, streetName
 		RETURNING id, house_name_number, street_name, town_city_name, post_code;
 	`;
 
-	const values = [requesterId, addressId, houseNameNumber, streetName, townCityName, postCode];
+	const values = [
+		requesterId,
+		addressId,
+		houseNameNumber,
+		streetName,
+		townCityName,
+		postCode,
+	];
 
 	const result = await db.query(query, values);
 

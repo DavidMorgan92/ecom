@@ -33,11 +33,15 @@ afterAll(async () => {
 beforeEach(async () => {
 	await db.query('CREATE TEMPORARY TABLE account (LIKE account INCLUDING ALL)');
 	await db.query('CREATE TEMPORARY TABLE cart (LIKE cart INCLUDING ALL)');
-	await db.query('CREATE TEMPORARY TABLE carts_products (LIKE carts_products INCLUDING ALL)');
+	await db.query(
+		'CREATE TEMPORARY TABLE carts_products (LIKE carts_products INCLUDING ALL)',
+	);
 	await db.query('CREATE TEMPORARY TABLE product (LIKE product INCLUDING ALL)');
 	await db.query('CREATE TEMPORARY TABLE address (LIKE address INCLUDING ALL)');
 	await db.query('CREATE TEMPORARY TABLE "order" (LIKE "order" INCLUDING ALL)');
-	await db.query('CREATE TEMPORARY TABLE orders_products (LIKE orders_products INCLUDING ALL)');
+	await db.query(
+		'CREATE TEMPORARY TABLE orders_products (LIKE orders_products INCLUDING ALL)',
+	);
 });
 
 afterEach(async () => {
@@ -53,18 +57,21 @@ afterEach(async () => {
 async function createTestUser() {
 	const passwordHash = await bcrypt.hash('Password01', 10);
 	const values = [1, 'David', 'Morgan', 'david.morgan@gmail.com', passwordHash];
-	await db.query('INSERT INTO account (id, first_name, last_name, email, password_hash) VALUES ($1, $2, $3, $4, $5)', values);
+	await db.query(
+		'INSERT INTO account (id, first_name, last_name, email, password_hash) VALUES ($1, $2, $3, $4, $5)',
+		values,
+	);
 }
 
 async function loginTestUser() {
-	const res = await request(app)
-		.post('/auth/login')
-		.send({
-			email: 'david.morgan@gmail.com',
-			password: 'Password01',
-		});
+	const res = await request(app).post('/auth/login').send({
+		email: 'david.morgan@gmail.com',
+		password: 'Password01',
+	});
 
-	const cookie = res.headers['set-cookie'].find(c => c.startsWith('connect.sid'));
+	const cookie = res.headers['set-cookie'].find(c =>
+		c.startsWith('connect.sid'),
+	);
 
 	return cookie;
 }
@@ -75,12 +82,44 @@ describe('/carts', () => {
 			await createTestUser();
 			const cookie = await loginTestUser();
 
-			await db.query('INSERT INTO cart VALUES ($1, $2, $3, $4, $5)', [1, 1, 'My Cart', '2004-10-19 10:23:54', false]);
-			await db.query('INSERT INTO cart VALUES ($1, $2, $3, $4, $5)', [2, 1, 'Christmas Cart', '2004-10-20 10:23:54', true]);
-			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [1, 'Toothbrush', 'Bristly', 'Health & Beauty', 123, 23]);
-			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [2, 'Hairbrush', 'Bristly', 'Health & Beauty', 234, 12]);
-			await db.query('INSERT INTO carts_products VALUES ($1, $2, $3)', [1, 1, 1]);
-			await db.query('INSERT INTO carts_products VALUES ($1, $2, $3)', [2, 2, 1]);
+			await db.query('INSERT INTO cart VALUES ($1, $2, $3, $4, $5)', [
+				1,
+				1,
+				'My Cart',
+				'2004-10-19 10:23:54',
+				false,
+			]);
+			await db.query('INSERT INTO cart VALUES ($1, $2, $3, $4, $5)', [
+				2,
+				1,
+				'Christmas Cart',
+				'2004-10-20 10:23:54',
+				true,
+			]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
+				1,
+				'Toothbrush',
+				'Bristly',
+				'Health & Beauty',
+				123,
+				23,
+			]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
+				2,
+				'Hairbrush',
+				'Bristly',
+				'Health & Beauty',
+				234,
+				12,
+			]);
+			await db.query(
+				'INSERT INTO carts_products VALUES ($1, $2, $3)',
+				[1, 1, 1],
+			);
+			await db.query(
+				'INSERT INTO carts_products VALUES ($1, $2, $3)',
+				[2, 2, 1],
+			);
 
 			await request(app)
 				.get('/carts')
@@ -128,21 +167,51 @@ describe('/carts', () => {
 		});
 
 		it('Rejects unauthorized users', async () => {
-			await request(app)
-				.get('/carts')
-				.expect(401);
+			await request(app).get('/carts').expect(401);
 		});
 
 		it('Does not get carts not belonging to the authorized user', async () => {
 			await createTestUser();
 			const cookie = await loginTestUser();
 
-			await db.query('INSERT INTO cart VALUES ($1, $2, $3, $4, $5)', [1, 1, 'My Cart', '2004-10-19 10:23:54', false]);
-			await db.query('INSERT INTO cart VALUES ($1, $2, $3, $4, $5)', [2, 2, 'Christmas Cart', '2004-10-20 10:23:54', true]);
-			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [1, 'Toothbrush', 'Bristly', 'Health & Beauty', 123, 23]);
-			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [2, 'Hairbrush', 'Bristly', 'Health & Beauty', 234, 12]);
-			await db.query('INSERT INTO carts_products VALUES ($1, $2, $3)', [1, 1, 1]);
-			await db.query('INSERT INTO carts_products VALUES ($1, $2, $3)', [2, 2, 1]);
+			await db.query('INSERT INTO cart VALUES ($1, $2, $3, $4, $5)', [
+				1,
+				1,
+				'My Cart',
+				'2004-10-19 10:23:54',
+				false,
+			]);
+			await db.query('INSERT INTO cart VALUES ($1, $2, $3, $4, $5)', [
+				2,
+				2,
+				'Christmas Cart',
+				'2004-10-20 10:23:54',
+				true,
+			]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
+				1,
+				'Toothbrush',
+				'Bristly',
+				'Health & Beauty',
+				123,
+				23,
+			]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
+				2,
+				'Hairbrush',
+				'Bristly',
+				'Health & Beauty',
+				234,
+				12,
+			]);
+			await db.query(
+				'INSERT INTO carts_products VALUES ($1, $2, $3)',
+				[1, 1, 1],
+			);
+			await db.query(
+				'INSERT INTO carts_products VALUES ($1, $2, $3)',
+				[2, 2, 1],
+			);
 
 			await request(app)
 				.get('/carts')
@@ -176,8 +245,22 @@ describe('/carts', () => {
 			await createTestUser();
 			const cookie = await loginTestUser();
 
-			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [1, 'Toothbrush', 'Bristly', 'Health & Beauty', 123, 23]);
-			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [2, 'Hairbrush', 'Bristly', 'Health & Beauty', 234, 12]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
+				1,
+				'Toothbrush',
+				'Bristly',
+				'Health & Beauty',
+				123,
+				23,
+			]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
+				2,
+				'Hairbrush',
+				'Bristly',
+				'Health & Beauty',
+				234,
+				12,
+			]);
 
 			const cart = {
 				name: 'My Cart',
@@ -235,10 +318,7 @@ describe('/carts', () => {
 				],
 			};
 
-			await request(app)
-				.post('/carts')
-				.send(cart)
-				.expect(401);
+			await request(app).post('/carts').send(cart).expect(401);
 		});
 
 		it('Rejects cart with no name', async () => {
@@ -266,10 +346,7 @@ describe('/carts', () => {
 
 			const cart = {
 				name: 'My Cart',
-				items: [
-					{ count: 1 },
-					{ productId: 2, count: 2 },
-				],
+				items: [{ count: 1 }, { productId: 2, count: 2 }],
 			};
 
 			await request(app)
@@ -285,10 +362,7 @@ describe('/carts', () => {
 
 			const cart = {
 				name: 'My Cart',
-				items: [
-					{ productId: 1, count: 1 },
-					{ productId: 2 },
-				],
+				items: [{ productId: 1, count: 1 }, { productId: 2 }],
 			};
 
 			await request(app)
@@ -306,9 +380,25 @@ describe('/carts/:cartId', () => {
 			await createTestUser();
 			const cookie = await loginTestUser();
 
-			await db.query('INSERT INTO cart VALUES ($1, $2, $3, $4, $5)', [1, 1, 'My Cart', '2004-10-19 10:23:54', false]);
-			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [1, 'Toothbrush', 'Bristly', 'Health & Beauty', 123, 23]);
-			await db.query('INSERT INTO carts_products VALUES ($1, $2, $3)', [1, 1, 1]);
+			await db.query('INSERT INTO cart VALUES ($1, $2, $3, $4, $5)', [
+				1,
+				1,
+				'My Cart',
+				'2004-10-19 10:23:54',
+				false,
+			]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
+				1,
+				'Toothbrush',
+				'Bristly',
+				'Health & Beauty',
+				123,
+				23,
+			]);
+			await db.query(
+				'INSERT INTO carts_products VALUES ($1, $2, $3)',
+				[1, 1, 1],
+			);
 
 			await request(app)
 				.get('/carts/1')
@@ -335,48 +425,88 @@ describe('/carts/:cartId', () => {
 		});
 
 		it('Rejects unauthorized users', async () => {
-			await request(app)
-				.get('/carts/1')
-				.expect(401);
+			await request(app).get('/carts/1').expect(401);
 		});
 
 		it('Returns 404 for non-existant carts', async () => {
 			await createTestUser();
 			const cookie = await loginTestUser();
 
-			await db.query('INSERT INTO cart VALUES ($1, $2, $3, $4, $5)', [1, 1, 'My Cart', '2004-10-19 10:23:54', false]);
-			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [1, 'Toothbrush', 'Bristly', 'Health & Beauty', 123, 23]);
-			await db.query('INSERT INTO carts_products VALUES ($1, $2, $3)', [1, 1, 1]);
+			await db.query('INSERT INTO cart VALUES ($1, $2, $3, $4, $5)', [
+				1,
+				1,
+				'My Cart',
+				'2004-10-19 10:23:54',
+				false,
+			]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
+				1,
+				'Toothbrush',
+				'Bristly',
+				'Health & Beauty',
+				123,
+				23,
+			]);
+			await db.query(
+				'INSERT INTO carts_products VALUES ($1, $2, $3)',
+				[1, 1, 1],
+			);
 
-			await request(app)
-				.get('/carts/2')
-				.set('Cookie', cookie)
-				.expect(404);
+			await request(app).get('/carts/2').set('Cookie', cookie).expect(404);
 		});
 
 		it('Does not allow an authorized user to get a cart not belonging to them', async () => {
 			await createTestUser();
 			const cookie = await loginTestUser();
 
-			await db.query('INSERT INTO cart VALUES ($1, $2, $3, $4, $5)', [1, 2, 'My Cart', '2004-10-19 10:23:54', false]);
-			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [1, 'Toothbrush', 'Bristly', 'Health & Beauty', 123, 23]);
-			await db.query('INSERT INTO carts_products VALUES ($1, $2, $3)', [1, 1, 1]);
+			await db.query('INSERT INTO cart VALUES ($1, $2, $3, $4, $5)', [
+				1,
+				2,
+				'My Cart',
+				'2004-10-19 10:23:54',
+				false,
+			]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
+				1,
+				'Toothbrush',
+				'Bristly',
+				'Health & Beauty',
+				123,
+				23,
+			]);
+			await db.query(
+				'INSERT INTO carts_products VALUES ($1, $2, $3)',
+				[1, 1, 1],
+			);
 
-			await request(app)
-				.get('/carts/1')
-				.set('Cookie', cookie)
-				.expect(404);
+			await request(app).get('/carts/1').set('Cookie', cookie).expect(404);
 		});
 	});
 
 	describe('put', () => {
-		it('Allows an authorized user to update a cart\'s name', async () => {
+		it("Allows an authorized user to update a cart's name", async () => {
 			await createTestUser();
 			const cookie = await loginTestUser();
 
-			await db.query('INSERT INTO cart VALUES ($1, $2, $3, $4, $5)', [1, 1, 'My Cart', '2004-10-19 10:23:54', false]);
-			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [1, 'Toothbrush', 'Bristly', 'Health & Beauty', 123, 23]);
-			await db.query('INSERT INTO carts_products VALUES ($1, $2, $3)', [1, 1, 1]);
+			await db.query('INSERT INTO cart VALUES ($1, $2, $3, $4, $5)', [
+				1,
+				1,
+				'My Cart',
+				'2004-10-19 10:23:54',
+				false,
+			]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
+				1,
+				'Toothbrush',
+				'Bristly',
+				'Health & Beauty',
+				123,
+				23,
+			]);
+			await db.query(
+				'INSERT INTO carts_products VALUES ($1, $2, $3)',
+				[1, 1, 1],
+			);
 
 			const newCart = {
 				name: 'New Cart Name',
@@ -407,13 +537,29 @@ describe('/carts/:cartId', () => {
 				});
 		});
 
-		it('Allows an authorized user to update a cart\'s item\'s count', async () => {
+		it("Allows an authorized user to update a cart's item's count", async () => {
 			await createTestUser();
 			const cookie = await loginTestUser();
 
-			await db.query('INSERT INTO cart VALUES ($1, $2, $3, $4, $5)', [1, 1, 'My Cart', '2004-10-19 10:23:54', false]);
-			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [1, 'Toothbrush', 'Bristly', 'Health & Beauty', 123, 23]);
-			await db.query('INSERT INTO carts_products VALUES ($1, $2, $3)', [1, 1, 1]);
+			await db.query('INSERT INTO cart VALUES ($1, $2, $3, $4, $5)', [
+				1,
+				1,
+				'My Cart',
+				'2004-10-19 10:23:54',
+				false,
+			]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
+				1,
+				'Toothbrush',
+				'Bristly',
+				'Health & Beauty',
+				123,
+				23,
+			]);
+			await db.query(
+				'INSERT INTO carts_products VALUES ($1, $2, $3)',
+				[1, 1, 1],
+			);
 
 			const newCart = {
 				name: 'My Cart',
@@ -454,9 +600,25 @@ describe('/carts/:cartId', () => {
 			await createTestUser();
 			const cookie = await loginTestUser();
 
-			await db.query('INSERT INTO cart VALUES ($1, $2, $3, $4, $5)', [1, 1, 'My Cart', '2004-10-19 10:23:54', false]);
-			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [1, 'Toothbrush', 'Bristly', 'Health & Beauty', 123, 23]);
-			await db.query('INSERT INTO carts_products VALUES ($1, $2, $3)', [1, 1, 1]);
+			await db.query('INSERT INTO cart VALUES ($1, $2, $3, $4, $5)', [
+				1,
+				1,
+				'My Cart',
+				'2004-10-19 10:23:54',
+				false,
+			]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
+				1,
+				'Toothbrush',
+				'Bristly',
+				'Health & Beauty',
+				123,
+				23,
+			]);
+			await db.query(
+				'INSERT INTO carts_products VALUES ($1, $2, $3)',
+				[1, 1, 1],
+			);
 
 			const newCart = {
 				name: 'My Cart',
@@ -480,10 +642,33 @@ describe('/carts/:cartId', () => {
 			await createTestUser();
 			const cookie = await loginTestUser();
 
-			await db.query('INSERT INTO cart VALUES ($1, $2, $3, $4, $5)', [1, 1, 'My Cart', '2004-10-19 10:23:54', false]);
-			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [1, 'Toothbrush', 'Bristly', 'Health & Beauty', 123, 23]);
-			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [2, 'Hairbrush', 'Bristly', 'Health & Beauty', 234, 12]);
-			await db.query('INSERT INTO carts_products VALUES ($1, $2, $3)', [1, 1, 1]);
+			await db.query('INSERT INTO cart VALUES ($1, $2, $3, $4, $5)', [
+				1,
+				1,
+				'My Cart',
+				'2004-10-19 10:23:54',
+				false,
+			]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
+				1,
+				'Toothbrush',
+				'Bristly',
+				'Health & Beauty',
+				123,
+				23,
+			]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
+				2,
+				'Hairbrush',
+				'Bristly',
+				'Health & Beauty',
+				234,
+				12,
+			]);
+			await db.query(
+				'INSERT INTO carts_products VALUES ($1, $2, $3)',
+				[1, 1, 1],
+			);
 
 			const newCart = {
 				name: 'My Cart',
@@ -539,10 +724,33 @@ describe('/carts/:cartId', () => {
 			await createTestUser();
 			const cookie = await loginTestUser();
 
-			await db.query('INSERT INTO cart VALUES ($1, $2, $3, $4, $5)', [1, 1, 'My Cart', '2004-10-19 10:23:54', false]);
-			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [1, 'Toothbrush', 'Bristly', 'Health & Beauty', 123, 23]);
-			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [2, 'Hairbrush', 'Bristly', 'Health & Beauty', 234, 12]);
-			await db.query('INSERT INTO carts_products VALUES ($1, $2, $3)', [1, 1, 1]);
+			await db.query('INSERT INTO cart VALUES ($1, $2, $3, $4, $5)', [
+				1,
+				1,
+				'My Cart',
+				'2004-10-19 10:23:54',
+				false,
+			]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
+				1,
+				'Toothbrush',
+				'Bristly',
+				'Health & Beauty',
+				123,
+				23,
+			]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
+				2,
+				'Hairbrush',
+				'Bristly',
+				'Health & Beauty',
+				234,
+				12,
+			]);
+			await db.query(
+				'INSERT INTO carts_products VALUES ($1, $2, $3)',
+				[1, 1, 1],
+			);
 
 			const newCart = {
 				name: 'My Cart',
@@ -602,9 +810,25 @@ describe('/carts/:cartId', () => {
 			await createTestUser();
 			const cookie = await loginTestUser();
 
-			await db.query('INSERT INTO cart VALUES ($1, $2, $3, $4, $5)', [1, 1, 'My Cart', '2004-10-19 10:23:54', false]);
-			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [1, 'Toothbrush', 'Bristly', 'Health & Beauty', 123, 23]);
-			await db.query('INSERT INTO carts_products VALUES ($1, $2, $3)', [1, 1, 1]);
+			await db.query('INSERT INTO cart VALUES ($1, $2, $3, $4, $5)', [
+				1,
+				1,
+				'My Cart',
+				'2004-10-19 10:23:54',
+				false,
+			]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
+				1,
+				'Toothbrush',
+				'Bristly',
+				'Health & Beauty',
+				123,
+				23,
+			]);
+			await db.query(
+				'INSERT INTO carts_products VALUES ($1, $2, $3)',
+				[1, 1, 1],
+			);
 
 			const newCart = {
 				name: '',
@@ -622,19 +846,32 @@ describe('/carts/:cartId', () => {
 				name: 'New Cart Name',
 			};
 
-			await request(app)
-				.put('/carts/1')
-				.send(newCart)
-				.expect(401);
+			await request(app).put('/carts/1').send(newCart).expect(401);
 		});
 
 		it('Returns 404 for non-existant carts', async () => {
 			await createTestUser();
 			const cookie = await loginTestUser();
 
-			await db.query('INSERT INTO cart VALUES ($1, $2, $3, $4, $5)', [1, 1, 'My Cart', '2004-10-19 10:23:54', false]);
-			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [1, 'Toothbrush', 'Bristly', 'Health & Beauty', 123, 23]);
-			await db.query('INSERT INTO carts_products VALUES ($1, $2, $3)', [1, 1, 1]);
+			await db.query('INSERT INTO cart VALUES ($1, $2, $3, $4, $5)', [
+				1,
+				1,
+				'My Cart',
+				'2004-10-19 10:23:54',
+				false,
+			]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
+				1,
+				'Toothbrush',
+				'Bristly',
+				'Health & Beauty',
+				123,
+				23,
+			]);
+			await db.query(
+				'INSERT INTO carts_products VALUES ($1, $2, $3)',
+				[1, 1, 1],
+			);
 
 			const newCart = {
 				name: 'New Cart Name',
@@ -651,9 +888,25 @@ describe('/carts/:cartId', () => {
 			await createTestUser();
 			const cookie = await loginTestUser();
 
-			await db.query('INSERT INTO cart VALUES ($1, $2, $3, $4, $5)', [1, 2, 'My Cart', '2004-10-19 10:23:54', false]);
-			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [1, 'Toothbrush', 'Bristly', 'Health & Beauty', 123, 23]);
-			await db.query('INSERT INTO carts_products VALUES ($1, $2, $3)', [1, 1, 1]);
+			await db.query('INSERT INTO cart VALUES ($1, $2, $3, $4, $5)', [
+				1,
+				2,
+				'My Cart',
+				'2004-10-19 10:23:54',
+				false,
+			]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
+				1,
+				'Toothbrush',
+				'Bristly',
+				'Health & Beauty',
+				123,
+				23,
+			]);
+			await db.query(
+				'INSERT INTO carts_products VALUES ($1, $2, $3)',
+				[1, 1, 1],
+			);
 
 			const newCart = {
 				name: 'New Cart Name',
@@ -672,48 +925,85 @@ describe('/carts/:cartId', () => {
 			await createTestUser();
 			const cookie = await loginTestUser();
 
-			await db.query('INSERT INTO cart VALUES ($1, $2, $3, $4, $5)', [1, 1, 'My Cart', '2004-10-19 10:23:54', false]);
-			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [1, 'Toothbrush', 'Bristly', 'Health & Beauty', 123, 23]);
-			await db.query('INSERT INTO carts_products VALUES ($1, $2, $3)', [1, 1, 1]);
+			await db.query('INSERT INTO cart VALUES ($1, $2, $3, $4, $5)', [
+				1,
+				1,
+				'My Cart',
+				'2004-10-19 10:23:54',
+				false,
+			]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
+				1,
+				'Toothbrush',
+				'Bristly',
+				'Health & Beauty',
+				123,
+				23,
+			]);
+			await db.query(
+				'INSERT INTO carts_products VALUES ($1, $2, $3)',
+				[1, 1, 1],
+			);
 
-			await request(app)
-				.delete('/carts/1')
-				.set('Cookie', cookie)
-				.expect(204);
+			await request(app).delete('/carts/1').set('Cookie', cookie).expect(204);
 		});
 
 		it('Rejects unauthorized users', async () => {
-			await request(app)
-				.delete('/carts/1')
-				.expect(401);
+			await request(app).delete('/carts/1').expect(401);
 		});
 
 		it('Returns 404 for non-existant carts', async () => {
 			await createTestUser();
 			const cookie = await loginTestUser();
 
-			await db.query('INSERT INTO cart VALUES ($1, $2, $3, $4, $5)', [1, 1, 'My Cart', '2004-10-19 10:23:54', false]);
-			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [1, 'Toothbrush', 'Bristly', 'Health & Beauty', 123, 23]);
-			await db.query('INSERT INTO carts_products VALUES ($1, $2, $3)', [1, 1, 1]);
+			await db.query('INSERT INTO cart VALUES ($1, $2, $3, $4, $5)', [
+				1,
+				1,
+				'My Cart',
+				'2004-10-19 10:23:54',
+				false,
+			]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
+				1,
+				'Toothbrush',
+				'Bristly',
+				'Health & Beauty',
+				123,
+				23,
+			]);
+			await db.query(
+				'INSERT INTO carts_products VALUES ($1, $2, $3)',
+				[1, 1, 1],
+			);
 
-			await request(app)
-				.delete('/carts/2')
-				.set('Cookie', cookie)
-				.expect(404);
+			await request(app).delete('/carts/2').set('Cookie', cookie).expect(404);
 		});
 
 		it('Does not allow an authorized user to delete a cart not belonging to them', async () => {
 			await createTestUser();
 			const cookie = await loginTestUser();
 
-			await db.query('INSERT INTO cart VALUES ($1, $2, $3, $4, $5)', [1, 2, 'My Cart', '2004-10-19 10:23:54', false]);
-			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [1, 'Toothbrush', 'Bristly', 'Health & Beauty', 123, 23]);
-			await db.query('INSERT INTO carts_products VALUES ($1, $2, $3)', [1, 1, 1]);
+			await db.query('INSERT INTO cart VALUES ($1, $2, $3, $4, $5)', [
+				1,
+				2,
+				'My Cart',
+				'2004-10-19 10:23:54',
+				false,
+			]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
+				1,
+				'Toothbrush',
+				'Bristly',
+				'Health & Beauty',
+				123,
+				23,
+			]);
+			await db.query(
+				'INSERT INTO carts_products VALUES ($1, $2, $3)',
+				[1, 1, 1],
+			);
 
-			await request(app)
-				.delete('/carts/1')
-				.set('Cookie', cookie)
-				.expect(404);
+			await request(app).delete('/carts/1').set('Cookie', cookie).expect(404);
 		});
 	});
 });
@@ -724,10 +1014,33 @@ describe('/carts/:cartId/checkout', () => {
 			await createTestUser();
 			const cookie = await loginTestUser();
 
-			await db.query('INSERT INTO cart VALUES ($1, $2, $3, $4, $5)', [1, 1, 'My Cart', '2004-10-19 10:23:54', false]);
-			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [1, 'Toothbrush', 'Bristly', 'Health & Beauty', 123, 23]);
-			await db.query('INSERT INTO carts_products VALUES ($1, $2, $3)', [1, 1, 1]);
-			await db.query('INSERT INTO address VALUES ($1, $2, $3, $4, $5, $6)', [1, 1, 'Pendennis', 'Tredegar Road', 'Ebbw Vale', 'NP23 6LP']);
+			await db.query('INSERT INTO cart VALUES ($1, $2, $3, $4, $5)', [
+				1,
+				1,
+				'My Cart',
+				'2004-10-19 10:23:54',
+				false,
+			]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
+				1,
+				'Toothbrush',
+				'Bristly',
+				'Health & Beauty',
+				123,
+				23,
+			]);
+			await db.query(
+				'INSERT INTO carts_products VALUES ($1, $2, $3)',
+				[1, 1, 1],
+			);
+			await db.query('INSERT INTO address VALUES ($1, $2, $3, $4, $5, $6)', [
+				1,
+				1,
+				'Pendennis',
+				'Tredegar Road',
+				'Ebbw Vale',
+				'NP23 6LP',
+			]);
 
 			const response = await request(app)
 				.post('/carts/1/checkout')
@@ -746,10 +1059,33 @@ describe('/carts/:cartId/checkout', () => {
 			await createTestUser();
 			const cookie = await loginTestUser();
 
-			await db.query('INSERT INTO cart VALUES ($1, $2, $3, $4, $5)', [1, 1, 'My Cart', '2004-10-19 10:23:54', false]);
-			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [1, 'Toothbrush', 'Bristly', 'Health & Beauty', 123, 23]);
-			await db.query('INSERT INTO carts_products VALUES ($1, $2, $3)', [1, 1, 1]);
-			await db.query('INSERT INTO address VALUES ($1, $2, $3, $4, $5, $6)', [1, 1, 'Pendennis', 'Tredegar Road', 'Ebbw Vale', 'NP23 6LP']);
+			await db.query('INSERT INTO cart VALUES ($1, $2, $3, $4, $5)', [
+				1,
+				1,
+				'My Cart',
+				'2004-10-19 10:23:54',
+				false,
+			]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
+				1,
+				'Toothbrush',
+				'Bristly',
+				'Health & Beauty',
+				123,
+				23,
+			]);
+			await db.query(
+				'INSERT INTO carts_products VALUES ($1, $2, $3)',
+				[1, 1, 1],
+			);
+			await db.query('INSERT INTO address VALUES ($1, $2, $3, $4, $5, $6)', [
+				1,
+				1,
+				'Pendennis',
+				'Tredegar Road',
+				'Ebbw Vale',
+				'NP23 6LP',
+			]);
 
 			await request(app)
 				.post('/carts/1/checkout')
@@ -764,10 +1100,33 @@ describe('/carts/:cartId/checkout', () => {
 			await createTestUser();
 			const cookie = await loginTestUser();
 
-			await db.query('INSERT INTO cart VALUES ($1, $2, $3, $4, $5)', [1, 1, 'My Cart', '2004-10-19 10:23:54', false]);
-			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [1, 'Toothbrush', 'Bristly', 'Health & Beauty', 123, 23]);
-			await db.query('INSERT INTO carts_products VALUES ($1, $2, $3)', [1, 1, 1]);
-			await db.query('INSERT INTO address VALUES ($1, $2, $3, $4, $5, $6)', [1, 2, 'Pendennis', 'Tredegar Road', 'Ebbw Vale', 'NP23 6LP']);
+			await db.query('INSERT INTO cart VALUES ($1, $2, $3, $4, $5)', [
+				1,
+				1,
+				'My Cart',
+				'2004-10-19 10:23:54',
+				false,
+			]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
+				1,
+				'Toothbrush',
+				'Bristly',
+				'Health & Beauty',
+				123,
+				23,
+			]);
+			await db.query(
+				'INSERT INTO carts_products VALUES ($1, $2, $3)',
+				[1, 1, 1],
+			);
+			await db.query('INSERT INTO address VALUES ($1, $2, $3, $4, $5, $6)', [
+				1,
+				2,
+				'Pendennis',
+				'Tredegar Road',
+				'Ebbw Vale',
+				'NP23 6LP',
+			]);
 
 			await request(app)
 				.post('/carts/1/checkout')
@@ -778,14 +1137,37 @@ describe('/carts/:cartId/checkout', () => {
 				.expect(400);
 		});
 
-		it('Rejects if an item\'s stock count is too low to order', async () => {
+		it("Rejects if an item's stock count is too low to order", async () => {
 			await createTestUser();
 			const cookie = await loginTestUser();
 
-			await db.query('INSERT INTO cart VALUES ($1, $2, $3, $4, $5)', [1, 1, 'My Cart', '2004-10-19 10:23:54', false]);
-			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [1, 'Toothbrush', 'Bristly', 'Health & Beauty', 123, 23]);
-			await db.query('INSERT INTO carts_products VALUES ($1, $2, $3)', [1, 1, 24]);
-			await db.query('INSERT INTO address VALUES ($1, $2, $3, $4, $5, $6)', [1, 1, 'Pendennis', 'Tredegar Road', 'Ebbw Vale', 'NP23 6LP']);
+			await db.query('INSERT INTO cart VALUES ($1, $2, $3, $4, $5)', [
+				1,
+				1,
+				'My Cart',
+				'2004-10-19 10:23:54',
+				false,
+			]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
+				1,
+				'Toothbrush',
+				'Bristly',
+				'Health & Beauty',
+				123,
+				23,
+			]);
+			await db.query(
+				'INSERT INTO carts_products VALUES ($1, $2, $3)',
+				[1, 1, 24],
+			);
+			await db.query('INSERT INTO address VALUES ($1, $2, $3, $4, $5, $6)', [
+				1,
+				1,
+				'Pendennis',
+				'Tredegar Road',
+				'Ebbw Vale',
+				'NP23 6LP',
+			]);
 
 			await request(app)
 				.post('/carts/1/checkout')
@@ -800,10 +1182,33 @@ describe('/carts/:cartId/checkout', () => {
 			await createTestUser();
 			const cookie = await loginTestUser();
 
-			await db.query('INSERT INTO cart VALUES ($1, $2, $3, $4, $5)', [1, 1, 'My Cart', '2004-10-19 10:23:54', true]);
-			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [1, 'Toothbrush', 'Bristly', 'Health & Beauty', 123, 23]);
-			await db.query('INSERT INTO carts_products VALUES ($1, $2, $3)', [1, 1, 1]);
-			await db.query('INSERT INTO address VALUES ($1, $2, $3, $4, $5, $6)', [1, 1, 'Pendennis', 'Tredegar Road', 'Ebbw Vale', 'NP23 6LP']);
+			await db.query('INSERT INTO cart VALUES ($1, $2, $3, $4, $5)', [
+				1,
+				1,
+				'My Cart',
+				'2004-10-19 10:23:54',
+				true,
+			]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
+				1,
+				'Toothbrush',
+				'Bristly',
+				'Health & Beauty',
+				123,
+				23,
+			]);
+			await db.query(
+				'INSERT INTO carts_products VALUES ($1, $2, $3)',
+				[1, 1, 1],
+			);
+			await db.query('INSERT INTO address VALUES ($1, $2, $3, $4, $5, $6)', [
+				1,
+				1,
+				'Pendennis',
+				'Tredegar Road',
+				'Ebbw Vale',
+				'NP23 6LP',
+			]);
 
 			await request(app)
 				.post('/carts/1/checkout')
@@ -818,10 +1223,33 @@ describe('/carts/:cartId/checkout', () => {
 			await createTestUser();
 			const cookie = await loginTestUser();
 
-			await db.query('INSERT INTO cart VALUES ($1, $2, $3, $4, $5)', [1, 1, 'My Cart', '2004-10-19 10:23:54', true]);
-			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [1, 'Toothbrush', 'Bristly', 'Health & Beauty', 123, 23]);
-			await db.query('INSERT INTO carts_products VALUES ($1, $2, $3)', [1, 1, 1]);
-			await db.query('INSERT INTO address VALUES ($1, $2, $3, $4, $5, $6)', [1, 1, 'Pendennis', 'Tredegar Road', 'Ebbw Vale', 'NP23 6LP']);
+			await db.query('INSERT INTO cart VALUES ($1, $2, $3, $4, $5)', [
+				1,
+				1,
+				'My Cart',
+				'2004-10-19 10:23:54',
+				true,
+			]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
+				1,
+				'Toothbrush',
+				'Bristly',
+				'Health & Beauty',
+				123,
+				23,
+			]);
+			await db.query(
+				'INSERT INTO carts_products VALUES ($1, $2, $3)',
+				[1, 1, 1],
+			);
+			await db.query('INSERT INTO address VALUES ($1, $2, $3, $4, $5, $6)', [
+				1,
+				1,
+				'Pendennis',
+				'Tredegar Road',
+				'Ebbw Vale',
+				'NP23 6LP',
+			]);
 
 			await request(app)
 				.post('/carts/2/checkout')
@@ -845,10 +1273,33 @@ describe('/carts/:cartId/checkout', () => {
 			await createTestUser();
 			const cookie = await loginTestUser();
 
-			await db.query('INSERT INTO cart VALUES ($1, $2, $3, $4, $5)', [1, 2, 'My Cart', '2004-10-19 10:23:54', false]);
-			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [1, 'Toothbrush', 'Bristly', 'Health & Beauty', 123, 23]);
-			await db.query('INSERT INTO carts_products VALUES ($1, $2, $3)', [1, 1, 1]);
-			await db.query('INSERT INTO address VALUES ($1, $2, $3, $4, $5, $6)', [1, 1, 'Pendennis', 'Tredegar Road', 'Ebbw Vale', 'NP23 6LP']);
+			await db.query('INSERT INTO cart VALUES ($1, $2, $3, $4, $5)', [
+				1,
+				2,
+				'My Cart',
+				'2004-10-19 10:23:54',
+				false,
+			]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
+				1,
+				'Toothbrush',
+				'Bristly',
+				'Health & Beauty',
+				123,
+				23,
+			]);
+			await db.query(
+				'INSERT INTO carts_products VALUES ($1, $2, $3)',
+				[1, 1, 1],
+			);
+			await db.query('INSERT INTO address VALUES ($1, $2, $3, $4, $5, $6)', [
+				1,
+				1,
+				'Pendennis',
+				'Tredegar Road',
+				'Ebbw Vale',
+				'NP23 6LP',
+			]);
 
 			await request(app)
 				.post('/carts/1/checkout')

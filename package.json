@@ -10,7 +10,9 @@
 		"start:watch": "nodemon index.js"
 	},
 	"jest": {
-		"setupFiles": ["./jest-env-setup.js"]
+		"setupFiles": [
+			"./jest-env-setup.js"
+		]
 	},
 	"author": "David Morgan",
 	"license": "ISC",

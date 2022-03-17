@@ -1,13 +1,15 @@
 const addressService = jest.requireActual('../address-service');
 
 async function getAllAddresses(requesterId) {
-	return [{
-		id: '1',
-		houseNameNumber: 'Pendennis',
-		streetName: 'Tredegar Road',
-		townCityName: 'Ebbw Vale',
-		postCode: 'NP23 6LP',
-	}];
+	return [
+		{
+			id: '1',
+			houseNameNumber: 'Pendennis',
+			streetName: 'Tredegar Road',
+			townCityName: 'Ebbw Vale',
+			postCode: 'NP23 6LP',
+		},
+	];
 }
 
 async function getAddressById(requesterId, id) {
@@ -24,8 +26,22 @@ async function getAddressById(requesterId, id) {
 	};
 }
 
-async function createAddress(requesterId, houseNameNumber, streetName, townCityName, postCode) {
-	if (!addressService.createAddressValidateInput(requesterId, houseNameNumber, streetName, townCityName, postCode)) {
+async function createAddress(
+	requesterId,
+	houseNameNumber,
+	streetName,
+	townCityName,
+	postCode,
+) {
+	if (
+		!addressService.createAddressValidateInput(
+			requesterId,
+			houseNameNumber,
+			streetName,
+			townCityName,
+			postCode,
+		)
+	) {
 		throw { status: 400 };
 	}
 
@@ -38,8 +54,24 @@ async function createAddress(requesterId, houseNameNumber, streetName, townCityN
 	};
 }
 
-async function updateAddress(requesterId, addressId, houseNameNumber, streetName, townCityName, postCode) {
-	if (!addressService.updateAddressValidateInput(requesterId, addressId, houseNameNumber, streetName, townCityName, postCode)) {
+async function updateAddress(
+	requesterId,
+	addressId,
+	houseNameNumber,
+	streetName,
+	townCityName,
+	postCode,
+) {
+	if (
+		!addressService.updateAddressValidateInput(
+			requesterId,
+			addressId,
+			houseNameNumber,
+			streetName,
+			townCityName,
+			postCode,
+		)
+	) {
 		throw { status: 400 };
 	}
 

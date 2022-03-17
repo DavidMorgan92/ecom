@@ -23,8 +23,7 @@ const users = [
 async function getUser(email) {
 	const user = users.find(u => u.email === email);
 
-	if (!user)
-		return null;
+	if (!user) return null;
 
 	// Give mock users the same password
 	user.password_hash = await passwordService.hashPassword('Password01');
@@ -61,7 +60,10 @@ async function authenticateUser(email, password, done) {
 			return done(null, false, { message: 'No user with the given email' });
 		}
 
-		const match = await passwordService.verifyPassword(password, user.password_hash);
+		const match = await passwordService.verifyPassword(
+			password,
+			user.password_hash,
+		);
 
 		if (!match) {
 			return done(null, false, { message: 'Password does not match' });

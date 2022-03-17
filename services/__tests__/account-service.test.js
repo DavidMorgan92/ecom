@@ -46,7 +46,12 @@ describe('Account service', () => {
 
 	describe('registerAccount', () => {
 		it('creates an account', async () => {
-			const result = await accountService.registerAccount(firstName, lastName, email, password);
+			const result = await accountService.registerAccount(
+				firstName,
+				lastName,
+				email,
+				password,
+			);
 
 			expect(result).toMatchObject({
 				firstName,
@@ -60,7 +65,10 @@ describe('Account service', () => {
 		it('gets account information', async () => {
 			const passwordHash = await bcrypt.hash(password, 10);
 			const values = [id, firstName, lastName, email, passwordHash];
-			await db.query('INSERT INTO account (id, first_name, last_name, email, password_hash) VALUES ($1, $2, $3, $4, $5)', values);
+			await db.query(
+				'INSERT INTO account (id, first_name, last_name, email, password_hash) VALUES ($1, $2, $3, $4, $5)',
+				values,
+			);
 
 			const result = await accountService.getAccountInfo(id);
 

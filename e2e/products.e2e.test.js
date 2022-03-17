@@ -45,7 +45,7 @@ async function createTestUser() {
 	const values = [1, 'David', 'Morgan', 'david.morgan@gmail.com', passwordHash];
 	await db.query(
 		'INSERT INTO account (id, first_name, last_name, email, password_hash) VALUES ($1, $2, $3, $4, $5)',
-		values
+		values,
 	);
 }
 
@@ -56,7 +56,7 @@ async function loginTestUser() {
 	});
 
 	const cookie = res.headers['set-cookie'].find(c =>
-		c.startsWith('connect.sid')
+		c.startsWith('connect.sid'),
 	);
 
 	return cookie;
@@ -67,7 +67,7 @@ async function createTestAdmin() {
 	const values = [1, 'Admin', 'Admin', 'admin@gmail.com', passwordHash, true];
 	await db.query(
 		'INSERT INTO account (id, first_name, last_name, email, password_hash, is_admin) VALUES ($1, $2, $3, $4, $5, $6)',
-		values
+		values,
 	);
 }
 
@@ -78,7 +78,7 @@ async function loginTestAdmin() {
 	});
 
 	const cookie = res.headers['set-cookie'].find(c =>
-		c.startsWith('connect.sid')
+		c.startsWith('connect.sid'),
 	);
 
 	return cookie;

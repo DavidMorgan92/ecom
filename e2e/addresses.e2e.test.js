@@ -43,24 +43,34 @@ afterEach(async () => {
 async function createTestUser() {
 	const passwordHash = await bcrypt.hash('Password01', 10);
 	const values = [1, 'David', 'Morgan', 'david.morgan@gmail.com', passwordHash];
-	await db.query('INSERT INTO account (id, first_name, last_name, email, password_hash) VALUES ($1, $2, $3, $4, $5)', values);
+	await db.query(
+		'INSERT INTO account (id, first_name, last_name, email, password_hash) VALUES ($1, $2, $3, $4, $5)',
+		values,
+	);
 }
 
 async function loginTestUser() {
-	const res = await request(app)
-		.post('/auth/login')
-		.send({
-			email: 'david.morgan@gmail.com',
-			password: 'Password01',
-		});
+	const res = await request(app).post('/auth/login').send({
+		email: 'david.morgan@gmail.com',
+		password: 'Password01',
+	});
 
-	const cookie = res.headers['set-cookie'].find(c => c.startsWith('connect.sid'));
+	const cookie = res.headers['set-cookie'].find(c =>
+		c.startsWith('connect.sid'),
+	);
 
 	return cookie;
 }
 
 async function insertMockAddress(address) {
-	const values = [address.id, address.accountId, address.houseNameNumber, address.streetName, address.townCityName, address.postCode];
+	const values = [
+		address.id,
+		address.accountId,
+		address.houseNameNumber,
+		address.streetName,
+		address.townCityName,
+		address.postCode,
+	];
 	await db.query('INSERT INTO address VALUES ($1, $2, $3, $4, $5, $6)', values);
 }
 
@@ -68,8 +78,22 @@ describe('/addresses', () => {
 	describe('get', () => {
 		it('Allows an authorized user to get all addresses', async () => {
 			const addresses = [
-				{ id: 1, accountId: 1, houseNameNumber: 'Pendennis', streetName: 'Tredegar Road', townCityName: 'Ebbw Vale', postCode: 'NP23 6LP' },
-				{ id: 2, accountId: 1, houseNameNumber: '3', streetName: 'St John\'s Court', townCityName: 'Merthyr Tydfil', postCode: 'CF48 3LU' },
+				{
+					id: 1,
+					accountId: 1,
+					houseNameNumber: 'Pendennis',
+					streetName: 'Tredegar Road',
+					townCityName: 'Ebbw Vale',
+					postCode: 'NP23 6LP',
+				},
+				{
+					id: 2,
+					accountId: 1,
+					houseNameNumber: '3',
+					streetName: "St John's Court",
+					townCityName: 'Merthyr Tydfil',
+					postCode: 'CF48 3LU',
+				},
 			];
 
 			await insertMockAddress(addresses[0]);
@@ -88,15 +112,27 @@ describe('/addresses', () => {
 		});
 
 		it('Rejects unauthorized users', async () => {
-			await request(app)
-				.get('/addresses')
-				.expect(401);
+			await request(app).get('/addresses').expect(401);
 		});
 
 		it('Does not get addresses not belonging to the requesting user', async () => {
 			const addresses = [
-				{ id: 1, accountId: 1, houseNameNumber: 'Pendennis', streetName: 'Tredegar Road', townCityName: 'Ebbw Vale', postCode: 'NP23 6LP' },
-				{ id: 2, accountId: 2, houseNameNumber: '3', streetName: 'St John\'s Court', townCityName: 'Merthyr Tydfil', postCode: 'CF48 3LU' },
+				{
+					id: 1,
+					accountId: 1,
+					houseNameNumber: 'Pendennis',
+					streetName: 'Tredegar Road',
+					townCityName: 'Ebbw Vale',
+					postCode: 'NP23 6LP',
+				},
+				{
+					id: 2,
+					accountId: 2,
+					houseNameNumber: '3',
+					streetName: "St John's Court",
+					townCityName: 'Merthyr Tydfil',
+					postCode: 'CF48 3LU',
+				},
 			];
 
 			await insertMockAddress(addresses[0]);
@@ -120,7 +156,12 @@ describe('/addresses', () => {
 			await createTestUser();
 			const cookie = await loginTestUser();
 
-			const address = { houseNameNumber: 'Pendennis', streetName: 'Tredegar Road', townCityName: 'Ebbw Vale', postCode: 'NP23 6LP' };
+			const address = {
+				houseNameNumber: 'Pendennis',
+				streetName: 'Tredegar Road',
+				townCityName: 'Ebbw Vale',
+				postCode: 'NP23 6LP',
+			};
 
 			const response = await request(app)
 				.post('/addresses')
@@ -134,20 +175,27 @@ describe('/addresses', () => {
 		});
 
 		it('Rejects unauthorized users', async () => {
-			const address = { houseNameNumber: 'Pendennis', streetName: 'Tredegar Road', townCityName: 'Ebbw Vale', postCode: 'NP23 6LP' };
-	
-			await request(app)
-				.post('/addresses')
-				.send(address)
-				.expect(401);
+			const address = {
+				houseNameNumber: 'Pendennis',
+				streetName: 'Tredegar Road',
+				townCityName: 'Ebbw Vale',
+				postCode: 'NP23 6LP',
+			};
+
+			await request(app).post('/addresses').send(address).expect(401);
 		});
 
 		it('Rejects address with no house name/number', async () => {
 			await createTestUser();
 			const cookie = await loginTestUser();
 
-			const address = { houseNameNumber: '', streetName: 'Tredegar Road', townCityName: 'Ebbw Vale', postCode: 'NP23 6LP' };
-	
+			const address = {
+				houseNameNumber: '',
+				streetName: 'Tredegar Road',
+				townCityName: 'Ebbw Vale',
+				postCode: 'NP23 6LP',
+			};
+
 			await request(app)
 				.post('/addresses')
 				.set('Cookie', cookie)
@@ -159,8 +207,13 @@ describe('/addresses', () => {
 			await createTestUser();
 			const cookie = await loginTestUser();
 
-			const address = { houseNameNumber: 'Pendennis', streetName: '', townCityName: 'Ebbw Vale', postCode: 'NP23 6LP' };
-	
+			const address = {
+				houseNameNumber: 'Pendennis',
+				streetName: '',
+				townCityName: 'Ebbw Vale',
+				postCode: 'NP23 6LP',
+			};
+
 			await request(app)
 				.post('/addresses')
 				.set('Cookie', cookie)
@@ -172,8 +225,13 @@ describe('/addresses', () => {
 			await createTestUser();
 			const cookie = await loginTestUser();
 
-			const address = { houseNameNumber: 'Pendennis', streetName: 'Tredegar Road', townCityName: '', postCode: 'NP23 6LP' };
-	
+			const address = {
+				houseNameNumber: 'Pendennis',
+				streetName: 'Tredegar Road',
+				townCityName: '',
+				postCode: 'NP23 6LP',
+			};
+
 			await request(app)
 				.post('/addresses')
 				.set('Cookie', cookie)
@@ -185,8 +243,13 @@ describe('/addresses', () => {
 			await createTestUser();
 			const cookie = await loginTestUser();
 
-			const address = { houseNameNumber: 'Pendennis', streetName: 'Tredegar Road', townCityName: 'Ebbw Vale', postCode: '' };
-	
+			const address = {
+				houseNameNumber: 'Pendennis',
+				streetName: 'Tredegar Road',
+				townCityName: 'Ebbw Vale',
+				postCode: '',
+			};
+
 			await request(app)
 				.post('/addresses')
 				.set('Cookie', cookie)
@@ -199,7 +262,14 @@ describe('/addresses', () => {
 describe('/addresses/:addressId', () => {
 	describe('get', () => {
 		it('Allows an authorized user to get an address', async () => {
-			const address = { id: 1, accountId: 1, houseNameNumber: 'Pendennis', streetName: 'Tredegar Road', townCityName: 'Ebbw Vale', postCode: 'NP23 6LP' };
+			const address = {
+				id: 1,
+				accountId: 1,
+				houseNameNumber: 'Pendennis',
+				streetName: 'Tredegar Road',
+				townCityName: 'Ebbw Vale',
+				postCode: 'NP23 6LP',
+			};
 
 			await insertMockAddress(address);
 
@@ -215,50 +285,68 @@ describe('/addresses/:addressId', () => {
 		});
 
 		it('Rejects unauthorized users', async () => {
-			await request(app)
-				.get('/addresses/1')
-				.expect(401);
+			await request(app).get('/addresses/1').expect(401);
 		});
 
 		it('Returns 404 for non-existant addresses', async () => {
-			const address = { id: 1, accountId: 1, houseNameNumber: 'Pendennis', streetName: 'Tredegar Road', townCityName: 'Ebbw Vale', postCode: 'NP23 6LP' };
+			const address = {
+				id: 1,
+				accountId: 1,
+				houseNameNumber: 'Pendennis',
+				streetName: 'Tredegar Road',
+				townCityName: 'Ebbw Vale',
+				postCode: 'NP23 6LP',
+			};
 
 			await insertMockAddress(address);
 
 			await createTestUser();
 			const cookie = await loginTestUser();
 
-			await request(app)
-				.get('/addresses/2')
-				.set('Cookie', cookie)
-				.expect(404);
+			await request(app).get('/addresses/2').set('Cookie', cookie).expect(404);
 		});
 
 		it('Does not allow an authorized user to get addresses not belonging to them', async () => {
-			const address = { id: 1, accountId: 2, houseNameNumber: 'Pendennis', streetName: 'Tredegar Road', townCityName: 'Ebbw Vale', postCode: 'NP23 6LP' };
+			const address = {
+				id: 1,
+				accountId: 2,
+				houseNameNumber: 'Pendennis',
+				streetName: 'Tredegar Road',
+				townCityName: 'Ebbw Vale',
+				postCode: 'NP23 6LP',
+			};
 
 			await insertMockAddress(address);
 
 			await createTestUser();
 			const cookie = await loginTestUser();
 
-			await request(app)
-				.get('/addresses/1')
-				.set('Cookie', cookie)
-				.expect(404);
+			await request(app).get('/addresses/1').set('Cookie', cookie).expect(404);
 		});
 	});
 
 	describe('put', () => {
 		it('Allows an authorized user to update an address', async () => {
-			const address = { id: 1, accountId: 1, houseNameNumber: 'Pendennis', streetName: 'Tredegar Road', townCityName: 'Ebbw Vale', postCode: 'NP23 6LP' };
+			const address = {
+				id: 1,
+				accountId: 1,
+				houseNameNumber: 'Pendennis',
+				streetName: 'Tredegar Road',
+				townCityName: 'Ebbw Vale',
+				postCode: 'NP23 6LP',
+			};
 
 			await insertMockAddress(address);
 
 			await createTestUser();
 			const cookie = await loginTestUser();
 
-			const newAddress = { houseNameNumber: '3', streetName: 'St John\'s Court', townCityName: 'Merthyr Tydfil', postCode: 'CF48 3LU' };
+			const newAddress = {
+				houseNameNumber: '3',
+				streetName: "St John's Court",
+				townCityName: 'Merthyr Tydfil',
+				postCode: 'CF48 3LU',
+			};
 
 			const response = await request(app)
 				.put('/addresses/1')
@@ -272,23 +360,37 @@ describe('/addresses/:addressId', () => {
 		});
 
 		it('Rejects unauthorized users', async () => {
-			const newAddress = { houseNameNumber: '3', streetName: 'St John\'s Court', townCityName: 'Merthyr Tydfil', postCode: 'CF48 3LU' };
+			const newAddress = {
+				houseNameNumber: '3',
+				streetName: "St John's Court",
+				townCityName: 'Merthyr Tydfil',
+				postCode: 'CF48 3LU',
+			};
 
-			await request(app)
-				.put('/addresses/1')
-				.send(newAddress)
-				.expect(401);
+			await request(app).put('/addresses/1').send(newAddress).expect(401);
 		});
 
 		it('Returns 404 for non-existant addresses', async () => {
-			const address = { id: 1, accountId: 1, houseNameNumber: 'Pendennis', streetName: 'Tredegar Road', townCityName: 'Ebbw Vale', postCode: 'NP23 6LP' };
+			const address = {
+				id: 1,
+				accountId: 1,
+				houseNameNumber: 'Pendennis',
+				streetName: 'Tredegar Road',
+				townCityName: 'Ebbw Vale',
+				postCode: 'NP23 6LP',
+			};
 
 			await insertMockAddress(address);
 
 			await createTestUser();
 			const cookie = await loginTestUser();
 
-			const newAddress = { houseNameNumber: '3', streetName: 'St John\'s Court', townCityName: 'Merthyr Tydfil', postCode: 'CF48 3LU' };
+			const newAddress = {
+				houseNameNumber: '3',
+				streetName: "St John's Court",
+				townCityName: 'Merthyr Tydfil',
+				postCode: 'CF48 3LU',
+			};
 
 			await request(app)
 				.put('/addresses/2')
@@ -298,14 +400,26 @@ describe('/addresses/:addressId', () => {
 		});
 
 		it('Does not allow an authorized user to update addresses not belonging to them', async () => {
-			const address = { id: 1, accountId: 2, houseNameNumber: 'Pendennis', streetName: 'Tredegar Road', townCityName: 'Ebbw Vale', postCode: 'NP23 6LP' };
+			const address = {
+				id: 1,
+				accountId: 2,
+				houseNameNumber: 'Pendennis',
+				streetName: 'Tredegar Road',
+				townCityName: 'Ebbw Vale',
+				postCode: 'NP23 6LP',
+			};
 
 			await insertMockAddress(address);
 
 			await createTestUser();
 			const cookie = await loginTestUser();
 
-			const newAddress = { houseNameNumber: '3', streetName: 'St John\'s Court', townCityName: 'Merthyr Tydfil', postCode: 'CF48 3LU' };
+			const newAddress = {
+				houseNameNumber: '3',
+				streetName: "St John's Court",
+				townCityName: 'Merthyr Tydfil',
+				postCode: 'CF48 3LU',
+			};
 
 			await request(app)
 				.put('/addresses/1')
@@ -315,15 +429,27 @@ describe('/addresses/:addressId', () => {
 		});
 
 		it('Rejects address with no house name/number', async () => {
-			const address = { id: 1, accountId: 1, houseNameNumber: 'Pendennis', streetName: 'Tredegar Road', townCityName: 'Ebbw Vale', postCode: 'NP23 6LP' };
+			const address = {
+				id: 1,
+				accountId: 1,
+				houseNameNumber: 'Pendennis',
+				streetName: 'Tredegar Road',
+				townCityName: 'Ebbw Vale',
+				postCode: 'NP23 6LP',
+			};
 
 			await insertMockAddress(address);
 
 			await createTestUser();
 			const cookie = await loginTestUser();
 
-			const newAddress = { houseNameNumber: '', streetName: 'St John\'s Court', townCityName: 'Merthyr Tydfil', postCode: 'CF48 3LU' };
-	
+			const newAddress = {
+				houseNameNumber: '',
+				streetName: "St John's Court",
+				townCityName: 'Merthyr Tydfil',
+				postCode: 'CF48 3LU',
+			};
+
 			await request(app)
 				.put('/addresses/1')
 				.set('Cookie', cookie)
@@ -332,15 +458,27 @@ describe('/addresses/:addressId', () => {
 		});
 
 		it('Rejects address with no street name', async () => {
-			const address = { id: 1, accountId: 1, houseNameNumber: 'Pendennis', streetName: 'Tredegar Road', townCityName: 'Ebbw Vale', postCode: 'NP23 6LP' };
+			const address = {
+				id: 1,
+				accountId: 1,
+				houseNameNumber: 'Pendennis',
+				streetName: 'Tredegar Road',
+				townCityName: 'Ebbw Vale',
+				postCode: 'NP23 6LP',
+			};
 
 			await insertMockAddress(address);
 
 			await createTestUser();
 			const cookie = await loginTestUser();
 
-			const newAddress = { houseNameNumber: '3', streetName: '', townCityName: 'Merthyr Tydfil', postCode: 'CF48 3LU' };
-	
+			const newAddress = {
+				houseNameNumber: '3',
+				streetName: '',
+				townCityName: 'Merthyr Tydfil',
+				postCode: 'CF48 3LU',
+			};
+
 			await request(app)
 				.put('/addresses/1')
 				.set('Cookie', cookie)
@@ -349,15 +487,27 @@ describe('/addresses/:addressId', () => {
 		});
 
 		it('Rejects address with no town/city name', async () => {
-			const address = { id: 1, accountId: 1, houseNameNumber: 'Pendennis', streetName: 'Tredegar Road', townCityName: 'Ebbw Vale', postCode: 'NP23 6LP' };
+			const address = {
+				id: 1,
+				accountId: 1,
+				houseNameNumber: 'Pendennis',
+				streetName: 'Tredegar Road',
+				townCityName: 'Ebbw Vale',
+				postCode: 'NP23 6LP',
+			};
 
 			await insertMockAddress(address);
 
 			await createTestUser();
 			const cookie = await loginTestUser();
 
-			const newAddress = { houseNameNumber: '3', streetName: 'St John\'s Court', townCityName: '', postCode: 'CF48 3LU' };
-	
+			const newAddress = {
+				houseNameNumber: '3',
+				streetName: "St John's Court",
+				townCityName: '',
+				postCode: 'CF48 3LU',
+			};
+
 			await request(app)
 				.put('/addresses/1')
 				.set('Cookie', cookie)
@@ -366,15 +516,27 @@ describe('/addresses/:addressId', () => {
 		});
 
 		it('Rejects address with no post code', async () => {
-			const address = { id: 1, accountId: 1, houseNameNumber: 'Pendennis', streetName: 'Tredegar Road', townCityName: 'Ebbw Vale', postCode: 'NP23 6LP' };
+			const address = {
+				id: 1,
+				accountId: 1,
+				houseNameNumber: 'Pendennis',
+				streetName: 'Tredegar Road',
+				townCityName: 'Ebbw Vale',
+				postCode: 'NP23 6LP',
+			};
 
 			await insertMockAddress(address);
 
 			await createTestUser();
 			const cookie = await loginTestUser();
 
-			const newAddress = { houseNameNumber: '3', streetName: 'St John\'s Court', townCityName: 'Merthyr Tydfil', postCode: '' };
-	
+			const newAddress = {
+				houseNameNumber: '3',
+				streetName: "St John's Court",
+				townCityName: 'Merthyr Tydfil',
+				postCode: '',
+			};
+
 			await request(app)
 				.put('/addresses/1')
 				.set('Cookie', cookie)
@@ -385,7 +547,14 @@ describe('/addresses/:addressId', () => {
 
 	describe('delete', () => {
 		it('Allows an authorized user to delete an address', async () => {
-			const address = { id: 1, accountId: 1, houseNameNumber: 'Pendennis', streetName: 'Tredegar Road', townCityName: 'Ebbw Vale', postCode: 'NP23 6LP' };
+			const address = {
+				id: 1,
+				accountId: 1,
+				houseNameNumber: 'Pendennis',
+				streetName: 'Tredegar Road',
+				townCityName: 'Ebbw Vale',
+				postCode: 'NP23 6LP',
+			};
 
 			await insertMockAddress(address);
 
@@ -399,13 +568,18 @@ describe('/addresses/:addressId', () => {
 		});
 
 		it('Rejects unauthorized users', async () => {
-			await request(app)
-				.delete('/addresses/1')
-				.expect(401);
+			await request(app).delete('/addresses/1').expect(401);
 		});
 
 		it('Returns 404 for non-existant addresses', async () => {
-			const address = { id: 1, accountId: 1, houseNameNumber: 'Pendennis', streetName: 'Tredegar Road', townCityName: 'Ebbw Vale', postCode: 'NP23 6LP' };
+			const address = {
+				id: 1,
+				accountId: 1,
+				houseNameNumber: 'Pendennis',
+				streetName: 'Tredegar Road',
+				townCityName: 'Ebbw Vale',
+				postCode: 'NP23 6LP',
+			};
 
 			await insertMockAddress(address);
 
@@ -419,7 +593,14 @@ describe('/addresses/:addressId', () => {
 		});
 
 		it('Does not allow an authorized user to delete addresses not belonging to them', async () => {
-			const address = { id: 1, accountId: 2, houseNameNumber: 'Pendennis', streetName: 'Tredegar Road', townCityName: 'Ebbw Vale', postCode: 'NP23 6LP' };
+			const address = {
+				id: 1,
+				accountId: 2,
+				houseNameNumber: 'Pendennis',
+				streetName: 'Tredegar Road',
+				townCityName: 'Ebbw Vale',
+				postCode: 'NP23 6LP',
+			};
 
 			await insertMockAddress(address);
 

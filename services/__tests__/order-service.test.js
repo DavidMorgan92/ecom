@@ -31,7 +31,9 @@ afterAll(async () => {
 beforeEach(async () => {
 	await db.query('CREATE TEMPORARY TABLE address (LIKE address INCLUDING ALL)');
 	await db.query('CREATE TEMPORARY TABLE "order" (LIKE "order" INCLUDING ALL)');
-	await db.query('CREATE TEMPORARY TABLE orders_products (LIKE orders_products INCLUDING ALL)');
+	await db.query(
+		'CREATE TEMPORARY TABLE orders_products (LIKE orders_products INCLUDING ALL)',
+	);
 	await db.query('CREATE TEMPORARY TABLE product (LIKE product INCLUDING ALL)');
 });
 
@@ -45,13 +47,50 @@ afterEach(async () => {
 describe('Order service', () => {
 	describe('getAllOrders', () => {
 		it('gets all the orders', async () => {
-			await db.query('INSERT INTO address VALUES ($1, $2, $3, $4, $5, $6)', [1, null, 'Pendennis', 'Tredegar Road', 'Ebbw Vale', 'NP23 6LP']);
-			await db.query('INSERT INTO "order" VALUES ($1, $2, $3, $4)', [1, 1, 1, '2004-10-19 10:23:54']);
-			await db.query('INSERT INTO "order" VALUES ($1, $2, $3, $4)', [2, 1, 1, '2004-10-20 10:23:54']);
-			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [1, 'Toothbrush', 'Bristly', 'Health & Beauty', 123, 23]);
-			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [2, 'Hairbrush', 'Bristly', 'Health & Beauty', 234, 12]);
-			await db.query('INSERT INTO orders_products VALUES ($1, $2, $3)', [1, 1, 1]);
-			await db.query('INSERT INTO orders_products VALUES ($1, $2, $3)', [2, 2, 1]);
+			await db.query('INSERT INTO address VALUES ($1, $2, $3, $4, $5, $6)', [
+				1,
+				null,
+				'Pendennis',
+				'Tredegar Road',
+				'Ebbw Vale',
+				'NP23 6LP',
+			]);
+			await db.query('INSERT INTO "order" VALUES ($1, $2, $3, $4)', [
+				1,
+				1,
+				1,
+				'2004-10-19 10:23:54',
+			]);
+			await db.query('INSERT INTO "order" VALUES ($1, $2, $3, $4)', [
+				2,
+				1,
+				1,
+				'2004-10-20 10:23:54',
+			]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
+				1,
+				'Toothbrush',
+				'Bristly',
+				'Health & Beauty',
+				123,
+				23,
+			]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
+				2,
+				'Hairbrush',
+				'Bristly',
+				'Health & Beauty',
+				234,
+				12,
+			]);
+			await db.query(
+				'INSERT INTO orders_products VALUES ($1, $2, $3)',
+				[1, 1, 1],
+			);
+			await db.query(
+				'INSERT INTO orders_products VALUES ($1, $2, $3)',
+				[2, 2, 1],
+			);
 
 			const requesterId = 1;
 
@@ -110,8 +149,20 @@ describe('Order service', () => {
 		});
 
 		it('works if an order has no items', async () => {
-			await db.query('INSERT INTO address VALUES ($1, $2, $3, $4, $5, $6)', [1, null, 'Pendennis', 'Tredegar Road', 'Ebbw Vale', 'NP23 6LP']);
-			await db.query('INSERT INTO "order" VALUES ($1, $2, $3, $4)', [1, 1, 1, '2004-10-19 10:23:54']);
+			await db.query('INSERT INTO address VALUES ($1, $2, $3, $4, $5, $6)', [
+				1,
+				null,
+				'Pendennis',
+				'Tredegar Road',
+				'Ebbw Vale',
+				'NP23 6LP',
+			]);
+			await db.query('INSERT INTO "order" VALUES ($1, $2, $3, $4)', [
+				1,
+				1,
+				1,
+				'2004-10-19 10:23:54',
+			]);
 
 			const requesterId = 1;
 
@@ -133,9 +184,21 @@ describe('Order service', () => {
 			]);
 		});
 
-		it('doesn\'t get orders not belonging to the requesting user', async () => {
-			await db.query('INSERT INTO address VALUES ($1, $2, $3, $4, $5, $6)', [1, null, 'Pendennis', 'Tredegar Road', 'Ebbw Vale', 'NP23 6LP']);
-			await db.query('INSERT INTO "order" VALUES ($1, $2, $3, $4)', [1, 2, 1, '2004-10-20 10:23:54']);
+		it("doesn't get orders not belonging to the requesting user", async () => {
+			await db.query('INSERT INTO address VALUES ($1, $2, $3, $4, $5, $6)', [
+				1,
+				null,
+				'Pendennis',
+				'Tredegar Road',
+				'Ebbw Vale',
+				'NP23 6LP',
+			]);
+			await db.query('INSERT INTO "order" VALUES ($1, $2, $3, $4)', [
+				1,
+				2,
+				1,
+				'2004-10-20 10:23:54',
+			]);
 
 			const requesterId = 1;
 
@@ -147,12 +210,44 @@ describe('Order service', () => {
 
 	describe('getOrderById', () => {
 		it('gets order information', async () => {
-			await db.query('INSERT INTO address VALUES ($1, $2, $3, $4, $5, $6)', [1, null, 'Pendennis', 'Tredegar Road', 'Ebbw Vale', 'NP23 6LP']);
-			await db.query('INSERT INTO "order" VALUES ($1, $2, $3, $4)', [1, 1, 1, '2004-10-19 10:23:54']);
-			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [1, 'Toothbrush', 'Bristly', 'Health & Beauty', 123, 23]);
-			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [2, 'Hairbrush', 'Bristly', 'Health & Beauty', 234, 12]);
-			await db.query('INSERT INTO orders_products VALUES ($1, $2, $3)', [1, 1, 1]);
-			await db.query('INSERT INTO orders_products VALUES ($1, $2, $3)', [1, 2, 1]);
+			await db.query('INSERT INTO address VALUES ($1, $2, $3, $4, $5, $6)', [
+				1,
+				null,
+				'Pendennis',
+				'Tredegar Road',
+				'Ebbw Vale',
+				'NP23 6LP',
+			]);
+			await db.query('INSERT INTO "order" VALUES ($1, $2, $3, $4)', [
+				1,
+				1,
+				1,
+				'2004-10-19 10:23:54',
+			]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
+				1,
+				'Toothbrush',
+				'Bristly',
+				'Health & Beauty',
+				123,
+				23,
+			]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
+				2,
+				'Hairbrush',
+				'Bristly',
+				'Health & Beauty',
+				234,
+				12,
+			]);
+			await db.query(
+				'INSERT INTO orders_products VALUES ($1, $2, $3)',
+				[1, 1, 1],
+			);
+			await db.query(
+				'INSERT INTO orders_products VALUES ($1, $2, $3)',
+				[1, 2, 1],
+			);
 
 			const requesterId = 1;
 
@@ -195,9 +290,21 @@ describe('Order service', () => {
 			});
 		});
 
-		it('doesn\'t get orders not belonging to the requesting user', async () => {
-			await db.query('INSERT INTO address VALUES ($1, $2, $3, $4, $5, $6)', [1, null, 'Pendennis', 'Tredegar Road', 'Ebbw Vale', 'NP23 6LP']);
-			await db.query('INSERT INTO "order" VALUES ($1, $2, $3, $4)', [1, 2, 1, '2004-10-20 10:23:54']);
+		it("doesn't get orders not belonging to the requesting user", async () => {
+			await db.query('INSERT INTO address VALUES ($1, $2, $3, $4, $5, $6)', [
+				1,
+				null,
+				'Pendennis',
+				'Tredegar Road',
+				'Ebbw Vale',
+				'NP23 6LP',
+			]);
+			await db.query('INSERT INTO "order" VALUES ($1, $2, $3, $4)', [
+				1,
+				2,
+				1,
+				'2004-10-20 10:23:54',
+			]);
 
 			const requesterId = 1;
 

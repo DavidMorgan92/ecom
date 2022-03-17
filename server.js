@@ -24,23 +24,27 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 app.use(express.json());
 
 // Use session
-app.use(expressSession({
-	secret: process.env.SESSION_SECRET,
-	resave: false,
-	saveUninitialized: false,
-}));
+app.use(
+	expressSession({
+		secret: process.env.SESSION_SECRET,
+		resave: false,
+		saveUninitialized: false,
+	}),
+);
 
 // Setup passport
 passport.serializeUser(authService.serializeUser);
 passport.deserializeUser(authService.deserializeUser);
 
-passport.use(new passportLocal.Strategy(
-	{
-		usernameField: 'email',
-		passwordField: 'password',
-	},
-	authService.authenticateUser
-));
+passport.use(
+	new passportLocal.Strategy(
+		{
+			usernameField: 'email',
+			passwordField: 'password',
+		},
+		authService.authenticateUser,
+	),
+);
 
 // Use passport
 app.use(passport.initialize());
@@ -50,7 +54,11 @@ app.use(passport.session());
 app.use('/products', require('./routes/products'));
 app.use('/orders', authService.protectedRoute, require('./routes/orders'));
 app.use('/carts', authService.protectedRoute, require('./routes/carts'));
-app.use('/addresses', authService.protectedRoute, require('./routes/addresses'));
+app.use(
+	'/addresses',
+	authService.protectedRoute,
+	require('./routes/addresses'),
+);
 app.use('/account', authService.protectedRoute, require('./routes/account'));
 app.use('/auth', require('./routes/auth'));
 

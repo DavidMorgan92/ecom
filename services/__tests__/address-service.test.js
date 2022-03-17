@@ -37,7 +37,14 @@ afterEach(async () => {
 });
 
 async function insertMockAddress(address) {
-	const values = [address.id, address.accountId, address.houseNameNumber, address.streetName, address.townCityName, address.postCode];
+	const values = [
+		address.id,
+		address.accountId,
+		address.houseNameNumber,
+		address.streetName,
+		address.townCityName,
+		address.postCode,
+	];
 	await db.query('INSERT INTO address VALUES ($1, $2, $3, $4, $5, $6)', values);
 }
 
@@ -46,8 +53,22 @@ describe('Address service', () => {
 		it('gets all the addresses', async () => {
 			const accountId = 1;
 			const addresses = [
-				{ id: 1, accountId: accountId, houseNameNumber: 'Pendennis', streetName: 'Tredegar Road', townCityName: 'Ebbw Vale', postCode: 'NP23 6LP' },
-				{ id: 2, accountId: accountId, houseNameNumber: '3', streetName: 'St John\'s Court', townCityName: 'Merthyr Tydfil', postCode: 'CF48 3LU' },
+				{
+					id: 1,
+					accountId: accountId,
+					houseNameNumber: 'Pendennis',
+					streetName: 'Tredegar Road',
+					townCityName: 'Ebbw Vale',
+					postCode: 'NP23 6LP',
+				},
+				{
+					id: 2,
+					accountId: accountId,
+					houseNameNumber: '3',
+					streetName: "St John's Court",
+					townCityName: 'Merthyr Tydfil',
+					postCode: 'CF48 3LU',
+				},
 			];
 
 			await insertMockAddress(addresses[0]);
@@ -61,11 +82,25 @@ describe('Address service', () => {
 			expect(result).toMatchObject(addresses);
 		});
 
-		it('doesn\'t get addresses not belonging to the requesting user', async () => {
+		it("doesn't get addresses not belonging to the requesting user", async () => {
 			const accountId = 1;
 			const addresses = [
-				{ id: 1, accountId: accountId, houseNameNumber: 'Pendennis', streetName: 'Tredegar Road', townCityName: 'Ebbw Vale', postCode: 'NP23 6LP' },
-				{ id: 2, accountId: accountId, houseNameNumber: '3', streetName: 'St John\'s Court', townCityName: 'Merthyr Tydfil', postCode: 'CF48 3LU' },
+				{
+					id: 1,
+					accountId: accountId,
+					houseNameNumber: 'Pendennis',
+					streetName: 'Tredegar Road',
+					townCityName: 'Ebbw Vale',
+					postCode: 'NP23 6LP',
+				},
+				{
+					id: 2,
+					accountId: accountId,
+					houseNameNumber: '3',
+					streetName: "St John's Court",
+					townCityName: 'Merthyr Tydfil',
+					postCode: 'CF48 3LU',
+				},
 			];
 
 			await insertMockAddress(addresses[0]);
@@ -90,7 +125,10 @@ describe('Address service', () => {
 		it('gets address information', async () => {
 			await insertMockAddress(address);
 
-			const result = await addressService.getAddressById(address.accountId, address.id);
+			const result = await addressService.getAddressById(
+				address.accountId,
+				address.id,
+			);
 
 			expect(result).toMatchObject({
 				id: address.id,
@@ -109,7 +147,7 @@ describe('Address service', () => {
 			expect(result).toBeNull();
 		});
 
-		it('returns null if the requesting user\'s ID doesn\'t match the address owner\'s ID', async () => {
+		it("returns null if the requesting user's ID doesn't match the address owner's ID", async () => {
 			await insertMockAddress(address);
 
 			const result = await addressService.getAddressById(2, address.id);
@@ -129,7 +167,13 @@ describe('Address service', () => {
 
 			const requesterId = 1;
 
-			const result = await addressService.createAddress(requesterId, address.houseNameNumber, address.streetName, address.townCityName, address.postCode);
+			const result = await addressService.createAddress(
+				requesterId,
+				address.houseNameNumber,
+				address.streetName,
+				address.townCityName,
+				address.postCode,
+			);
 
 			expect(result).toMatchObject(address);
 			expect(result).toHaveProperty('id');
@@ -150,14 +194,21 @@ describe('Address service', () => {
 			const address = {
 				id: 1,
 				houseNameNumber: '3',
-				streetName: 'St John\'s Court',
+				streetName: "St John's Court",
 				townCityName: 'Merthyr Tydfil',
 				postCode: 'CF48 3LU',
 			};
 
 			const requesterId = 1;
 
-			const result = await addressService.updateAddress(requesterId, address.id, address.houseNameNumber, address.streetName, address.townCityName, address.postCode);
+			const result = await addressService.updateAddress(
+				requesterId,
+				address.id,
+				address.houseNameNumber,
+				address.streetName,
+				address.townCityName,
+				address.postCode,
+			);
 
 			expect(result).toMatchObject(address);
 		});

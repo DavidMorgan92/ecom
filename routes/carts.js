@@ -76,7 +76,7 @@ carts.param(
 		} else {
 			res.status(404).send('Cart not found');
 		}
-	})
+	}),
 );
 
 /**
@@ -105,7 +105,7 @@ carts.get(
 		const requesterId = req.session.passport.user.id;
 		const carts = await cartService.getAllCarts(requesterId);
 		res.send(carts);
-	})
+	}),
 );
 
 /**
@@ -178,7 +178,7 @@ carts.post(
 				throw err;
 			}
 		}
-	})
+	}),
 );
 
 /**
@@ -223,7 +223,7 @@ carts.put(
 				requesterId,
 				req.cartId,
 				name,
-				items
+				items,
 			);
 
 			res.send(cart);
@@ -234,7 +234,7 @@ carts.put(
 				throw err;
 			}
 		}
-	})
+	}),
 );
 
 /**
@@ -267,7 +267,7 @@ carts.delete(
 		} else {
 			res.sendStatus(404);
 		}
-	})
+	}),
 );
 
 /**
@@ -311,7 +311,7 @@ carts.post(
 			const orderId = await cartService.checkoutCart(
 				requesterId,
 				req.cartId,
-				addressId
+				addressId,
 			);
 
 			res.send({
@@ -324,7 +324,7 @@ carts.post(
 				throw err;
 			}
 		}
-	})
+	}),
 );
 
 module.exports = carts;

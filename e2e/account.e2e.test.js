@@ -42,18 +42,21 @@ afterEach(async () => {
 async function createTestUser() {
 	const passwordHash = await bcrypt.hash('Password01', 10);
 	const values = [1, 'David', 'Morgan', 'david.morgan@gmail.com', passwordHash];
-	await db.query('INSERT INTO account (id, first_name, last_name, email, password_hash) VALUES ($1, $2, $3, $4, $5)', values);
+	await db.query(
+		'INSERT INTO account (id, first_name, last_name, email, password_hash) VALUES ($1, $2, $3, $4, $5)',
+		values,
+	);
 }
 
 async function loginTestUser() {
-	const res = await request(app)
-		.post('/auth/login')
-		.send({
-			email: 'david.morgan@gmail.com',
-			password: 'Password01',
-		});
+	const res = await request(app).post('/auth/login').send({
+		email: 'david.morgan@gmail.com',
+		password: 'Password01',
+	});
 
-	const cookie = res.headers['set-cookie'].find(c => c.startsWith('connect.sid'));
+	const cookie = res.headers['set-cookie'].find(c =>
+		c.startsWith('connect.sid'),
+	);
 
 	return cookie;
 }
@@ -64,20 +67,15 @@ describe('/account', () => {
 			await createTestUser();
 			const cookie = await loginTestUser();
 
-			await request(app)
-				.get('/account')
-				.set('Cookie', cookie)
-				.expect(200, {
-					firstName: 'David',
-					lastName: 'Morgan',
-					email: 'david.morgan@gmail.com',
-				});
+			await request(app).get('/account').set('Cookie', cookie).expect(200, {
+				firstName: 'David',
+				lastName: 'Morgan',
+				email: 'david.morgan@gmail.com',
+			});
 		});
 
 		it('Rejects unauthorized users', async () => {
-			await request(app)
-				.get('/account')
-				.expect(401);
+			await request(app).get('/account').expect(401);
 		});
 	});
 
@@ -101,9 +99,7 @@ describe('/account', () => {
 		});
 
 		it('Rejects unauthorized users', async () => {
-			await request(app)
-				.put('/account')
-				.expect(401);
+			await request(app).put('/account').expect(401);
 		});
 
 		it('Rejects empty first name', async () => {

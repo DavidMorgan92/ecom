@@ -79,25 +79,28 @@ auth.post('/login', authService.authenticate, (err, req, res, next) => {
  *       400:
  *         description: Invalid input.
  */
-auth.post('/register', asyncHandler(async (req, res) => {
-	// Register a new user with email and password
-	try {
-		const {
-			firstName,
-			lastName,
-			email,
-			password,
-		} = req.body;
+auth.post(
+	'/register',
+	asyncHandler(async (req, res) => {
+		// Register a new user with email and password
+		try {
+			const { firstName, lastName, email, password } = req.body;
 
-		const accountInfo = await account.registerAccount(firstName, lastName, email, password);
-		res.send(accountInfo);
-	} catch (err) {
-		if (err.status === 400) {
-			res.sendStatus(400);
-		} else {
-			throw err;
+			const accountInfo = await account.registerAccount(
+				firstName,
+				lastName,
+				email,
+				password,
+			);
+			res.send(accountInfo);
+		} catch (err) {
+			if (err.status === 400) {
+				res.sendStatus(400);
+			} else {
+				throw err;
+			}
 		}
-	}
-}));
+	}),
+);
 
 module.exports = auth;

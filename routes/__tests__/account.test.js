@@ -7,9 +7,7 @@ jest.mock('../../services/auth-service');
 describe('/account', () => {
 	describe('get', () => {
 		it('returns status 200', done => {
-			request(app)
-				.get('/account')
-				.expect(200, done);
+			request(app).get('/account').expect(200, done);
 		});
 	});
 
@@ -25,12 +23,10 @@ describe('/account', () => {
 		});
 
 		it('returns status 400 with no input', done => {
-			request(app)
-				.put('/account')
-				.expect(400, done);
+			request(app).put('/account').expect(400, done);
 		});
 
-		it ('returns status 400 with empty first name', done => {
+		it('returns status 400 with empty first name', done => {
 			request(app)
 				.put('/account')
 				.send({
@@ -40,7 +36,7 @@ describe('/account', () => {
 				.expect(400, done);
 		});
 
-		it ('returns status 400 with empty last name', done => {
+		it('returns status 400 with empty last name', done => {
 			request(app)
 				.put('/account')
 				.send({

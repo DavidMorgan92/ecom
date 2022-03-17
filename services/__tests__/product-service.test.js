@@ -138,7 +138,7 @@ describe('Product service', () => {
 
 			const result = await productService.getProductsByCategoryAndName(
 				'Health & Beauty',
-				null
+				null,
 			);
 
 			expect(result).toMatchObject([
@@ -189,7 +189,7 @@ describe('Product service', () => {
 
 			const result = await productService.getProductsByCategoryAndName(
 				'Beauty',
-				null
+				null,
 			);
 
 			expect(result).toMatchObject([
@@ -240,7 +240,7 @@ describe('Product service', () => {
 
 			const result = await productService.getProductsByCategoryAndName(
 				null,
-				'Toiletbrush'
+				'Toiletbrush',
 			);
 
 			expect(result).toMatchObject([
@@ -283,7 +283,7 @@ describe('Product service', () => {
 
 			const result = await productService.getProductsByCategoryAndName(
 				null,
-				'brush'
+				'brush',
 			);
 
 			expect(result).toMatchObject([
@@ -342,7 +342,7 @@ describe('Product service', () => {
 
 			const result = await productService.getProductsByCategoryAndName(
 				'Bathroom',
-				'brush'
+				'brush',
 			);
 
 			expect(result).toMatchObject([
@@ -429,7 +429,7 @@ describe('Product service', () => {
 				description,
 				category,
 				pricePennies,
-				stockCount
+				stockCount,
 			);
 
 			expect(result).toMatchObject({

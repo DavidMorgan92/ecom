@@ -79,7 +79,7 @@ products.param(
 		} else {
 			res.status(404).send('Product not found');
 		}
-	})
+	}),
 );
 
 /**
@@ -138,14 +138,14 @@ products.get(
 		} else if (req.query.name || req.query.category) {
 			products = await productService.getProductsByCategoryAndName(
 				req.query.category,
-				req.query.name
+				req.query.name,
 			);
 		} else {
 			products = await productService.getAllProducts();
 		}
 
 		res.send(products);
-	})
+	}),
 );
 
 /**
@@ -213,7 +213,7 @@ products.post(
 				description,
 				category,
 				pricePennies,
-				stockCount
+				stockCount,
 			);
 
 			res.status(201).send(product);
@@ -224,7 +224,7 @@ products.post(
 				throw err;
 			}
 		}
-	})
+	}),
 );
 
 module.exports = products;

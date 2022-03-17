@@ -42,18 +42,21 @@ const orders = express.Router();
  *       schema:
  *         type: integer
  */
-orders.param('orderId', asyncHandler(async (req, res, next, id) => {
-	const requesterId = req.session.passport.user.id;
-	const order = await orderService.getOrderById(requesterId, id);
+orders.param(
+	'orderId',
+	asyncHandler(async (req, res, next, id) => {
+		const requesterId = req.session.passport.user.id;
+		const order = await orderService.getOrderById(requesterId, id);
 
-	if (order) {
-		req.orderId = id;
-		req.order = order;
-		next();
-	} else {
-		res.status(404).send('Order not found');
-	}
-}));
+		if (order) {
+			req.orderId = id;
+			req.order = order;
+			next();
+		} else {
+			res.status(404).send('Order not found');
+		}
+	}),
+);
 
 /**
  * @swagger
@@ -74,12 +77,15 @@ orders.param('orderId', asyncHandler(async (req, res, next, id) => {
  *       401:
  *         description: Unauthorized.
  */
-orders.get('/', asyncHandler(async (req, res) => {
-	// Return all orders for the authorised user
-	const requesterId = req.session.passport.user.id;
-	const orders = await orderService.getAllOrders(requesterId);
-	res.send(orders);
-}));
+orders.get(
+	'/',
+	asyncHandler(async (req, res) => {
+		// Return all orders for the authorised user
+		const requesterId = req.session.passport.user.id;
+		const orders = await orderService.getAllOrders(requesterId);
+		res.send(orders);
+	}),
+);
 
 /**
  * @swagger

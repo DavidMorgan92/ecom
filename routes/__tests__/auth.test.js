@@ -16,7 +16,7 @@ describe('/auth/login', () => {
 				.expect(200, done);
 		});
 
-		it('returns status 401 if user doesn\'t exist', done => {
+		it("returns status 401 if user doesn't exist", done => {
 			request(app)
 				.post('/auth/login')
 				.send({
@@ -27,9 +27,7 @@ describe('/auth/login', () => {
 		});
 
 		it('returns status 401 with no input', done => {
-			request(app)
-				.post('/auth/login')
-				.expect(401, done);
+			request(app).post('/auth/login').expect(401, done);
 		});
 	});
 });
@@ -45,17 +43,19 @@ describe('/auth/register', () => {
 					email: 'david.morgan@gmail.com',
 					password: 'Password01',
 				})
-				.expect(200, {
-					firstName: 'David',
-					lastName: 'Morgan',
-					email: 'david.morgan@gmail.com',
-				}, done);
+				.expect(
+					200,
+					{
+						firstName: 'David',
+						lastName: 'Morgan',
+						email: 'david.morgan@gmail.com',
+					},
+					done,
+				);
 		});
 
 		it('returns status 400 with no input', done => {
-			request(app)
-				.post('/auth/register')
-				.expect(400, done);
+			request(app).post('/auth/register').expect(400, done);
 		});
 
 		it('returns status 400 with invalid email', done => {

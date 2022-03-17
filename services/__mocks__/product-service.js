@@ -45,7 +45,9 @@ async function getProductsByCategoryAndName(category, name) {
 	let prods = null;
 
 	if (category && name) {
-		prods = products.filter(p => p.category.includes(category) && p.name.includes(name));
+		prods = products.filter(
+			p => p.category.includes(category) && p.name.includes(name),
+		);
 	} else if (category) {
 		prods = products.filter(p => p.category.includes(category));
 	} else if (name) {
@@ -59,8 +61,22 @@ async function getAllProducts() {
 	return products;
 }
 
-async function createProduct(name, description, category, pricePennies, stockCount) {
-	if (!productService.createProductValidateInput(name, description, category, pricePennies, stockCount)) {
+async function createProduct(
+	name,
+	description,
+	category,
+	pricePennies,
+	stockCount,
+) {
+	if (
+		!productService.createProductValidateInput(
+			name,
+			description,
+			category,
+			pricePennies,
+			stockCount,
+		)
+	) {
 		throw { status: 400 };
 	}
 

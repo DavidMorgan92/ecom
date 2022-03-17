@@ -21,7 +21,7 @@ The server uses a .env file in the root directory with a PORT value for the serv
 Future improvements could include but are not limited to:
 
 1. Refactoring repeated code in the test suites.
-2. Changing mocking technique in [services/__mocks\__/auth-service.js](https://github.com/DavidMorgan92/ecom/blob/c58546d810ce6a63f86320d62ba24d6c342ebac6/services/__mocks__/auth-service.js) so as not require repeating code, perhaps using [Rewire](https://www.npmjs.com/package/rewire).
+2. Changing mocking technique in [services/\_\_mocks\_\_/auth-service.js](https://github.com/DavidMorgan92/ecom/blob/c58546d810ce6a63f86320d62ba24d6c342ebac6/services/__mocks__/auth-service.js) so as not require repeating code, perhaps using [Rewire](https://www.npmjs.com/package/rewire).
 3. Avoiding use of the LOWER function in the database query [here](https://github.com/DavidMorgan92/ecom/blob/c58546d810ce6a63f86320d62ba24d6c342ebac6/services/product-service.js#L70) to improve performance.
 4. Implement array of secret session keys so that keys can be periodically updated without immediately invalidating old sessions.
 5. Improve API error reporting.

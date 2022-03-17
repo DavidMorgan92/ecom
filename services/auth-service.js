@@ -73,7 +73,7 @@ async function authenticateUser(email, password, done) {
 
 		const match = await passwordService.verifyPassword(
 			password,
-			user.password_hash
+			user.password_hash,
 		);
 
 		if (!match) {

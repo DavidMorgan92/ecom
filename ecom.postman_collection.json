@@ -25,14 +25,9 @@
 						"url": {
 							"raw": "http://localhost:4001/auth/register",
 							"protocol": "http",
-							"host": [
-								"localhost"
-							],
+							"host": ["localhost"],
 							"port": "4001",
-							"path": [
-								"auth",
-								"register"
-							]
+							"path": ["auth", "register"]
 						}
 					},
 					"response": []
@@ -54,14 +49,9 @@
 						"url": {
 							"raw": "http://localhost:4001/auth/login",
 							"protocol": "http",
-							"host": [
-								"localhost"
-							],
+							"host": ["localhost"],
 							"port": "4001",
-							"path": [
-								"auth",
-								"login"
-							]
+							"path": ["auth", "login"]
 						}
 					},
 					"response": []
@@ -79,13 +69,9 @@
 						"url": {
 							"raw": "http://localhost:4001/account",
 							"protocol": "http",
-							"host": [
-								"localhost"
-							],
+							"host": ["localhost"],
 							"port": "4001",
-							"path": [
-								"account"
-							]
+							"path": ["account"]
 						}
 					},
 					"response": []
@@ -107,13 +93,9 @@
 						"url": {
 							"raw": "http://localhost:4001/account",
 							"protocol": "http",
-							"host": [
-								"localhost"
-							],
+							"host": ["localhost"],
 							"port": "4001",
-							"path": [
-								"account"
-							]
+							"path": ["account"]
 						}
 					},
 					"response": []
@@ -131,13 +113,9 @@
 						"url": {
 							"raw": "http://localhost:4001/addresses",
 							"protocol": "http",
-							"host": [
-								"localhost"
-							],
+							"host": ["localhost"],
 							"port": "4001",
-							"path": [
-								"addresses"
-							]
+							"path": ["addresses"]
 						}
 					},
 					"response": []
@@ -150,14 +128,9 @@
 						"url": {
 							"raw": "http://localhost:4001/addresses/13",
 							"protocol": "http",
-							"host": [
-								"localhost"
-							],
+							"host": ["localhost"],
 							"port": "4001",
-							"path": [
-								"addresses",
-								"13"
-							]
+							"path": ["addresses", "13"]
 						}
 					},
 					"response": []
@@ -179,13 +152,9 @@
 						"url": {
 							"raw": "http://localhost:4001/addresses",
 							"protocol": "http",
-							"host": [
-								"localhost"
-							],
+							"host": ["localhost"],
 							"port": "4001",
-							"path": [
-								"addresses"
-							]
+							"path": ["addresses"]
 						}
 					},
 					"response": []
@@ -207,14 +176,9 @@
 						"url": {
 							"raw": "http://localhost:4001/addresses/13",
 							"protocol": "http",
-							"host": [
-								"localhost"
-							],
+							"host": ["localhost"],
 							"port": "4001",
-							"path": [
-								"addresses",
-								"13"
-							]
+							"path": ["addresses", "13"]
 						}
 					},
 					"response": []
@@ -227,14 +191,9 @@
 						"url": {
 							"raw": "http://localhost:4001/addresses/13",
 							"protocol": "http",
-							"host": [
-								"localhost"
-							],
+							"host": ["localhost"],
 							"port": "4001",
-							"path": [
-								"addresses",
-								"13"
-							]
+							"path": ["addresses", "13"]
 						}
 					},
 					"response": []
@@ -252,13 +211,9 @@
 						"url": {
 							"raw": "http://localhost:4001/carts",
 							"protocol": "http",
-							"host": [
-								"localhost"
-							],
+							"host": ["localhost"],
 							"port": "4001",
-							"path": [
-								"carts"
-							]
+							"path": ["carts"]
 						}
 					},
 					"response": []
@@ -271,14 +226,9 @@
 						"url": {
 							"raw": "http://localhost:4001/carts/405",
 							"protocol": "http",
-							"host": [
-								"localhost"
-							],
+							"host": ["localhost"],
 							"port": "4001",
-							"path": [
-								"carts",
-								"405"
-							]
+							"path": ["carts", "405"]
 						}
 					},
 					"response": []
@@ -300,13 +250,9 @@
 						"url": {
 							"raw": "http://localhost:4001/carts",
 							"protocol": "http",
-							"host": [
-								"localhost"
-							],
+							"host": ["localhost"],
 							"port": "4001",
-							"path": [
-								"carts"
-							]
+							"path": ["carts"]
 						}
 					},
 					"response": []
@@ -328,14 +274,9 @@
 						"url": {
 							"raw": "http://localhost:4001/carts/405",
 							"protocol": "http",
-							"host": [
-								"localhost"
-							],
+							"host": ["localhost"],
 							"port": "4001",
-							"path": [
-								"carts",
-								"405"
-							]
+							"path": ["carts", "405"]
 						}
 					},
 					"response": []
@@ -348,14 +289,9 @@
 						"url": {
 							"raw": "http://localhost:4001/carts/405",
 							"protocol": "http",
-							"host": [
-								"localhost"
-							],
+							"host": ["localhost"],
 							"port": "4001",
-							"path": [
-								"carts",
-								"405"
-							]
+							"path": ["carts", "405"]
 						}
 					},
 					"response": []
@@ -377,15 +313,9 @@
 						"url": {
 							"raw": "http://localhost:4001/carts/13/checkout",
 							"protocol": "http",
-							"host": [
-								"localhost"
-							],
+							"host": ["localhost"],
 							"port": "4001",
-							"path": [
-								"carts",
-								"13",
-								"checkout"
-							]
+							"path": ["carts", "13", "checkout"]
 						}
 					},
 					"response": []
@@ -403,13 +333,9 @@
 						"url": {
 							"raw": "http://localhost:4001/orders",
 							"protocol": "http",
-							"host": [
-								"localhost"
-							],
+							"host": ["localhost"],
 							"port": "4001",
-							"path": [
-								"orders"
-							]
+							"path": ["orders"]
 						}
 					},
 					"response": []
@@ -422,14 +348,9 @@
 						"url": {
 							"raw": "http://localhost:4001/orders/1",
 							"protocol": "http",
-							"host": [
-								"localhost"
-							],
+							"host": ["localhost"],
 							"port": "4001",
-							"path": [
-								"orders",
-								"1"
-							]
+							"path": ["orders", "1"]
 						}
 					},
 					"response": []
@@ -447,13 +368,9 @@
 						"url": {
 							"raw": "http://localhost:4001/products",
 							"protocol": "http",
-							"host": [
-								"localhost"
-							],
+							"host": ["localhost"],
 							"port": "4001",
-							"path": [
-								"products"
-							]
+							"path": ["products"]
 						}
 					},
 					"response": []
@@ -466,13 +383,9 @@
 						"url": {
 							"raw": "http://localhost:4001/products?id=1&id=2&id=3",
 							"protocol": "http",
-							"host": [
-								"localhost"
-							],
+							"host": ["localhost"],
 							"port": "4001",
-							"path": [
-								"products"
-							],
+							"path": ["products"],
 							"query": [
 								{
 									"key": "id",
@@ -499,13 +412,9 @@
 						"url": {
 							"raw": "http://localhost:4001/products?name=Toothbrush",
 							"protocol": "http",
-							"host": [
-								"localhost"
-							],
+							"host": ["localhost"],
 							"port": "4001",
-							"path": [
-								"products"
-							],
+							"path": ["products"],
 							"query": [
 								{
 									"key": "name",
@@ -524,13 +433,9 @@
 						"url": {
 							"raw": "http://localhost:4001/products?category=Health %26 Beauty",
 							"protocol": "http",
-							"host": [
-								"localhost"
-							],
+							"host": ["localhost"],
 							"port": "4001",
-							"path": [
-								"products"
-							],
+							"path": ["products"],
 							"query": [
 								{
 									"key": "category",
@@ -549,13 +454,9 @@
 						"url": {
 							"raw": "http://localhost:4001/products?name=Toothbrush&category=Health %26 Beauty",
 							"protocol": "http",
-							"host": [
-								"localhost"
-							],
+							"host": ["localhost"],
 							"port": "4001",
-							"path": [
-								"products"
-							],
+							"path": ["products"],
 							"query": [
 								{
 									"key": "name",
@@ -578,14 +479,9 @@
 						"url": {
 							"raw": "http://localhost:4001/products/1",
 							"protocol": "http",
-							"host": [
-								"localhost"
-							],
+							"host": ["localhost"],
 							"port": "4001",
-							"path": [
-								"products",
-								"1"
-							]
+							"path": ["products", "1"]
 						}
 					},
 					"response": []
@@ -598,13 +494,9 @@
 						"url": {
 							"raw": "http://localhost:4001/products?id=1",
 							"protocol": "http",
-							"host": [
-								"localhost"
-							],
+							"host": ["localhost"],
 							"port": "4001",
-							"path": [
-								"products"
-							],
+							"path": ["products"],
 							"query": [
 								{
 									"key": "id",
@@ -632,13 +524,9 @@
 						"url": {
 							"raw": "http://localhost:4001/products",
 							"protocol": "http",
-							"host": [
-								"localhost"
-							],
+							"host": ["localhost"],
 							"port": "4001",
-							"path": [
-								"products"
-							]
+							"path": ["products"]
 						}
 					},
 					"response": []

@@ -35,7 +35,9 @@ beforeEach(async () => {
 	await db.query('CREATE TEMPORARY TABLE product (LIKE product INCLUDING ALL)');
 	await db.query('CREATE TEMPORARY TABLE address (LIKE address INCLUDING ALL)');
 	await db.query('CREATE TEMPORARY TABLE "order" (LIKE "order" INCLUDING ALL)');
-	await db.query('CREATE TEMPORARY TABLE orders_products (LIKE orders_products INCLUDING ALL)');
+	await db.query(
+		'CREATE TEMPORARY TABLE orders_products (LIKE orders_products INCLUDING ALL)',
+	);
 });
 
 afterEach(async () => {
@@ -49,18 +51,21 @@ afterEach(async () => {
 async function createTestUser() {
 	const passwordHash = await bcrypt.hash('Password01', 10);
 	const values = [1, 'David', 'Morgan', 'david.morgan@gmail.com', passwordHash];
-	await db.query('INSERT INTO account (id, first_name, last_name, email, password_hash) VALUES ($1, $2, $3, $4, $5)', values);
+	await db.query(
+		'INSERT INTO account (id, first_name, last_name, email, password_hash) VALUES ($1, $2, $3, $4, $5)',
+		values,
+	);
 }
 
 async function loginTestUser() {
-	const res = await request(app)
-		.post('/auth/login')
-		.send({
-			email: 'david.morgan@gmail.com',
-			password: 'Password01',
-		});
+	const res = await request(app).post('/auth/login').send({
+		email: 'david.morgan@gmail.com',
+		password: 'Password01',
+	});
 
-	const cookie = res.headers['set-cookie'].find(c => c.startsWith('connect.sid'));
+	const cookie = res.headers['set-cookie'].find(c =>
+		c.startsWith('connect.sid'),
+	);
 
 	return cookie;
 }
@@ -71,13 +76,50 @@ describe('/orders', () => {
 			await createTestUser();
 			const cookie = await loginTestUser();
 
-			await db.query('INSERT INTO address VALUES ($1, $2, $3, $4, $5, $6)', [1, 1, 'Pendennis', 'Tredegar Road', 'Ebbw Vale', 'NP23 6LP']);
-			await db.query('INSERT INTO "order" VALUES ($1, $2, $3, $4)', [1, 1, 1, '2004-10-19 10:23:54']);
-			await db.query('INSERT INTO "order" VALUES ($1, $2, $3, $4)', [2, 1, 1, '2004-10-20 10:23:54']);
-			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [1, 'Toothbrush', 'Bristly', 'Health & Beauty', 123, 23]);
-			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [2, 'Hairbrush', 'Bristly', 'Health & Beauty', 234, 12]);
-			await db.query('INSERT INTO orders_products VALUES ($1, $2, $3)', [1, 1, 1]);
-			await db.query('INSERT INTO orders_products VALUES ($1, $2, $3)', [2, 2, 1]);
+			await db.query('INSERT INTO address VALUES ($1, $2, $3, $4, $5, $6)', [
+				1,
+				1,
+				'Pendennis',
+				'Tredegar Road',
+				'Ebbw Vale',
+				'NP23 6LP',
+			]);
+			await db.query('INSERT INTO "order" VALUES ($1, $2, $3, $4)', [
+				1,
+				1,
+				1,
+				'2004-10-19 10:23:54',
+			]);
+			await db.query('INSERT INTO "order" VALUES ($1, $2, $3, $4)', [
+				2,
+				1,
+				1,
+				'2004-10-20 10:23:54',
+			]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
+				1,
+				'Toothbrush',
+				'Bristly',
+				'Health & Beauty',
+				123,
+				23,
+			]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
+				2,
+				'Hairbrush',
+				'Bristly',
+				'Health & Beauty',
+				234,
+				12,
+			]);
+			await db.query(
+				'INSERT INTO orders_products VALUES ($1, $2, $3)',
+				[1, 1, 1],
+			);
+			await db.query(
+				'INSERT INTO orders_products VALUES ($1, $2, $3)',
+				[2, 2, 1],
+			);
 
 			await request(app)
 				.get('/orders')
@@ -135,22 +177,57 @@ describe('/orders', () => {
 		});
 
 		it('Rejects unauthorized users', async () => {
-			await request(app)
-				.get('/orders')
-				.expect(401);
+			await request(app).get('/orders').expect(401);
 		});
 
 		it('Does not get carts not belonging to the authorized user', async () => {
 			await createTestUser();
 			const cookie = await loginTestUser();
 
-			await db.query('INSERT INTO address VALUES ($1, $2, $3, $4, $5, $6)', [1, 1, 'Pendennis', 'Tredegar Road', 'Ebbw Vale', 'NP23 6LP']);
-			await db.query('INSERT INTO "order" VALUES ($1, $2, $3, $4)', [1, 1, 1, '2004-10-19 10:23:54']);
-			await db.query('INSERT INTO "order" VALUES ($1, $2, $3, $4)', [2, 2, 1, '2004-10-20 10:23:54']);
-			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [1, 'Toothbrush', 'Bristly', 'Health & Beauty', 123, 23]);
-			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [2, 'Hairbrush', 'Bristly', 'Health & Beauty', 234, 12]);
-			await db.query('INSERT INTO orders_products VALUES ($1, $2, $3)', [1, 1, 1]);
-			await db.query('INSERT INTO orders_products VALUES ($1, $2, $3)', [2, 2, 1]);
+			await db.query('INSERT INTO address VALUES ($1, $2, $3, $4, $5, $6)', [
+				1,
+				1,
+				'Pendennis',
+				'Tredegar Road',
+				'Ebbw Vale',
+				'NP23 6LP',
+			]);
+			await db.query('INSERT INTO "order" VALUES ($1, $2, $3, $4)', [
+				1,
+				1,
+				1,
+				'2004-10-19 10:23:54',
+			]);
+			await db.query('INSERT INTO "order" VALUES ($1, $2, $3, $4)', [
+				2,
+				2,
+				1,
+				'2004-10-20 10:23:54',
+			]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
+				1,
+				'Toothbrush',
+				'Bristly',
+				'Health & Beauty',
+				123,
+				23,
+			]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
+				2,
+				'Hairbrush',
+				'Bristly',
+				'Health & Beauty',
+				234,
+				12,
+			]);
+			await db.query(
+				'INSERT INTO orders_products VALUES ($1, $2, $3)',
+				[1, 1, 1],
+			);
+			await db.query(
+				'INSERT INTO orders_products VALUES ($1, $2, $3)',
+				[2, 2, 1],
+			);
 
 			await request(app)
 				.get('/orders')
@@ -191,10 +268,32 @@ describe('/orders/:orderId', () => {
 			await createTestUser();
 			const cookie = await loginTestUser();
 
-			await db.query('INSERT INTO address VALUES ($1, $2, $3, $4, $5, $6)', [1, 1, 'Pendennis', 'Tredegar Road', 'Ebbw Vale', 'NP23 6LP']);
-			await db.query('INSERT INTO "order" VALUES ($1, $2, $3, $4)', [1, 1, 1, '2004-10-19 10:23:54']);
-			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [1, 'Toothbrush', 'Bristly', 'Health & Beauty', 123, 23]);
-			await db.query('INSERT INTO orders_products VALUES ($1, $2, $3)', [1, 1, 1]);
+			await db.query('INSERT INTO address VALUES ($1, $2, $3, $4, $5, $6)', [
+				1,
+				1,
+				'Pendennis',
+				'Tredegar Road',
+				'Ebbw Vale',
+				'NP23 6LP',
+			]);
+			await db.query('INSERT INTO "order" VALUES ($1, $2, $3, $4)', [
+				1,
+				1,
+				1,
+				'2004-10-19 10:23:54',
+			]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
+				1,
+				'Toothbrush',
+				'Bristly',
+				'Health & Beauty',
+				123,
+				23,
+			]);
+			await db.query(
+				'INSERT INTO orders_products VALUES ($1, $2, $3)',
+				[1, 1, 1],
+			);
 
 			await request(app)
 				.get('/orders/1')
@@ -226,39 +325,75 @@ describe('/orders/:orderId', () => {
 		});
 
 		it('Rejects unauthorized users', async () => {
-			await request(app)
-				.get('/orders/1')
-				.expect(401);
+			await request(app).get('/orders/1').expect(401);
 		});
 
 		it('Returns 404 for non-existant orders', async () => {
 			await createTestUser();
 			const cookie = await loginTestUser();
 
-			await db.query('INSERT INTO address VALUES ($1, $2, $3, $4, $5, $6)', [1, 1, 'Pendennis', 'Tredegar Road', 'Ebbw Vale', 'NP23 6LP']);
-			await db.query('INSERT INTO "order" VALUES ($1, $2, $3, $4)', [1, 1, 1, '2004-10-19 10:23:54']);
-			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [1, 'Toothbrush', 'Bristly', 'Health & Beauty', 123, 23]);
-			await db.query('INSERT INTO orders_products VALUES ($1, $2, $3)', [1, 1, 1]);
+			await db.query('INSERT INTO address VALUES ($1, $2, $3, $4, $5, $6)', [
+				1,
+				1,
+				'Pendennis',
+				'Tredegar Road',
+				'Ebbw Vale',
+				'NP23 6LP',
+			]);
+			await db.query('INSERT INTO "order" VALUES ($1, $2, $3, $4)', [
+				1,
+				1,
+				1,
+				'2004-10-19 10:23:54',
+			]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
+				1,
+				'Toothbrush',
+				'Bristly',
+				'Health & Beauty',
+				123,
+				23,
+			]);
+			await db.query(
+				'INSERT INTO orders_products VALUES ($1, $2, $3)',
+				[1, 1, 1],
+			);
 
-			await request(app)
-				.get('/orders/2')
-				.set('Cookie', cookie)
-				.expect(404);
+			await request(app).get('/orders/2').set('Cookie', cookie).expect(404);
 		});
 
 		it('Returns 404 for orders not belonging to the authorized user', async () => {
 			await createTestUser();
 			const cookie = await loginTestUser();
 
-			await db.query('INSERT INTO address VALUES ($1, $2, $3, $4, $5, $6)', [1, 2, 'Pendennis', 'Tredegar Road', 'Ebbw Vale', 'NP23 6LP']);
-			await db.query('INSERT INTO "order" VALUES ($1, $2, $3, $4)', [1, 2, 1, '2004-10-19 10:23:54']);
-			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [1, 'Toothbrush', 'Bristly', 'Health & Beauty', 123, 23]);
-			await db.query('INSERT INTO orders_products VALUES ($1, $2, $3)', [1, 1, 1]);
+			await db.query('INSERT INTO address VALUES ($1, $2, $3, $4, $5, $6)', [
+				1,
+				2,
+				'Pendennis',
+				'Tredegar Road',
+				'Ebbw Vale',
+				'NP23 6LP',
+			]);
+			await db.query('INSERT INTO "order" VALUES ($1, $2, $3, $4)', [
+				1,
+				2,
+				1,
+				'2004-10-19 10:23:54',
+			]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
+				1,
+				'Toothbrush',
+				'Bristly',
+				'Health & Beauty',
+				123,
+				23,
+			]);
+			await db.query(
+				'INSERT INTO orders_products VALUES ($1, $2, $3)',
+				[1, 1, 1],
+			);
 
-			await request(app)
-				.get('/orders/1')
-				.set('Cookie', cookie)
-				.expect(404);
+			await request(app).get('/orders/1').set('Cookie', cookie).expect(404);
 		});
 	});
 });

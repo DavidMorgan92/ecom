@@ -43,13 +43,16 @@ const account = express.Router();
  *       401:
  *         description: Unauthorized.
  */
-account.get('/', asyncHandler(async (req, res) => {
-	// Get user ID from authentication service
-	const userId = req.session.passport.user.id;
-	// Return the account of the authorised user
-	const accountInfo = await accountService.getAccountInfo(userId);
-	res.send(accountInfo);
-}));
+account.get(
+	'/',
+	asyncHandler(async (req, res) => {
+		// Get user ID from authentication service
+		const userId = req.session.passport.user.id;
+		// Return the account of the authorised user
+		const accountInfo = await accountService.getAccountInfo(userId);
+		res.send(accountInfo);
+	}),
+);
 
 /**
  * @swagger
@@ -77,25 +80,29 @@ account.get('/', asyncHandler(async (req, res) => {
  *       401:
  *         description: Unauthorized.
  */
-account.put('/', asyncHandler(async (req, res) => {
-	try {
-		const userId = req.session.passport.user.id;
+account.put(
+	'/',
+	asyncHandler(async (req, res) => {
+		try {
+			const userId = req.session.passport.user.id;
 
-		const {
-			firstName,
-			lastName,
-		} = req.body;
+			const { firstName, lastName } = req.body;
 
-		// Update the account of the authorised user
-		const accountInfo = await accountService.updateAccountInfo(userId, firstName, lastName);
-		res.send(accountInfo);
-	} catch (err) {
-		if (err.status === 400) {
-			res.sendStatus(400);
-		} else {
-			throw err;
+			// Update the account of the authorised user
+			const accountInfo = await accountService.updateAccountInfo(
+				userId,
+				firstName,
+				lastName,
+			);
+			res.send(accountInfo);
+		} catch (err) {
+			if (err.status === 400) {
+				res.sendStatus(400);
+			} else {
+				throw err;
+			}
 		}
-	}
-}));
+	}),
+);
 
 module.exports = account;

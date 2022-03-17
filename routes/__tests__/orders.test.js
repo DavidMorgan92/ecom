@@ -9,30 +9,36 @@ describe('/orders', () => {
 		it('returns status 200', done => {
 			request(app)
 				.get('/orders')
-				.expect(200, [{
-					id: 1,
-					createdAt: '2004-10-19T09:23:54.000Z',
-					address: {
-						id: 1,
-						houseNameNumber: 'Pendennis',
-						streetName: 'Tredegar Road',
-						townCityName: 'Ebbw Vale',
-						postCode: 'NP23 6LP',
-					},
-					items: [
+				.expect(
+					200,
+					[
 						{
-							count: 1,
-							product: {
+							id: 1,
+							createdAt: '2004-10-19T09:23:54.000Z',
+							address: {
 								id: 1,
-								name: 'Toothbrush',
-								description: 'Bristly',
-								category: 'Health & Beauty',
-								pricePennies: 123,
-								stockCount: 23,
+								houseNameNumber: 'Pendennis',
+								streetName: 'Tredegar Road',
+								townCityName: 'Ebbw Vale',
+								postCode: 'NP23 6LP',
 							},
+							items: [
+								{
+									count: 1,
+									product: {
+										id: 1,
+										name: 'Toothbrush',
+										description: 'Bristly',
+										category: 'Health & Beauty',
+										pricePennies: 123,
+										stockCount: 23,
+									},
+								},
+							],
 						},
 					],
-				}], done);
+					done,
+				);
 		});
 	});
 });
@@ -42,36 +48,38 @@ describe('/orders/:orderId', () => {
 		it('returns status 200', done => {
 			request(app)
 				.get('/orders/1')
-				.expect(200, {
-					id: 1,
-					createdAt: '2004-10-19T09:23:54.000Z',
-					address: {
+				.expect(
+					200,
+					{
 						id: 1,
-						houseNameNumber: 'Pendennis',
-						streetName: 'Tredegar Road',
-						townCityName: 'Ebbw Vale',
-						postCode: 'NP23 6LP',
-					},
-					items: [
-						{
-							count: 1,
-							product: {
-								id: 1,
-								name: 'Toothbrush',
-								description: 'Bristly',
-								category: 'Health & Beauty',
-								pricePennies: 123,
-								stockCount: 23,
-							},
+						createdAt: '2004-10-19T09:23:54.000Z',
+						address: {
+							id: 1,
+							houseNameNumber: 'Pendennis',
+							streetName: 'Tredegar Road',
+							townCityName: 'Ebbw Vale',
+							postCode: 'NP23 6LP',
 						},
-					],
-				}, done);
+						items: [
+							{
+								count: 1,
+								product: {
+									id: 1,
+									name: 'Toothbrush',
+									description: 'Bristly',
+									category: 'Health & Beauty',
+									pricePennies: 123,
+									stockCount: 23,
+								},
+							},
+						],
+					},
+					done,
+				);
 		});
 
-		it('returns status 404 if the order doesn\'t exist', done => {
-			request(app)
-				.get('/orders/2')
-				.expect(404, done);
+		it("returns status 404 if the order doesn't exist", done => {
+			request(app).get('/orders/2').expect(404, done);
 		});
 	});
 });

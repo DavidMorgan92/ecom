@@ -135,7 +135,13 @@ async function getAllProducts() {
  * @param {number} stockCount Number of items in stock
  * @returns True if all inputs are valid
  */
-function createProductValidateInput(name, description, category, pricePennies, stockCount) {
+function createProductValidateInput(
+	name,
+	description,
+	category,
+	pricePennies,
+	stockCount,
+) {
 	if (!name || !description || !category) {
 		return false;
 	}
@@ -164,8 +170,22 @@ function createProductValidateInput(name, description, category, pricePennies, s
  * @param {number} stockCount Number of items in stock
  * @returns The newly created product object
  */
-async function createProduct(name, description, category, pricePennies, stockCount) {
-	if (!createProductValidateInput(name, description, category, pricePennies, stockCount)) {
+async function createProduct(
+	name,
+	description,
+	category,
+	pricePennies,
+	stockCount,
+) {
+	if (
+		!createProductValidateInput(
+			name,
+			description,
+			category,
+			pricePennies,
+			stockCount,
+		)
+	) {
 		throw { status: 400 };
 	}
 
