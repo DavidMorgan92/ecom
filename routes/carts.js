@@ -42,7 +42,7 @@
  *           type: integer
  *           description: ID of the order that was created.
  *           example: 123
- *           readyOnly: true
+ *           readOnly: true
  */
 
 const express = require('express');
@@ -63,18 +63,21 @@ const carts = express.Router();
  *       schema:
  *         type: integer
  */
-carts.param('cartId', asyncHandler(async (req, res, next, id) => {
-	const requesterId = req.session.passport.user.id;
-	const cart = await cartService.getCartById(requesterId, id);
+carts.param(
+	'cartId',
+	asyncHandler(async (req, res, next, id) => {
+		const requesterId = req.session.passport.user.id;
+		const cart = await cartService.getCartById(requesterId, id);
 
-	if (cart) {
-		req.cartId = id;
-		req.cart = cart;
-		next();
-	} else {
-		res.status(404).send('Cart not found');
-	}
-}));
+		if (cart) {
+			req.cartId = id;
+			req.cart = cart;
+			next();
+		} else {
+			res.status(404).send('Cart not found');
+		}
+	})
+);
 
 /**
  * @swagger
@@ -95,12 +98,15 @@ carts.param('cartId', asyncHandler(async (req, res, next, id) => {
  *       401:
  *         description: Unauthorized.
  */
-carts.get('/', asyncHandler(async (req, res) => {
-	// Return all carts belonging to the authorised user
-	const requesterId = req.session.passport.user.id;
-	const carts = await cartService.getAllCarts(requesterId);
-	res.send(carts);
-}));
+carts.get(
+	'/',
+	asyncHandler(async (req, res) => {
+		// Return all carts belonging to the authorised user
+		const requesterId = req.session.passport.user.id;
+		const carts = await cartService.getAllCarts(requesterId);
+		res.send(carts);
+	})
+);
 
 /**
  * @swagger
@@ -154,26 +160,26 @@ carts.get('/:cartId', (req, res) => {
  *       401:
  *         description: Unauthorized.
  */
-carts.post('/', asyncHandler(async (req, res) => {
-	// Create a new cart belonging to the authorised user
-	try {
-		const requesterId = req.session.passport.user.id;
-		const {
-			name,
-			items,
-		} = req.body;
+carts.post(
+	'/',
+	asyncHandler(async (req, res) => {
+		// Create a new cart belonging to the authorised user
+		try {
+			const requesterId = req.session.passport.user.id;
+			const { name, items } = req.body;
 
-		const cart = await cartService.createCart(requesterId, name, items);
+			const cart = await cartService.createCart(requesterId, name, items);
 
-		res.status(201).send(cart);
-	} catch (err) {
-		if (err.status === 400) {
-			res.sendStatus(400);
-		} else {
-			throw err;
+			res.status(201).send(cart);
+		} catch (err) {
+			if (err.status === 400) {
+				res.sendStatus(400);
+			} else {
+				throw err;
+			}
 		}
-	}
-}));
+	})
+);
 
 /**
  * @swagger
@@ -205,26 +211,31 @@ carts.post('/', asyncHandler(async (req, res) => {
  *       404:
  *         description: Cart not found.
  */
-carts.put('/:cartId', asyncHandler(async (req, res) => {
-	// Update a cart belonging to the authorised user
-	try {
-		const requesterId = req.session.passport.user.id;
-		const {
-			name,
-			items,
-		} = req.body;
+carts.put(
+	'/:cartId',
+	asyncHandler(async (req, res) => {
+		// Update a cart belonging to the authorised user
+		try {
+			const requesterId = req.session.passport.user.id;
+			const { name, items } = req.body;
 
-		const cart = await cartService.updateCart(requesterId, req.cartId, name, items);
+			const cart = await cartService.updateCart(
+				requesterId,
+				req.cartId,
+				name,
+				items
+			);
 
-		res.send(cart);
-	} catch (err) {
-		if (err.status === 400) {
-			res.sendStatus(400);
-		} else {
-			throw err;
+			res.send(cart);
+		} catch (err) {
+			if (err.status === 400) {
+				res.sendStatus(400);
+			} else {
+				throw err;
+			}
 		}
-	}
-}));
+	})
+);
 
 /**
  * @swagger
@@ -244,17 +255,20 @@ carts.put('/:cartId', asyncHandler(async (req, res) => {
  *       404:
  *         description: Cart not found.
  */
-carts.delete('/:cartId', asyncHandler(async (req, res) => {
-	// Delete a cart belonging to the authorised user
-	const requesterId = req.session.passport.user.id;
-	const succeeded = await cartService.deleteCart(requesterId, req.cartId);
+carts.delete(
+	'/:cartId',
+	asyncHandler(async (req, res) => {
+		// Delete a cart belonging to the authorised user
+		const requesterId = req.session.passport.user.id;
+		const succeeded = await cartService.deleteCart(requesterId, req.cartId);
 
-	if (succeeded) {
-		res.sendStatus(204);
-	} else {
-		res.sendStatus(404);
-	}
-}));
+		if (succeeded) {
+			res.sendStatus(204);
+		} else {
+			res.sendStatus(404);
+		}
+	})
+);
 
 /**
  * @swagger
@@ -266,7 +280,7 @@ carts.delete('/:cartId', asyncHandler(async (req, res) => {
  *     description: Dispatch the order in the cart belonging to the authorised user. Will simply return 404 Not Found if the requested cart ID does exist but it doesn't belong to the authorised user.
  *     parameters:
  *       - $ref: '#/components/parameters/cartId'
- *     requesteBody:
+ *     requestBody:
  *       required: true
  *       content:
  *         application/json:
@@ -286,26 +300,31 @@ carts.delete('/:cartId', asyncHandler(async (req, res) => {
  *       404:
  *         description: Cart not found.
  */
-carts.post('/:cartId/checkout', asyncHandler(async (req, res) => {
-	// Dispatch the order in the cart belonging to the authorised user
-	try {
-		const requesterId = req.session.passport.user.id;
-		const {
-			addressId,
-		} = req.body;
+carts.post(
+	'/:cartId/checkout',
+	asyncHandler(async (req, res) => {
+		// Dispatch the order in the cart belonging to the authorised user
+		try {
+			const requesterId = req.session.passport.user.id;
+			const { addressId } = req.body;
 
-		const orderId = await cartService.checkoutCart(requesterId, req.cartId, addressId);
+			const orderId = await cartService.checkoutCart(
+				requesterId,
+				req.cartId,
+				addressId
+			);
 
-		res.send({
-			orderId,
-		});
-	} catch (err) {
-		if (err.status === 400) {
-			res.sendStatus(400);
-		} else {
-			throw err;
+			res.send({
+				orderId,
+			});
+		} catch (err) {
+			if (err.status === 400) {
+				res.sendStatus(400);
+			} else {
+				throw err;
+			}
 		}
-	}
-}));
+	})
+);
 
 module.exports = carts;
