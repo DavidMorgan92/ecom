@@ -111,6 +111,10 @@ async function getProductsByCategoryAndName(category, name) {
 	return result.rows.map(mapDboProductToApiProduct);
 }
 
+/**
+ * Get all products in the database
+ * @returns All products in the database
+ */
 async function getAllProducts() {
 	const query = `
 		SELECT id, name, description, category, price_pennies, stock_count
