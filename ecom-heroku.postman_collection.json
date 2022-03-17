@@ -1,0 +1,671 @@
+{
+	"info": {
+		"_postman_id": "9e421525-1f55-4c1c-8848-cc366cce9a43",
+		"name": "Ecom Heroku Deployment",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Register Account",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"David\",\r\n    \"lastName\": \"Morgan\",\r\n    \"email\": \"david.morgan@gmail.com\",\r\n    \"password\": \"Password01\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://fathomless-brushlands-45761.herokuapp.com/auth/register",
+							"protocol": "https",
+							"host": [
+								"fathomless-brushlands-45761",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"david.morgan@gmail.com\",\r\n    \"password\": \"Password01\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://fathomless-brushlands-45761.herokuapp.com/auth/login",
+							"protocol": "https",
+							"host": [
+								"fathomless-brushlands-45761",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Account",
+			"item": [
+				{
+					"name": "Get Account Info",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://fathomless-brushlands-45761.herokuapp.com/account",
+							"protocol": "https",
+							"host": [
+								"fathomless-brushlands-45761",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"account"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Account Info",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"Dave\",\r\n    \"lastName\": \"Morgsy\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://fathomless-brushlands-45761.herokuapp.com/account",
+							"protocol": "https",
+							"host": [
+								"fathomless-brushlands-45761",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"account"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Addresses",
+			"item": [
+				{
+					"name": "Get All Addresses",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://fathomless-brushlands-45761.herokuapp.com/addresses",
+							"protocol": "https",
+							"host": [
+								"fathomless-brushlands-45761",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"addresses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get One Address",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://fathomless-brushlands-45761.herokuapp.com/addresses/1",
+							"protocol": "https",
+							"host": [
+								"fathomless-brushlands-45761",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"addresses",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Address",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"houseNameNumber\": \"Pendennis\",\r\n    \"streetName\": \"Tredegar Road\",\r\n    \"townCityName\": \"Ebbw Vale\",\r\n    \"postCode\": \"NP23 6LP\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://fathomless-brushlands-45761.herokuapp.com/addresses",
+							"protocol": "https",
+							"host": [
+								"fathomless-brushlands-45761",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"addresses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Address",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"houseNameNumber\": \"Pends\",\r\n    \"streetName\": \"Tred Road\",\r\n    \"townCityName\": \"Ebbw Valewitch\",\r\n    \"postCode\": \"NP23 6PL\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://fathomless-brushlands-45761.herokuapp.com/addresses/1",
+							"protocol": "https",
+							"host": [
+								"fathomless-brushlands-45761",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"addresses",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Address",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://fathomless-brushlands-45761.herokuapp.com/addresses/1",
+							"protocol": "https",
+							"host": [
+								"fathomless-brushlands-45761",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"addresses",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Carts",
+			"item": [
+				{
+					"name": "Get All Carts",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://fathomless-brushlands-45761.herokuapp.com/carts",
+							"protocol": "https",
+							"host": [
+								"fathomless-brushlands-45761",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"carts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get One Cart",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://fathomless-brushlands-45761.herokuapp.com/405",
+							"protocol": "https",
+							"host": [
+								"fathomless-brushlands-45761",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"405"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Cart",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"My Cart\",\r\n    \"items\": [\r\n        {\r\n            \"productId\": 1,\r\n            \"count\": 2\r\n        },\r\n        {\r\n            \"productId\": 2,\r\n            \"count\": 1\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://fathomless-brushlands-45761.herokuapp.com/carts",
+							"protocol": "https",
+							"host": [
+								"fathomless-brushlands-45761",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"carts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Cart",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"My Renamed Cart\",\r\n    \"items\": []\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://fathomless-brushlands-45761.herokuapp.com/405",
+							"protocol": "https",
+							"host": [
+								"fathomless-brushlands-45761",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"405"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Cart",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://fathomless-brushlands-45761.herokuapp.com/405",
+							"protocol": "https",
+							"host": [
+								"fathomless-brushlands-45761",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"405"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Checkout Cart",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"addressId\": 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://fathomless-brushlands-45761.herokuapp.com/carts/2/checkout",
+							"protocol": "https",
+							"host": [
+								"fathomless-brushlands-45761",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"carts",
+								"2",
+								"checkout"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Orders",
+			"item": [
+				{
+					"name": "Get All Orders",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://fathomless-brushlands-45761.herokuapp.com/orders",
+							"protocol": "https",
+							"host": [
+								"fathomless-brushlands-45761",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get One Order",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://fathomless-brushlands-45761.herokuapp.com/orders/1",
+							"protocol": "https",
+							"host": [
+								"fathomless-brushlands-45761",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"orders",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Products",
+			"item": [
+				{
+					"name": "Get All Products",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://fathomless-brushlands-45761.herokuapp.com/products",
+							"protocol": "https",
+							"host": [
+								"fathomless-brushlands-45761",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Multiple Products By ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://fathomless-brushlands-45761.herokuapp.com/products?id=1&id=2&id=3",
+							"protocol": "https",
+							"host": [
+								"fathomless-brushlands-45761",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "1"
+								},
+								{
+									"key": "id",
+									"value": "2"
+								},
+								{
+									"key": "id",
+									"value": "3"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Products By Name",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://fathomless-brushlands-45761.herokuapp.com/products?name=Toothbrush",
+							"protocol": "https",
+							"host": [
+								"fathomless-brushlands-45761",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "Toothbrush"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Products By Category",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://fathomless-brushlands-45761.herokuapp.com/products?category=Health %26 Beauty",
+							"protocol": "https",
+							"host": [
+								"fathomless-brushlands-45761",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "category",
+									"value": "Health %26 Beauty"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Products By Name And Category",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://fathomless-brushlands-45761.herokuapp.com/products?name=Toothbrush&category=Health %26 Beauty",
+							"protocol": "https",
+							"host": [
+								"fathomless-brushlands-45761",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "Toothbrush"
+								},
+								{
+									"key": "category",
+									"value": "Health %26 Beauty"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get One Product",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://fathomless-brushlands-45761.herokuapp.com/products/1",
+							"protocol": "https",
+							"host": [
+								"fathomless-brushlands-45761",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"products",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get One Product By Query String Copy",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://fathomless-brushlands-45761.herokuapp.com/products?id=1",
+							"protocol": "https",
+							"host": [
+								"fathomless-brushlands-45761",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Product",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Sardines\",\r\n    \"description\": \"Canned fish\",\r\n    \"category\": \"Food\",\r\n    \"pricePennies\": \"100\",\r\n    \"stockCount\": 10\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://fathomless-brushlands-45761.herokuapp.com/products",
+							"protocol": "https",
+							"host": [
+								"fathomless-brushlands-45761",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"products"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
