@@ -126,10 +126,68 @@ async function getAllProducts() {
 	return result.rows.map(mapDboProductToApiProduct);
 }
 
+/**
+ * Check if the inputs for createProduct are valid
+ * @param {string} name Product's name
+ * @param {string} description Product's description
+ * @param {string} category Product's category
+ * @param {string} pricePennies Bigint price in pennies
+ * @param {number} stockCount Number of items in stock
+ * @returns True if all inputs are valid
+ */
+function createProductValidateInput(name, description, category, pricePennies, stockCount) {
+	if (!name || !description || !category) {
+		return false;
+	}
+
+	const pp = parseInt(pricePennies);
+
+	if (isNaN(pp) || pp < 0) {
+		return false;
+	}
+
+	const sc = parseInt(stockCount);
+
+	if (isNaN(sc) || sc < 0) {
+		return false;
+	}
+
+	return true;
+}
+
+/**
+ * Create a product in the database
+ * @param {string} name Product's name
+ * @param {string} description Product's description
+ * @param {string} category Product's category
+ * @param {string} pricePennies Bigint price in pennies
+ * @param {number} stockCount Number of items in stock
+ * @returns The newly created product object
+ */
+async function createProduct(name, description, category, pricePennies, stockCount) {
+	if (!createProductValidateInput(name, description, category, pricePennies, stockCount)) {
+		throw { status: 400 };
+	}
+
+	const query = `
+		INSERT INTO product (name, description, category, price_pennies, stock_count)
+		VALUES ($1, $2, $3, $4, $5)
+		RETURNING id, name, description, category, price_pennies, stock_count;
+	`;
+
+	const values = [name, description, category, pricePennies, stockCount];
+
+	const result = await db.query(query, values);
+
+	return mapDboProductToApiProduct(result.rows[0]);
+}
+
 module.exports = {
 	mapDboProductToApiProduct,
 	getProductById,
 	getMultipleProductsById,
 	getProductsByCategoryAndName,
 	getAllProducts,
+	createProductValidateInput,
+	createProduct,
 };

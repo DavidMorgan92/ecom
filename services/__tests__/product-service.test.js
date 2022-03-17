@@ -39,7 +39,14 @@ afterEach(async () => {
 describe('Product service', () => {
 	describe('getProductById', () => {
 		it('gets product information', async () => {
-			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [1, 'Toothbrush', 'Bristly', 'Health & Beauty', 123, 23]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
+				1,
+				'Toothbrush',
+				'Bristly',
+				'Health & Beauty',
+				123,
+				23,
+			]);
 
 			const result = await productService.getProductById(1);
 
@@ -56,8 +63,22 @@ describe('Product service', () => {
 
 	describe('getMultipleProductsById', () => {
 		it('gets multiple products', async () => {
-			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [1, 'Toothbrush', 'Bristly', 'Health & Beauty', 123, 23]);
-			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [2, 'Hairbrush', 'Bristly', 'Health & Beauty', 234, 12]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
+				1,
+				'Toothbrush',
+				'Bristly',
+				'Health & Beauty',
+				123,
+				23,
+			]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
+				2,
+				'Hairbrush',
+				'Bristly',
+				'Health & Beauty',
+				234,
+				12,
+			]);
 
 			const result = await productService.getMultipleProductsById([1, 2]);
 
@@ -90,11 +111,35 @@ describe('Product service', () => {
 		});
 
 		it('gets products by category', async () => {
-			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [1, 'Toothbrush', 'Bristly', 'Health & Beauty', 123, 23]);
-			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [2, 'Hairbrush', 'Bristly', 'Health & Beauty', 234, 12]);
-			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [3, 'Toiletbrush', 'Bristly', 'Bathroom', 321, 21]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
+				1,
+				'Toothbrush',
+				'Bristly',
+				'Health & Beauty',
+				123,
+				23,
+			]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
+				2,
+				'Hairbrush',
+				'Bristly',
+				'Health & Beauty',
+				234,
+				12,
+			]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
+				3,
+				'Toiletbrush',
+				'Bristly',
+				'Bathroom',
+				321,
+				21,
+			]);
 
-			const result = await productService.getProductsByCategoryAndName('Health & Beauty', null);
+			const result = await productService.getProductsByCategoryAndName(
+				'Health & Beauty',
+				null
+			);
 
 			expect(result).toMatchObject([
 				{
@@ -117,11 +162,35 @@ describe('Product service', () => {
 		});
 
 		it('gets products by partial category', async () => {
-			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [1, 'Toothbrush', 'Bristly', 'Health & Beauty', 123, 23]);
-			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [2, 'Hairbrush', 'Bristly', 'Health & Beauty', 234, 12]);
-			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [3, 'Toiletbrush', 'Bristly', 'Bathroom', 321, 21]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
+				1,
+				'Toothbrush',
+				'Bristly',
+				'Health & Beauty',
+				123,
+				23,
+			]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
+				2,
+				'Hairbrush',
+				'Bristly',
+				'Health & Beauty',
+				234,
+				12,
+			]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
+				3,
+				'Toiletbrush',
+				'Bristly',
+				'Bathroom',
+				321,
+				21,
+			]);
 
-			const result = await productService.getProductsByCategoryAndName('Beauty', null);
+			const result = await productService.getProductsByCategoryAndName(
+				'Beauty',
+				null
+			);
 
 			expect(result).toMatchObject([
 				{
@@ -144,11 +213,35 @@ describe('Product service', () => {
 		});
 
 		it('gets products by name', async () => {
-			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [1, 'Toothbrush', 'Bristly', 'Health & Beauty', 123, 23]);
-			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [2, 'Hairbrush', 'Bristly', 'Health & Beauty', 234, 12]);
-			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [3, 'Toiletbrush', 'Bristly', 'Bathroom', 321, 21]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
+				1,
+				'Toothbrush',
+				'Bristly',
+				'Health & Beauty',
+				123,
+				23,
+			]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
+				2,
+				'Hairbrush',
+				'Bristly',
+				'Health & Beauty',
+				234,
+				12,
+			]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
+				3,
+				'Toiletbrush',
+				'Bristly',
+				'Bathroom',
+				321,
+				21,
+			]);
 
-			const result = await productService.getProductsByCategoryAndName(null, 'Toiletbrush');
+			const result = await productService.getProductsByCategoryAndName(
+				null,
+				'Toiletbrush'
+			);
 
 			expect(result).toMatchObject([
 				{
@@ -161,14 +254,38 @@ describe('Product service', () => {
 				},
 			]);
 		});
-	
+
 		it('gets products by partial name', async () => {
-			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [1, 'Toothbrush', 'Bristly', 'Health & Beauty', 123, 23]);
-			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [2, 'Hairbrush', 'Bristly', 'Health & Beauty', 234, 12]);
-			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [3, 'Toiletbrush', 'Bristly', 'Bathroom', 321, 21]);
-	
-			const result = await productService.getProductsByCategoryAndName(null, 'brush');
-	
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
+				1,
+				'Toothbrush',
+				'Bristly',
+				'Health & Beauty',
+				123,
+				23,
+			]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
+				2,
+				'Hairbrush',
+				'Bristly',
+				'Health & Beauty',
+				234,
+				12,
+			]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
+				3,
+				'Toiletbrush',
+				'Bristly',
+				'Bathroom',
+				321,
+				21,
+			]);
+
+			const result = await productService.getProductsByCategoryAndName(
+				null,
+				'brush'
+			);
+
 			expect(result).toMatchObject([
 				{
 					id: 1,
@@ -198,12 +315,36 @@ describe('Product service', () => {
 		});
 
 		it('get products by category and name', async () => {
-			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [1, 'Toothbrush', 'Bristly', 'Health & Beauty', 123, 23]);
-			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [2, 'Hairbrush', 'Bristly', 'Health & Beauty', 234, 12]);
-			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [3, 'Toiletbrush', 'Bristly', 'Bathroom', 321, 21]);
-	
-			const result = await productService.getProductsByCategoryAndName('Bathroom', 'brush');
-	
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
+				1,
+				'Toothbrush',
+				'Bristly',
+				'Health & Beauty',
+				123,
+				23,
+			]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
+				2,
+				'Hairbrush',
+				'Bristly',
+				'Health & Beauty',
+				234,
+				12,
+			]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
+				3,
+				'Toiletbrush',
+				'Bristly',
+				'Bathroom',
+				321,
+				21,
+			]);
+
+			const result = await productService.getProductsByCategoryAndName(
+				'Bathroom',
+				'brush'
+			);
+
 			expect(result).toMatchObject([
 				{
 					id: 3,
@@ -219,9 +360,30 @@ describe('Product service', () => {
 
 	describe('getAllProducts', () => {
 		it('gets all products', async () => {
-			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [1, 'Toothbrush', 'Bristly', 'Health & Beauty', 123, 23]);
-			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [2, 'Hairbrush', 'Bristly', 'Health & Beauty', 234, 12]);
-			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [3, 'Toiletbrush', 'Bristly', 'Bathroom', 321, 21]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
+				1,
+				'Toothbrush',
+				'Bristly',
+				'Health & Beauty',
+				123,
+				23,
+			]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
+				2,
+				'Hairbrush',
+				'Bristly',
+				'Health & Beauty',
+				234,
+				12,
+			]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
+				3,
+				'Toiletbrush',
+				'Bristly',
+				'Bathroom',
+				321,
+				21,
+			]);
 
 			const result = await productService.getAllProducts();
 
@@ -251,6 +413,35 @@ describe('Product service', () => {
 					stockCount: 21,
 				},
 			]);
+		});
+	});
+
+	describe('createProduct', () => {
+		it('creates a product', async () => {
+			const name = 'Sardines';
+			const description = 'Canned fish';
+			const category = 'Food';
+			const pricePennies = '300';
+			const stockCount = 10;
+
+			const result = await productService.createProduct(
+				name,
+				description,
+				category,
+				pricePennies,
+				stockCount
+			);
+
+			expect(result).toMatchObject({
+				name,
+				description,
+				category,
+				pricePennies,
+				stockCount,
+			});
+
+			expect(result).toHaveProperty('id');
+			expect(result.id).toEqual(expect.any(Number));
 		});
 	});
 });

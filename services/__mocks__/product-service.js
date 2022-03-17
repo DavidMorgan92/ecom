@@ -1,3 +1,5 @@
+const productService = jest.requireActual('../product-service');
+
 const products = [
 	{
 		id: 1,
@@ -24,6 +26,8 @@ const products = [
 		stockCount: 21,
 	},
 ];
+
+let idGen = 4;
 
 async function getProductById(id) {
 	if (!products.some(p => p.id == id)) {
@@ -55,9 +59,29 @@ async function getAllProducts() {
 	return products;
 }
 
+async function createProduct(name, description, category, pricePennies, stockCount) {
+	if (!productService.createProductValidateInput(name, description, category, pricePennies, stockCount)) {
+		throw { status: 400 };
+	}
+
+	const newProduct = {
+		id: idGen++,
+		name,
+		description,
+		category,
+		pricePennies,
+		stockCount,
+	};
+
+	products.push(newProduct);
+
+	return newProduct;
+}
+
 module.exports = {
 	getProductById,
 	getMultipleProductsById,
 	getProductsByCategoryAndName,
 	getAllProducts,
+	createProduct,
 };
