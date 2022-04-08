@@ -4,6 +4,7 @@ const passport = require('passport');
 const passportLocal = require('passport-local');
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
+const cors = require('cors');
 const authService = require('./services/auth-service');
 
 // Create server
@@ -19,6 +20,9 @@ const swaggerJsdocOptions = {
 
 const specs = swaggerJsdoc(swaggerJsdocOptions);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
+
+// Enable CORS
+app.use(cors());
 
 // Use body parser
 app.use(express.json());
