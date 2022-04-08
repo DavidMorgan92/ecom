@@ -62,6 +62,24 @@ auth.post('/login', authService.authenticate, (err, req, res, next) => {
 
 /**
  * @swagger
+ * /auth/logout:
+ *   post:
+ *     tags:
+ *       - Authentication
+ *     summary: Logout of an authentication session.
+ *     responses:
+ *       200:
+ *         description: Successfully logged out.
+ *       401:
+ *         description: Not authenticated.
+ */
+auth.post('/logout', authService.protectedRoute, (req, res) => {
+	req.logout();
+	res.sendStatus(200);
+});
+
+/**
+ * @swagger
  * /auth/register:
  *   post:
  *     tags:
