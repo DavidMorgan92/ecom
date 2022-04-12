@@ -14,7 +14,7 @@ A Postman collection of requests can be found in the [ecom.postman_collection.js
 
 ## Configuration
 
-The server uses a .env file in the root directory with a PORT value for the server's listen port, and a SESSION_SECRET value for the express-session secret key. The PORT value defaults to 4001 if one is not provided, but provide a SESSION_SECRET to run the server. You can also provide connection settings for running locally by providing PG_USER, PG_PASSWORD, PG_HOST, PG_DATABASE and PG_PORT variables.
+The server uses a .env file in the root directory with a PORT value for the server's listen port, and a SESSION_SECRET value for the express-session secret key. The PORT value defaults to 4001 if one is not provided, but provide a SESSION_SECRET to run the server. You can also provide connection settings for running locally by providing PG_USER, PG_PASSWORD, PG_HOST, PG_DATABASE and PG_PORT variables. Set the CLIENT_ORIGIN variable to control which origins are permitted by the CORS policy.
 
 ## Future improvements
 
