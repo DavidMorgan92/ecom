@@ -5,10 +5,14 @@ const passportLocal = require('passport-local');
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const cors = require('cors');
+const helmet = require('helmet');
 const authService = require('./services/auth-service');
 
 // Create server
 const app = express();
+
+// Init helmet
+app.use(helmet());
 
 // Init Swagger
 const swaggerDefinition = require('./swagger-definition');
