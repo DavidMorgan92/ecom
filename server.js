@@ -26,10 +26,12 @@ const specs = swaggerJsdoc(swaggerJsdocOptions);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
 // Enable CORS
-app.use(cors({
-	origin: process.env.CLIENT_ORIGIN,
-	credentials: true,
-}));
+app.use(
+	cors({
+		origin: process.env.CLIENT_ORIGIN,
+		credentials: true,
+	}),
+);
 
 // Use body parser
 app.use(express.json());
