@@ -84,6 +84,41 @@ async function loginTestAdmin() {
 	return cookie;
 }
 
+describe('/products/categories', () => {
+	describe('get', () => {
+		it('Allows a user to get all product categories', async () => {
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
+				1,
+				'Toothbrush',
+				'Bristly',
+				'Health & Beauty',
+				123,
+				23,
+			]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
+				2,
+				'Hairbrush',
+				'Bristly',
+				'Health & Beauty',
+				234,
+				12,
+			]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
+				3,
+				'Sardines',
+				'Smelly fish',
+				'Food',
+				432,
+				21,
+			]);
+
+			await request(app)
+				.get('/products/categories')
+				.expect(200, ['Food', 'Health & Beauty']);
+		});
+	});
+});
+
 describe('/products', () => {
 	describe('get', () => {
 		it('Allows a user to get all products', async () => {

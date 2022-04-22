@@ -94,10 +94,18 @@ async function createProduct(
 	return newProduct;
 }
 
+async function getAllCategories() {
+	return products
+		.map(p => p.category)
+		.filter((value, index, self) => self.indexOf(value) === index)
+		.sort();
+}
+
 module.exports = {
 	getProductById,
 	getMultipleProductsById,
 	getProductsByCategoryAndName,
 	getAllProducts,
 	createProduct,
+	getAllCategories,
 };

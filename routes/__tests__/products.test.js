@@ -4,6 +4,16 @@ const app = require('../../server');
 jest.mock('../../services/product-service');
 jest.mock('../../services/auth-service');
 
+describe('/products/categories', () => {
+	describe('get', () => {
+		it('gets all categories', done => {
+			request(app)
+				.get('/products/categories')
+				.expect(200, ['Bathroom', 'Health & Beauty'], done);
+		});
+	});
+});
+
 describe('/products', () => {
 	describe('get', () => {
 		it('returns all products', done => {

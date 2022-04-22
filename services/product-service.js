@@ -202,6 +202,23 @@ async function createProduct(
 	return mapDboProductToApiProduct(result.rows[0]);
 }
 
+/**
+ * Get all product categories sorted alphabetically
+ * @returns An array of category names
+ */
+async function getAllCategories() {
+	const query = `
+		SELECT category
+		FROM product
+		GROUP BY category
+		ORDER BY category;
+	`;
+
+	const result = await db.query(query);
+
+	return result.rows.map(r => r.category);
+}
+
 module.exports = {
 	mapDboProductToApiProduct,
 	getProductById,
@@ -210,4 +227,5 @@ module.exports = {
 	getAllProducts,
 	createProductValidateInput,
 	createProduct,
+	getAllCategories,
 };

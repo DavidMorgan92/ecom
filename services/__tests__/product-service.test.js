@@ -444,4 +444,37 @@ describe('Product service', () => {
 			expect(result.id).toEqual(expect.any(Number));
 		});
 	});
+
+	describe('getAllCategories', () => {
+		it('gets all categories', async () => {
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
+				1,
+				'Toothbrush',
+				'Bristly',
+				'Health & Beauty',
+				123,
+				23,
+			]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
+				2,
+				'Hairbrush',
+				'Bristly',
+				'Health & Beauty',
+				234,
+				12,
+			]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
+				3,
+				'Toiletbrush',
+				'Bristly',
+				'Bathroom',
+				321,
+				21,
+			]);
+
+			const result = await productService.getAllCategories();
+
+			expect(result).toEqual(['Bathroom', 'Health & Beauty']);
+		});
+	});
 });

@@ -84,6 +84,33 @@ products.param(
 
 /**
  * @swagger
+ * /products/categories:
+ *   get:
+ *     tags:
+ *       - Products
+ *     summary: Retrieve all product categories.
+ *     description: Retrieve an array of product category names sorted alphabetically.
+ *     responses:
+ *       200:
+ *         description: List of category names.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: string
+ */
+products.get(
+	'/categories',
+	asyncHandler(async (req, res) => {
+		const categories = await productService.getAllCategories();
+
+		res.send(categories);
+	}),
+);
+
+/**
+ * @swagger
  * /products:
  *   get:
  *     tags:
