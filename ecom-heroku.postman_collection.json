@@ -25,8 +25,15 @@
 						"url": {
 							"raw": "https://fathomless-brushlands-45761.herokuapp.com/auth/register",
 							"protocol": "https",
-							"host": ["fathomless-brushlands-45761", "herokuapp", "com"],
-							"path": ["auth", "register"]
+							"host": [
+								"fathomless-brushlands-45761",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
 						}
 					},
 					"response": []
@@ -48,8 +55,15 @@
 						"url": {
 							"raw": "https://fathomless-brushlands-45761.herokuapp.com/auth/login",
 							"protocol": "https",
-							"host": ["fathomless-brushlands-45761", "herokuapp", "com"],
-							"path": ["auth", "login"]
+							"host": [
+								"fathomless-brushlands-45761",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
 						}
 					},
 					"response": []
@@ -67,8 +81,14 @@
 						"url": {
 							"raw": "https://fathomless-brushlands-45761.herokuapp.com/account",
 							"protocol": "https",
-							"host": ["fathomless-brushlands-45761", "herokuapp", "com"],
-							"path": ["account"]
+							"host": [
+								"fathomless-brushlands-45761",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"account"
+							]
 						}
 					},
 					"response": []
@@ -90,8 +110,14 @@
 						"url": {
 							"raw": "https://fathomless-brushlands-45761.herokuapp.com/account",
 							"protocol": "https",
-							"host": ["fathomless-brushlands-45761", "herokuapp", "com"],
-							"path": ["account"]
+							"host": [
+								"fathomless-brushlands-45761",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"account"
+							]
 						}
 					},
 					"response": []
@@ -109,8 +135,14 @@
 						"url": {
 							"raw": "https://fathomless-brushlands-45761.herokuapp.com/addresses",
 							"protocol": "https",
-							"host": ["fathomless-brushlands-45761", "herokuapp", "com"],
-							"path": ["addresses"]
+							"host": [
+								"fathomless-brushlands-45761",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"addresses"
+							]
 						}
 					},
 					"response": []
@@ -123,8 +155,15 @@
 						"url": {
 							"raw": "https://fathomless-brushlands-45761.herokuapp.com/addresses/1",
 							"protocol": "https",
-							"host": ["fathomless-brushlands-45761", "herokuapp", "com"],
-							"path": ["addresses", "1"]
+							"host": [
+								"fathomless-brushlands-45761",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"addresses",
+								"1"
+							]
 						}
 					},
 					"response": []
@@ -146,8 +185,14 @@
 						"url": {
 							"raw": "https://fathomless-brushlands-45761.herokuapp.com/addresses",
 							"protocol": "https",
-							"host": ["fathomless-brushlands-45761", "herokuapp", "com"],
-							"path": ["addresses"]
+							"host": [
+								"fathomless-brushlands-45761",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"addresses"
+							]
 						}
 					},
 					"response": []
@@ -169,8 +214,15 @@
 						"url": {
 							"raw": "https://fathomless-brushlands-45761.herokuapp.com/addresses/1",
 							"protocol": "https",
-							"host": ["fathomless-brushlands-45761", "herokuapp", "com"],
-							"path": ["addresses", "1"]
+							"host": [
+								"fathomless-brushlands-45761",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"addresses",
+								"1"
+							]
 						}
 					},
 					"response": []
@@ -183,8 +235,15 @@
 						"url": {
 							"raw": "https://fathomless-brushlands-45761.herokuapp.com/addresses/1",
 							"protocol": "https",
-							"host": ["fathomless-brushlands-45761", "herokuapp", "com"],
-							"path": ["addresses", "1"]
+							"host": [
+								"fathomless-brushlands-45761",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"addresses",
+								"1"
+							]
 						}
 					},
 					"response": []
@@ -192,55 +251,24 @@
 			]
 		},
 		{
-			"name": "Carts",
+			"name": "Cart",
 			"item": [
 				{
-					"name": "Get All Carts",
+					"name": "Get Cart",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://fathomless-brushlands-45761.herokuapp.com/carts",
+							"raw": "https://fathomless-brushlands-45761.herokuapp.com/cart",
 							"protocol": "https",
-							"host": ["fathomless-brushlands-45761", "herokuapp", "com"],
-							"path": ["carts"]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get One Cart",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "https://fathomless-brushlands-45761.herokuapp.com/405",
-							"protocol": "https",
-							"host": ["fathomless-brushlands-45761", "herokuapp", "com"],
-							"path": ["405"]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Create Cart",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"My Cart\",\r\n    \"items\": [\r\n        {\r\n            \"productId\": 1,\r\n            \"count\": 2\r\n        },\r\n        {\r\n            \"productId\": 2,\r\n            \"count\": 1\r\n        }\r\n    ]\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "https://fathomless-brushlands-45761.herokuapp.com/carts",
-							"protocol": "https",
-							"host": ["fathomless-brushlands-45761", "herokuapp", "com"],
-							"path": ["carts"]
+							"host": [
+								"fathomless-brushlands-45761",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"cart"
+							]
 						}
 					},
 					"response": []
@@ -260,24 +288,16 @@
 							}
 						},
 						"url": {
-							"raw": "https://fathomless-brushlands-45761.herokuapp.com/405",
+							"raw": "https://fathomless-brushlands-45761.herokuapp.com/cart",
 							"protocol": "https",
-							"host": ["fathomless-brushlands-45761", "herokuapp", "com"],
-							"path": ["405"]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete Cart",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "https://fathomless-brushlands-45761.herokuapp.com/405",
-							"protocol": "https",
-							"host": ["fathomless-brushlands-45761", "herokuapp", "com"],
-							"path": ["405"]
+							"host": [
+								"fathomless-brushlands-45761",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"cart"
+							]
 						}
 					},
 					"response": []
@@ -297,10 +317,17 @@
 							}
 						},
 						"url": {
-							"raw": "https://fathomless-brushlands-45761.herokuapp.com/carts/2/checkout",
+							"raw": "https://fathomless-brushlands-45761.herokuapp.com/cart/checkout",
 							"protocol": "https",
-							"host": ["fathomless-brushlands-45761", "herokuapp", "com"],
-							"path": ["carts", "2", "checkout"]
+							"host": [
+								"fathomless-brushlands-45761",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"cart",
+								"checkout"
+							]
 						}
 					},
 					"response": []
@@ -318,8 +345,14 @@
 						"url": {
 							"raw": "https://fathomless-brushlands-45761.herokuapp.com/orders",
 							"protocol": "https",
-							"host": ["fathomless-brushlands-45761", "herokuapp", "com"],
-							"path": ["orders"]
+							"host": [
+								"fathomless-brushlands-45761",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"orders"
+							]
 						}
 					},
 					"response": []
@@ -332,8 +365,15 @@
 						"url": {
 							"raw": "https://fathomless-brushlands-45761.herokuapp.com/orders/1",
 							"protocol": "https",
-							"host": ["fathomless-brushlands-45761", "herokuapp", "com"],
-							"path": ["orders", "1"]
+							"host": [
+								"fathomless-brushlands-45761",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"orders",
+								"1"
+							]
 						}
 					},
 					"response": []
@@ -351,8 +391,14 @@
 						"url": {
 							"raw": "https://fathomless-brushlands-45761.herokuapp.com/products",
 							"protocol": "https",
-							"host": ["fathomless-brushlands-45761", "herokuapp", "com"],
-							"path": ["products"]
+							"host": [
+								"fathomless-brushlands-45761",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"products"
+							]
 						}
 					},
 					"response": []
@@ -365,8 +411,14 @@
 						"url": {
 							"raw": "https://fathomless-brushlands-45761.herokuapp.com/products?id=1&id=2&id=3",
 							"protocol": "https",
-							"host": ["fathomless-brushlands-45761", "herokuapp", "com"],
-							"path": ["products"],
+							"host": [
+								"fathomless-brushlands-45761",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"products"
+							],
 							"query": [
 								{
 									"key": "id",
@@ -393,8 +445,14 @@
 						"url": {
 							"raw": "https://fathomless-brushlands-45761.herokuapp.com/products?name=Toothbrush",
 							"protocol": "https",
-							"host": ["fathomless-brushlands-45761", "herokuapp", "com"],
-							"path": ["products"],
+							"host": [
+								"fathomless-brushlands-45761",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"products"
+							],
 							"query": [
 								{
 									"key": "name",
@@ -413,8 +471,14 @@
 						"url": {
 							"raw": "https://fathomless-brushlands-45761.herokuapp.com/products?category=Health %26 Beauty",
 							"protocol": "https",
-							"host": ["fathomless-brushlands-45761", "herokuapp", "com"],
-							"path": ["products"],
+							"host": [
+								"fathomless-brushlands-45761",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"products"
+							],
 							"query": [
 								{
 									"key": "category",
@@ -433,8 +497,14 @@
 						"url": {
 							"raw": "https://fathomless-brushlands-45761.herokuapp.com/products?name=Toothbrush&category=Health %26 Beauty",
 							"protocol": "https",
-							"host": ["fathomless-brushlands-45761", "herokuapp", "com"],
-							"path": ["products"],
+							"host": [
+								"fathomless-brushlands-45761",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"products"
+							],
 							"query": [
 								{
 									"key": "name",
@@ -457,8 +527,15 @@
 						"url": {
 							"raw": "https://fathomless-brushlands-45761.herokuapp.com/products/1",
 							"protocol": "https",
-							"host": ["fathomless-brushlands-45761", "herokuapp", "com"],
-							"path": ["products", "1"]
+							"host": [
+								"fathomless-brushlands-45761",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"products",
+								"1"
+							]
 						}
 					},
 					"response": []
@@ -471,8 +548,14 @@
 						"url": {
 							"raw": "https://fathomless-brushlands-45761.herokuapp.com/products?id=1",
 							"protocol": "https",
-							"host": ["fathomless-brushlands-45761", "herokuapp", "com"],
-							"path": ["products"],
+							"host": [
+								"fathomless-brushlands-45761",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"products"
+							],
 							"query": [
 								{
 									"key": "id",
@@ -500,8 +583,14 @@
 						"url": {
 							"raw": "https://fathomless-brushlands-45761.herokuapp.com/products",
 							"protocol": "https",
-							"host": ["fathomless-brushlands-45761", "herokuapp", "com"],
-							"path": ["products"]
+							"host": [
+								"fathomless-brushlands-45761",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"products"
+							]
 						}
 					},
 					"response": []

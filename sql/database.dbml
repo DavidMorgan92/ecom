@@ -25,14 +25,6 @@ Table address {
 	post_code text [not null]
 }
 
-Table cart {
-	id int [pk, increment]
-	account_id int [ref: > account.id]
-	name text [not null]
-	created_at timestamp [not null, default: `now()`]
-	ordered bool [not null, default: false]
-}
-
 Table order {
 	id int [pk, increment]
 	account_id int [ref: > account.id]
@@ -55,7 +47,7 @@ Table orders_products {
 }
 
 Table carts_products {
-	cart_id int
+	account_id int [ref: - account.id]
 	product_id int [ref: > product.id]
 	count int [
 		not null,
@@ -64,8 +56,6 @@ Table carts_products {
 	]
 
 	indexes {
-		(cart_id, product_id) [pk]
+		(account_id, product_id) [pk]
 	}
 }
-
-ref: carts_products.cart_id > cart.id [delete: cascade]

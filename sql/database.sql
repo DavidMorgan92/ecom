@@ -13,7 +13,7 @@ CREATE TABLE "account" (
 	"last_name" text NOT NULL,
 	"email" text UNIQUE NOT NULL,
 	"password_hash" text NOT NULL,
-	"is_admin" bool NOT NULL DEFAULT false
+	"is_admin" boolean NOT NULL DEFAULT false
 );
 
 CREATE TABLE "address" (
@@ -23,14 +23,6 @@ CREATE TABLE "address" (
 	"street_name" text NOT NULL,
 	"town_city_name" text NOT NULL,
 	"post_code" text NOT NULL
-);
-
-CREATE TABLE "cart" (
-	"id" SERIAL PRIMARY KEY,
-	"account_id" int,
-	"name" text NOT NULL,
-	"created_at" timestamp NOT NULL DEFAULT (now()),
-	"ordered" bool NOT NULL DEFAULT false
 );
 
 CREATE TABLE "order" (
@@ -48,15 +40,13 @@ CREATE TABLE "orders_products" (
 );
 
 CREATE TABLE "carts_products" (
-	"cart_id" int,
+	"account_id" int,
 	"product_id" int,
 	"count" int NOT NULL DEFAULT 1,
-	PRIMARY KEY ("cart_id", "product_id")
+	PRIMARY KEY ("account_id", "product_id")
 );
 
 ALTER TABLE "address" ADD FOREIGN KEY ("account_id") REFERENCES "account" ("id");
-
-ALTER TABLE "cart" ADD FOREIGN KEY ("account_id") REFERENCES "account" ("id");
 
 ALTER TABLE "order" ADD FOREIGN KEY ("account_id") REFERENCES "account" ("id");
 
@@ -66,7 +56,7 @@ ALTER TABLE "orders_products" ADD FOREIGN KEY ("order_id") REFERENCES "order" ("
 
 ALTER TABLE "orders_products" ADD FOREIGN KEY ("product_id") REFERENCES "product" ("id");
 
-ALTER TABLE "carts_products" ADD FOREIGN KEY ("cart_id") REFERENCES "cart" ("id") ON DELETE CASCADE;
+ALTER TABLE "carts_products" ADD FOREIGN KEY ("account_id") REFERENCES "account" ("id");
 
 ALTER TABLE "carts_products" ADD FOREIGN KEY ("product_id") REFERENCES "product" ("id");
 

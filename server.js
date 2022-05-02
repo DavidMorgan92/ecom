@@ -66,7 +66,7 @@ app.use(passport.session());
 // Connect routers
 app.use('/products', require('./routes/products'));
 app.use('/orders', authService.protectedRoute, require('./routes/orders'));
-app.use('/carts', authService.protectedRoute, require('./routes/carts'));
+app.use('/cart', authService.protectedRoute, require('./routes/cart'));
 app.use(
 	'/addresses',
 	authService.protectedRoute,

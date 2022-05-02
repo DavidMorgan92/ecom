@@ -29,7 +29,6 @@ afterAll(async () => {
 });
 
 beforeEach(async () => {
-	await db.query('CREATE TEMPORARY TABLE cart (LIKE cart INCLUDING ALL)');
 	await db.query(
 		'CREATE TEMPORARY TABLE carts_products (LIKE carts_products INCLUDING ALL)',
 	);
@@ -42,7 +41,6 @@ beforeEach(async () => {
 });
 
 afterEach(async () => {
-	await db.query('DROP TABLE IF EXISTS pg_temp.cart');
 	await db.query('DROP TABLE IF EXISTS pg_temp.carts_products');
 	await db.query('DROP TABLE IF EXISTS pg_temp.product');
 	await db.query('DROP TABLE IF EXISTS pg_temp.address');
@@ -51,150 +49,8 @@ afterEach(async () => {
 });
 
 describe('Cart service', () => {
-	describe('getAllCarts', () => {
-		it('gets all the carts', async () => {
-			await db.query('INSERT INTO cart VALUES ($1, $2, $3, $4, $5)', [
-				1,
-				1,
-				'My Cart',
-				'2004-10-19 10:23:54',
-				false,
-			]);
-			await db.query('INSERT INTO cart VALUES ($1, $2, $3, $4, $5)', [
-				2,
-				1,
-				'Christmas Cart',
-				'2004-10-20 10:23:54',
-				true,
-			]);
-			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
-				1,
-				'Toothbrush',
-				'Bristly',
-				'Health & Beauty',
-				123,
-				23,
-			]);
-			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
-				2,
-				'Hairbrush',
-				'Bristly',
-				'Health & Beauty',
-				234,
-				12,
-			]);
-			await db.query(
-				'INSERT INTO carts_products VALUES ($1, $2, $3)',
-				[1, 1, 1],
-			);
-			await db.query(
-				'INSERT INTO carts_products VALUES ($1, $2, $3)',
-				[2, 2, 1],
-			);
-
-			const requesterId = 1;
-
-			const result = await cartService.getAllCarts(requesterId);
-
-			expect(result).toMatchObject([
-				{
-					id: 1,
-					createdAt: new Date('2004-10-19 10:23:54'),
-					name: 'My Cart',
-					ordered: false,
-					items: [
-						{
-							count: 1,
-							product: {
-								id: 1,
-								name: 'Toothbrush',
-								description: 'Bristly',
-								category: 'Health & Beauty',
-								pricePennies: 123,
-								stockCount: 23,
-							},
-						},
-					],
-				},
-				{
-					id: 2,
-					createdAt: new Date('2004-10-20 10:23:54'),
-					name: 'Christmas Cart',
-					ordered: true,
-					items: [
-						{
-							count: 1,
-							product: {
-								id: 2,
-								name: 'Hairbrush',
-								description: 'Bristly',
-								category: 'Health & Beauty',
-								pricePennies: 234,
-								stockCount: 12,
-							},
-						},
-					],
-				},
-			]);
-		});
-
-		it('works if a cart has no items', async () => {
-			await db.query('INSERT INTO cart VALUES ($1, $2, $3, $4, $5)', [
-				1,
-				1,
-				'My Cart',
-				'2004-10-19 10:23:54',
-				false,
-			]);
-
-			const requesterId = 1;
-
-			const result = await cartService.getAllCarts(requesterId);
-
-			expect(result).toMatchObject([
-				{
-					id: 1,
-					createdAt: new Date('2004-10-19 10:23:54'),
-					name: 'My Cart',
-					ordered: false,
-					items: [],
-				},
-			]);
-		});
-
-		it("doesn't get carts not belonging to the requesting user", async () => {
-			await db.query('INSERT INTO cart VALUES ($1, $2, $3, $4, $5)', [
-				1,
-				2,
-				'My Cart',
-				'2004-10-19 10:23:54',
-				false,
-			]);
-
-			const requesterId = 1;
-
-			const result = await cartService.getAllCarts(requesterId);
-
-			expect(result).toMatchObject([]);
-		});
-	});
-
-	describe('getCartById', () => {
+	describe('getCart', () => {
 		it('gets cart information', async () => {
-			await db.query('INSERT INTO cart VALUES ($1, $2, $3, $4, $5)', [
-				1,
-				1,
-				'My Cart',
-				'2004-10-19 10:23:54',
-				false,
-			]);
-			await db.query('INSERT INTO cart VALUES ($1, $2, $3, $4, $5)', [
-				2,
-				1,
-				'Christmas Cart',
-				'2004-10-20 10:23:54',
-				true,
-			]);
 			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
 				1,
 				'Toothbrush',
@@ -222,13 +78,9 @@ describe('Cart service', () => {
 
 			const requesterId = 1;
 
-			const result = await cartService.getCartById(requesterId, 1);
+			const result = await cartService.getCart(requesterId);
 
 			expect(result).toMatchObject({
-				id: 1,
-				createdAt: new Date('2004-10-19 10:23:54'),
-				name: 'My Cart',
-				ordered: false,
 				items: [
 					{
 						count: 1,
@@ -245,156 +97,19 @@ describe('Cart service', () => {
 			});
 		});
 
-		it("doesn't get carts not belonging to the requesting user", async () => {
-			await db.query('INSERT INTO cart VALUES ($1, $2, $3, $4, $5)', [
-				1,
-				2,
-				'My Cart',
-				'2004-10-19 10:23:54',
-				false,
-			]);
-
+		it('works if there are no items', async () => {
 			const requesterId = 1;
 
-			const result = await cartService.getAllCarts(requesterId);
-
-			expect(result).toMatchObject([]);
-		});
-	});
-
-	describe('createCart', () => {
-		it('creates a cart', async () => {
-			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
-				1,
-				'Toothbrush',
-				'Bristly',
-				'Health & Beauty',
-				123,
-				23,
-			]);
-			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
-				2,
-				'Hairbrush',
-				'Bristly',
-				'Health & Beauty',
-				234,
-				12,
-			]);
-
-			const items = [
-				{ productId: 1, count: 1 },
-				{ productId: 2, count: 2 },
-			];
-
-			const requesterId = 1;
-
-			const result = await cartService.createCart(
-				requesterId,
-				'My Cart',
-				items,
-			);
+			const result = await cartService.getCart(requesterId);
 
 			expect(result).toMatchObject({
-				name: 'My Cart',
-				ordered: false,
-				items: [
-					{
-						count: 1,
-						product: {
-							id: 1,
-							name: 'Toothbrush',
-							description: 'Bristly',
-							category: 'Health & Beauty',
-							pricePennies: 123,
-							stockCount: 23,
-						},
-					},
-					{
-						count: 2,
-						product: {
-							id: 2,
-							name: 'Hairbrush',
-							description: 'Bristly',
-							category: 'Health & Beauty',
-							pricePennies: 234,
-							stockCount: 12,
-						},
-					},
-				],
+				items: [],
 			});
-
-			expect(result).toHaveProperty('id');
-			expect(result).toHaveProperty('createdAt');
 		});
-	});
-
-	describe('deleteCart', () => {
-		it('deletes a cart', async () => {
-			await db.query('INSERT INTO cart VALUES ($1, $2, $3, $4, $5)', [
-				1,
-				1,
-				'My Cart',
-				'2004-10-19 10:23:54',
-				false,
-			]);
-			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
-				1,
-				'Toothbrush',
-				'Bristly',
-				'Health & Beauty',
-				123,
-				23,
-			]);
-			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
-				2,
-				'Hairbrush',
-				'Bristly',
-				'Health & Beauty',
-				234,
-				12,
-			]);
-			await db.query(
-				'INSERT INTO carts_products VALUES ($1, $2, $3)',
-				[1, 1, 1],
-			);
-			await db.query(
-				'INSERT INTO carts_products VALUES ($1, $2, $3)',
-				[1, 2, 1],
-			);
-
-			const requesterId = 1;
-
-			const result = await cartService.deleteCart(requesterId, 1);
-
-			expect(result).toBe(true);
-		});
-
-		/* it('cascade deletes from carts_products', async () => {
-			await db.query('INSERT INTO cart VALUES ($1, $2, $3, $4, $5)', [1, 1, 'My Cart', '2004-10-19 10:23:54', false]);
-			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [1, 'Toothbrush', 'Bristly', 'Health & Beauty', 123, 23]);
-			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [2, 'Hairbrush', 'Bristly', 'Health & Beauty', 234, 12]);
-			await db.query('INSERT INTO carts_products VALUES ($1, $2, $3)', [1, 1, 1]);
-			await db.query('INSERT INTO carts_products VALUES ($1, $2, $3)', [1, 2, 1]);
-
-			const requesterId = 1;
-
-			await cartService.deleteCart(requesterId, 1);
-
-			const result = await db.query('SELECT * FROM carts_products WHERE cart_id = 1');
-
-			expect(result.rows.length).toEqual(0);
-		}); */
 	});
 
 	describe('checkoutCart', () => {
 		it('checks out a cart', async () => {
-			await db.query('INSERT INTO cart VALUES ($1, $2, $3, $4, $5)', [
-				1,
-				1,
-				'My Cart',
-				'2004-10-19 10:23:54',
-				false,
-			]);
 			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
 				1,
 				'Toothbrush',
@@ -431,14 +146,9 @@ describe('Cart service', () => {
 			const requesterId = 1;
 			const addressId = 1;
 
-			const orderId = await cartService.checkoutCart(requesterId, 1, addressId);
+			const orderId = await cartService.checkoutCart(requesterId, addressId);
 
 			expect(orderId).toEqual(expect.any(Number));
-
-			const isOrdered = (
-				await db.query('SELECT ordered FROM cart WHERE id = 1')
-			).rows[0].ordered;
-			expect(isOrdered).toBe(true);
 
 			const product1stock = (
 				await db.query('SELECT stock_count FROM product WHERE id = 1')
@@ -449,6 +159,111 @@ describe('Cart service', () => {
 				await db.query('SELECT stock_count FROM product WHERE id = 2')
 			).rows[0].stock_count;
 			expect(product2stock).toEqual(11);
+		});
+
+		it('throws if cart is empty', async () => {
+			await db.query('INSERT INTO address VALUES ($1, $2, $3, $4, $5, $6)', [
+				1,
+				1,
+				'Pendennis',
+				'Tredegar Road',
+				'Ebbw Vale',
+				'NP23 6LP',
+			]);
+
+			const requesterId = 1;
+			const addressId = 1;
+
+			await expect(
+				cartService.checkoutCart(requesterId, addressId),
+			).rejects.toEqual({ status: 400, message: 'Cart is empty' });
+		});
+
+		it("throws if item doesn't have enough stock", async () => {
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
+				1,
+				'Toothbrush',
+				'Bristly',
+				'Health & Beauty',
+				123,
+				23,
+			]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
+				2,
+				'Hairbrush',
+				'Bristly',
+				'Health & Beauty',
+				234,
+				12,
+			]);
+			await db.query(
+				'INSERT INTO carts_products VALUES ($1, $2, $3)',
+				[1, 1, 1],
+			);
+			await db.query(
+				'INSERT INTO carts_products VALUES ($1, $2, $3)',
+				[1, 2, 24],
+			);
+			await db.query('INSERT INTO address VALUES ($1, $2, $3, $4, $5, $6)', [
+				1,
+				1,
+				'Pendennis',
+				'Tredegar Road',
+				'Ebbw Vale',
+				'NP23 6LP',
+			]);
+
+			const requesterId = 1;
+			const addressId = 1;
+
+			await expect(
+				cartService.checkoutCart(requesterId, addressId),
+			).rejects.toEqual({
+				status: 400,
+				message: 'Cart item "Hairbrush" does not have enough stock left',
+			});
+		});
+
+		it('throws if address ID does not exist', async () => {
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
+				1,
+				'Toothbrush',
+				'Bristly',
+				'Health & Beauty',
+				123,
+				23,
+			]);
+			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
+				2,
+				'Hairbrush',
+				'Bristly',
+				'Health & Beauty',
+				234,
+				12,
+			]);
+			await db.query(
+				'INSERT INTO carts_products VALUES ($1, $2, $3)',
+				[1, 1, 1],
+			);
+			await db.query(
+				'INSERT INTO carts_products VALUES ($1, $2, $3)',
+				[1, 2, 1],
+			);
+			await db.query('INSERT INTO address VALUES ($1, $2, $3, $4, $5, $6)', [
+				1,
+				1,
+				'Pendennis',
+				'Tredegar Road',
+				'Ebbw Vale',
+				'NP23 6LP',
+			]);
+
+			const requesterId = 1;
+			const addressId = 2;
+
+			await expect(
+				cartService.checkoutCart(requesterId, addressId),
+			).rejects.toEqual({ status: 400, message: 'Given address ID not found' });
 		});
 	});
 
@@ -489,87 +304,7 @@ describe('Cart service', () => {
 	});
 
 	describe('updateCart', () => {
-		it("updates the cart's name", async () => {
-			await db.query('INSERT INTO cart VALUES ($1, $2, $3, $4, $5)', [
-				1,
-				1,
-				'My Cart',
-				'2004-10-19 10:23:54',
-				false,
-			]);
-			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
-				1,
-				'Toothbrush',
-				'Bristly',
-				'Health & Beauty',
-				123,
-				23,
-			]);
-			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
-				2,
-				'Hairbrush',
-				'Bristly',
-				'Health & Beauty',
-				234,
-				12,
-			]);
-			await db.query(
-				'INSERT INTO carts_products VALUES ($1, $2, $3)',
-				[1, 1, 1],
-			);
-			await db.query(
-				'INSERT INTO carts_products VALUES ($1, $2, $3)',
-				[1, 2, 1],
-			);
-
-			const requesterId = 1;
-
-			const result = await cartService.updateCart(
-				requesterId,
-				1,
-				'New Cart Name',
-			);
-
-			expect(result).toMatchObject({
-				id: 1,
-				createdAt: new Date('2004-10-19 10:23:54'),
-				name: 'New Cart Name',
-				ordered: false,
-				items: [
-					{
-						count: 1,
-						product: {
-							id: 1,
-							name: 'Toothbrush',
-							description: 'Bristly',
-							category: 'Health & Beauty',
-							pricePennies: 123,
-							stockCount: 23,
-						},
-					},
-					{
-						count: 1,
-						product: {
-							id: 2,
-							name: 'Hairbrush',
-							description: 'Bristly',
-							category: 'Health & Beauty',
-							pricePennies: 234,
-							stockCount: 12,
-						},
-					},
-				],
-			});
-		});
-
 		it("updates the cart's items' counts", async () => {
-			await db.query('INSERT INTO cart VALUES ($1, $2, $3, $4, $5)', [
-				1,
-				1,
-				'My Cart',
-				'2004-10-19 10:23:54',
-				false,
-			]);
 			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
 				1,
 				'Toothbrush',
@@ -608,18 +343,9 @@ describe('Cart service', () => {
 				},
 			];
 
-			const result = await cartService.updateCart(
-				requesterId,
-				1,
-				'My Cart',
-				newItems,
-			);
+			const result = await cartService.updateCart(requesterId, newItems);
 
 			expect(result).toMatchObject({
-				id: 1,
-				createdAt: new Date('2004-10-19 10:23:54'),
-				name: 'My Cart',
-				ordered: false,
 				items: [
 					{
 						count: 2,
@@ -648,13 +374,6 @@ describe('Cart service', () => {
 		});
 
 		it('removes items no longer in the cart', async () => {
-			await db.query('INSERT INTO cart VALUES ($1, $2, $3, $4, $5)', [
-				1,
-				1,
-				'My Cart',
-				'2004-10-19 10:23:54',
-				false,
-			]);
 			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
 				1,
 				'Toothbrush',
@@ -689,18 +408,9 @@ describe('Cart service', () => {
 				},
 			];
 
-			const result = await cartService.updateCart(
-				requesterId,
-				1,
-				'My Cart',
-				newItems,
-			);
+			const result = await cartService.updateCart(requesterId, newItems);
 
 			expect(result).toMatchObject({
-				id: 1,
-				createdAt: new Date('2004-10-19 10:23:54'),
-				name: 'My Cart',
-				ordered: false,
 				items: [
 					{
 						count: 1,
@@ -718,13 +428,6 @@ describe('Cart service', () => {
 		});
 
 		it('adds new items to the cart', async () => {
-			await db.query('INSERT INTO cart VALUES ($1, $2, $3, $4, $5)', [
-				1,
-				1,
-				'My Cart',
-				'2004-10-19 10:23:54',
-				false,
-			]);
 			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
 				1,
 				'Toothbrush',
@@ -759,18 +462,9 @@ describe('Cart service', () => {
 				},
 			];
 
-			const result = await cartService.updateCart(
-				requesterId,
-				1,
-				'My Cart',
-				newItems,
-			);
+			const result = await cartService.updateCart(requesterId, newItems);
 
 			expect(result).toMatchObject({
-				id: 1,
-				createdAt: new Date('2004-10-19 10:23:54'),
-				name: 'My Cart',
-				ordered: false,
 				items: [
 					{
 						count: 1,
