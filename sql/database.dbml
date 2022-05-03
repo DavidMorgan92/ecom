@@ -23,6 +23,7 @@ Table address {
 	street_name text [not null]
 	town_city_name text [not null]
 	post_code text [not null]
+	deleted boolean [not null, default: false]
 }
 
 Table order {

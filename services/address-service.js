@@ -24,7 +24,7 @@ async function getAllAddresses(requesterId) {
 	const query = `
 		SELECT id, house_name_number, street_name, town_city_name, post_code
 		FROM address
-		WHERE account_id = $1;
+		WHERE account_id = $1 AND NOT deleted;
 	`;
 
 	const values = [requesterId];
@@ -44,7 +44,7 @@ async function getAddressById(requesterId, id) {
 	const query = `
 		SELECT id, house_name_number, street_name, town_city_name, post_code
 		FROM address
-		WHERE account_id = $1 AND id = $2;
+		WHERE account_id = $1 AND id = $2 AND NOT deleted;
 	`;
 
 	const values = [requesterId, id];
@@ -200,7 +200,7 @@ async function updateAddress(
 	const query = `
 		UPDATE address
 		SET house_name_number = $3, street_name = $4, town_city_name = $5, post_code = $6
-		WHERE account_id = $1 AND id = $2
+		WHERE account_id = $1 AND id = $2 AND NOT deleted
 		RETURNING id, house_name_number, street_name, town_city_name, post_code;
 	`;
 
@@ -226,7 +226,8 @@ async function updateAddress(
  */
 async function deleteAddress(requesterId, addressId) {
 	const query = `
-		DELETE FROM address
+		UPDATE address
+		SET deleted = TRUE
 		WHERE account_id = $1 AND id = $2;
 	`;
 

@@ -22,7 +22,8 @@ CREATE TABLE "address" (
 	"house_name_number" text NOT NULL,
 	"street_name" text NOT NULL,
 	"town_city_name" text NOT NULL,
-	"post_code" text NOT NULL
+	"post_code" text NOT NULL,
+	"deleted" boolean NOT NULL DEFAULT false
 );
 
 CREATE TABLE "order" (

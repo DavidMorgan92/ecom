@@ -44,8 +44,12 @@ async function insertMockAddress(address) {
 		address.streetName,
 		address.townCityName,
 		address.postCode,
+		address.deleted || false,
 	];
-	await db.query('INSERT INTO address VALUES ($1, $2, $3, $4, $5, $6)', values);
+	await db.query(
+		'INSERT INTO address VALUES ($1, $2, $3, $4, $5, $6, $7)',
+		values,
+	);
 }
 
 describe('Address service', () => {
@@ -110,6 +114,39 @@ describe('Address service', () => {
 
 			expect(result).toMatchObject([]);
 		});
+
+		it("doesn't get deleted addresses", async () => {
+			const accountId = 1;
+			const addresses = [
+				{
+					id: 1,
+					accountId: accountId,
+					houseNameNumber: 'Pendennis',
+					streetName: 'Tredegar Road',
+					townCityName: 'Ebbw Vale',
+					postCode: 'NP23 6LP',
+				},
+				{
+					id: 2,
+					accountId: accountId,
+					houseNameNumber: '3',
+					streetName: "St John's Court",
+					townCityName: 'Merthyr Tydfil',
+					postCode: 'CF48 3LU',
+					deleted: true,
+				},
+			];
+
+			await insertMockAddress(addresses[0]);
+			await insertMockAddress(addresses[1]);
+
+			const result = await addressService.getAllAddresses(accountId);
+
+			delete addresses[0].accountId;
+			addresses.splice(1);
+
+			expect(result).toMatchObject(addresses);
+		});
 	});
 
 	describe('getAddressById', () => {
@@ -151,6 +188,18 @@ describe('Address service', () => {
 			await insertMockAddress(address);
 
 			const result = await addressService.getAddressById(2, address.id);
+
+			expect(result).toBeNull();
+		});
+
+		it('returns null if the address is deleted', async () => {
+			address.deleted = true;
+			await insertMockAddress(address);
+
+			const result = await addressService.getAddressById(
+				address.accountId,
+				address.id,
+			);
 
 			expect(result).toBeNull();
 		});
