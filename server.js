@@ -6,6 +6,7 @@ const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const cors = require('cors');
 const helmet = require('helmet');
+const morgan = require('morgan');
 const authService = require('./services/auth-service');
 
 // Create server
@@ -24,6 +25,9 @@ const swaggerJsdocOptions = {
 
 const specs = swaggerJsdoc(swaggerJsdocOptions);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
+
+// Use logger
+app.use(morgan(process.env.NODE_ENV === 'development' ? 'dev' : 'common'));
 
 // Enable CORS
 app.use(
