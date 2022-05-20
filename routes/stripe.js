@@ -29,9 +29,13 @@ stripe.post(
 	'/intent',
 	asyncHandler(async (req, res) => {
 		try {
+			const requesterEmail = req.session.passport.user.email;
 			const { pricePennies } = req.body;
 
-			const clientSecret = await stripeService.beginTransaction(pricePennies);
+			const clientSecret = await stripeService.beginTransaction(
+				pricePennies,
+				requesterEmail,
+			);
 
 			// Return the client secret used to complete the transaction on the client
 			res.send(clientSecret);
