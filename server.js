@@ -78,6 +78,7 @@ app.use(
 );
 app.use('/account', authService.protectedRoute, require('./routes/account'));
 app.use('/auth', require('./routes/auth'));
+app.use('/stripe', authService.protectedRoute, require('./routes/stripe'));
 
 // Export server
 module.exports = app;
