@@ -30,6 +30,7 @@ Table order {
 	id int [pk, increment]
 	account_id int [ref: > account.id]
 	address_id int [ref: > address.id]
+	payment_intent_id text [not null]
 	created_at timestamp [not null, default: `now()`]
 }
 

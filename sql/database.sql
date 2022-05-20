@@ -30,6 +30,7 @@ CREATE TABLE "order" (
 	"id" SERIAL PRIMARY KEY,
 	"account_id" int,
 	"address_id" int,
+	"payment_intent_id" text NOT NULL,
 	"created_at" timestamp NOT NULL DEFAULT (now())
 );
 

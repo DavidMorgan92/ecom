@@ -136,11 +136,12 @@ cart.post(
 		// Dispatch the order in the cart belonging to the authorised user
 		try {
 			const requesterId = req.session.passport.user.id;
-			const { addressId } = req.body;
+			const { addressId, paymentIntentId } = req.body;
 
 			const orderId = await cartService.checkoutCart(
 				requesterId,
 				addressId,
+				paymentIntentId,
 			);
 
 			res.send({

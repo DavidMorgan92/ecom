@@ -252,9 +252,10 @@ async function updateCart(requesterId, items) {
  * Order the items in the cart belonging to the requesting user, and have them sent to the given address.
  * @param {number} requesterId The account ID of the user requesting
  * @param {number} addressId The ID of the address to which to send the order
+ * @param {string} paymentIntentId The ID of the Stripe payment intent associated with this order
  * @returns The ID of the order
  */
-async function checkoutCart(requesterId, addressId) {
+async function checkoutCart(requesterId, addressId, paymentIntentId) {
 	// Create order with same items as the cart
 	const cart = await getCart(requesterId);
 
@@ -296,11 +297,11 @@ async function checkoutCart(requesterId, addressId) {
 		const orderId = (
 			await client.query(
 				`
-					INSERT INTO "order" (account_id, address_id)
-					VALUES ($1, $2)
+					INSERT INTO "order" (account_id, address_id, payment_intent_id)
+					VALUES ($1, $2, $3)
 					RETURNING id;
 				`,
-				[requesterId, addressId],
+				[requesterId, addressId, paymentIntentId],
 			)
 		).rows[0].id;
 
