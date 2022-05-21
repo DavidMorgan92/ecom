@@ -55,17 +55,19 @@ describe('Order service', () => {
 				'Ebbw Vale',
 				'NP23 6LP',
 			]);
-			await db.query('INSERT INTO "order" VALUES ($1, $2, $3, $4)', [
+			await db.query('INSERT INTO "order" VALUES ($1, $2, $3, $4, $5)', [
 				1,
 				1,
 				1,
 				'2004-10-19 10:23:54',
+				'payment_id'
 			]);
-			await db.query('INSERT INTO "order" VALUES ($1, $2, $3, $4)', [
+			await db.query('INSERT INTO "order" VALUES ($1, $2, $3, $4, $5)', [
 				2,
 				1,
 				1,
 				'2004-10-20 10:23:54',
+				'payment_id'
 			]);
 			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
 				1,
@@ -157,11 +159,12 @@ describe('Order service', () => {
 				'Ebbw Vale',
 				'NP23 6LP',
 			]);
-			await db.query('INSERT INTO "order" VALUES ($1, $2, $3, $4)', [
+			await db.query('INSERT INTO "order" VALUES ($1, $2, $3, $4, $5)', [
 				1,
 				1,
 				1,
 				'2004-10-19 10:23:54',
+				'payment_id'
 			]);
 
 			const requesterId = 1;
@@ -193,11 +196,12 @@ describe('Order service', () => {
 				'Ebbw Vale',
 				'NP23 6LP',
 			]);
-			await db.query('INSERT INTO "order" VALUES ($1, $2, $3, $4)', [
+			await db.query('INSERT INTO "order" VALUES ($1, $2, $3, $4, $5)', [
 				1,
 				2,
 				1,
 				'2004-10-20 10:23:54',
+				'payment_id'
 			]);
 
 			const requesterId = 1;
@@ -218,11 +222,12 @@ describe('Order service', () => {
 				'Ebbw Vale',
 				'NP23 6LP',
 			]);
-			await db.query('INSERT INTO "order" VALUES ($1, $2, $3, $4)', [
+			await db.query('INSERT INTO "order" VALUES ($1, $2, $3, $4, $5)', [
 				1,
 				1,
 				1,
 				'2004-10-19 10:23:54',
+				'payment_id'
 			]);
 			await db.query('INSERT INTO product VALUES ($1, $2, $3, $4, $5, $6)', [
 				1,
@@ -299,11 +304,12 @@ describe('Order service', () => {
 				'Ebbw Vale',
 				'NP23 6LP',
 			]);
-			await db.query('INSERT INTO "order" VALUES ($1, $2, $3, $4)', [
+			await db.query('INSERT INTO "order" VALUES ($1, $2, $3, $4, $5)', [
 				1,
 				2,
 				1,
 				'2004-10-20 10:23:54',
+				'payment_id'
 			]);
 
 			const requesterId = 1;

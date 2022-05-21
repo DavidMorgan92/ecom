@@ -397,6 +397,7 @@ describe('/cart/checkout', () => {
 				.set('Cookie', cookie)
 				.send({
 					addressId: 1,
+					paymentIntentId: 'payment_id',
 				})
 				.expect(200);
 
@@ -435,6 +436,7 @@ describe('/cart/checkout', () => {
 				.set('Cookie', cookie)
 				.send({
 					addressId: 2,
+					paymentIntentId: 'payment_id',
 				})
 				.expect(400);
 		});
@@ -469,6 +471,7 @@ describe('/cart/checkout', () => {
 				.set('Cookie', cookie)
 				.send({
 					addressId: 1,
+					paymentIntentId: 'payment_id'
 				})
 				.expect(400);
 		});
@@ -503,6 +506,7 @@ describe('/cart/checkout', () => {
 				.set('Cookie', cookie)
 				.send({
 					addressId: 1,
+					paymentIntentId: 'payment_id'
 				})
 				.expect(400);
 		});

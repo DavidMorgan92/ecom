@@ -146,7 +146,11 @@ describe('Cart service', () => {
 			const requesterId = 1;
 			const addressId = 1;
 
-			const orderId = await cartService.checkoutCart(requesterId, addressId);
+			const orderId = await cartService.checkoutCart(
+				requesterId,
+				addressId,
+				'payment_id',
+			);
 
 			expect(orderId).toEqual(expect.any(Number));
 
@@ -175,7 +179,7 @@ describe('Cart service', () => {
 			const addressId = 1;
 
 			await expect(
-				cartService.checkoutCart(requesterId, addressId),
+				cartService.checkoutCart(requesterId, addressId, 'payment_id'),
 			).rejects.toEqual({ status: 400, message: 'Cart is empty' });
 		});
 
@@ -217,7 +221,7 @@ describe('Cart service', () => {
 			const addressId = 1;
 
 			await expect(
-				cartService.checkoutCart(requesterId, addressId),
+				cartService.checkoutCart(requesterId, addressId, 'payment_id'),
 			).rejects.toEqual({
 				status: 400,
 				message: 'Cart item "Hairbrush" does not have enough stock left',
@@ -262,7 +266,7 @@ describe('Cart service', () => {
 			const addressId = 2;
 
 			await expect(
-				cartService.checkoutCart(requesterId, addressId),
+				cartService.checkoutCart(requesterId, addressId, 'payment_id'),
 			).rejects.toEqual({ status: 400, message: 'Given address ID not found' });
 		});
 	});

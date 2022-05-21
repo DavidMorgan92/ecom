@@ -51,7 +51,7 @@ async function updateCart(requesterId, items) {
 	};
 }
 
-async function checkoutCart(requesterId, cartId, addressId) {
+async function checkoutCart(requesterId, addressId, paymentIntentId) {
 	return 1;
 }
 
