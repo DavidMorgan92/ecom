@@ -2,6 +2,7 @@ const express = require('express');
 const expressSession = require('express-session');
 const passport = require('passport');
 const passportLocal = require('passport-local');
+const passportCustom = require('passport-custom');
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const cors = require('cors');
@@ -61,6 +62,11 @@ passport.use(
 		},
 		authService.authenticateUser,
 	),
+);
+
+passport.use(
+	'google',
+	new passportCustom.Strategy(authService.authenticateGoogleUser),
 );
 
 // Use passport

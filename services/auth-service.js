@@ -1,6 +1,10 @@
 const passport = require('passport');
+const { OAuth2Client } = require('google-auth-library');
 const db = require('../db');
 const passwordService = require('./password-service');
+
+// Google OAuth client
+const client = new OAuth2Client(process.env.GOOGLE_OAUTH_CLIENT_ID);
 
 /**
  * Get a user from the database including password hash
@@ -87,6 +91,48 @@ async function authenticateUser(email, password, done) {
 }
 
 /**
+ * Authentication method for passport with Google token
+ * @param {object} req Network request object
+ * @param {function} done Callback
+ * @returns Result of callback
+ */
+async function authenticateGoogleUser(req, done) {
+	try {
+		const { token } = req.body;
+
+		const ticket = await client.verifyIdToken({
+			idToken: token,
+			audience: process.env.GOOGLE_OAUTH_CLIENT_ID,
+		});
+
+		const { given_name, family_name, email } = ticket.getPayload();
+
+		const user = await getUser(email);
+
+		if (user) {
+			return done(null, user);
+		}
+
+		const insertResult = await db.query(
+			`
+				INSERT INTO account (first_name, last_name, email)
+				VALUES ($1, $2, $3)
+				RETURNING id, email, is_admin;
+			`,
+			[given_name, family_name, email],
+		);
+
+		if (insertResult.rowCount === 0) {
+			return done(null, false, { message: 'Failed to create user account' });
+		}
+
+		return done(null, insertResult.rows[0]);
+	} catch (err) {
+		done(err);
+	}
+}
+
+/**
  * Express middleware to authenticate and login a user
  */
 function authenticate(req, res, next) {
@@ -105,6 +151,29 @@ function authenticate(req, res, next) {
 			}
 
 			return res.sendStatus(200);
+		});
+	})(req, res, next);
+}
+
+/**
+ * Express middleware to authenticate and login a user with Google
+ */
+function authenticateGoogle(req, res, next) {
+	return passport.authenticate('google', (err, user, info) => {
+		if (err) {
+			return res.sendStatus(500);
+		}
+
+		if (!user) {
+			return res.status(401).json({ error: info.message });
+		}
+
+		req.logIn(user, err => {
+			if (err) {
+				return next(err);
+			}
+
+			return res.send(user.email);
 		});
 	})(req, res, next);
 }
@@ -135,7 +204,9 @@ module.exports = {
 	serializeUser,
 	deserializeUser,
 	authenticateUser,
+	authenticateGoogleUser,
 	authenticate,
+	authenticateGoogle,
 	protectedRoute,
 	adminRoute,
 };

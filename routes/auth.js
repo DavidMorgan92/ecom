@@ -26,6 +26,13 @@
  *               description: User's last name.
  *               example: Smith
  *         - $ref: '#/components/schemas/Login'
+ *     GoogleLogin:
+ *       type: object
+ *       properties:
+ *         token:
+ *           type: string
+ *           description: Login token obtained from Google.
+ *           example: 0123456789abcdef
  */
 
 const express = require('express');
@@ -57,6 +64,35 @@ const auth = express.Router();
 auth.post('/login', authService.authenticate, (err, req, res, next) => {
 	if (err) {
 		next(err);
+	}
+});
+
+/**
+ * @swagger
+ * /auth/google:
+ *   post:
+ *     tags:
+ *       - Authentication
+ *     summary: Login with Google token.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/GoogleLogin'
+ *     responses:
+ *       200:
+ *         description: Successful login.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: string
+ *       401:
+ *         description: Unsuccessful login.
+ */
+auth.post('/google', authService.authenticateGoogle, (err, req, res, next) => {
+	if (err) {
+		return next(err);
 	}
 });
 
