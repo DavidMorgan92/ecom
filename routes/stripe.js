@@ -1,3 +1,16 @@
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Intent:
+ *       type: object
+ *       properties:
+ *         pricePennies:
+ *           type: number
+ *           description: Price to request from user's account in pennies.
+ *           example: 1000
+ */
+
 const express = require('express');
 const asyncHandler = require('express-async-handler');
 const stripeService = require('../services/stripe-service');
