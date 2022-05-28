@@ -13,6 +13,7 @@
  *           type: string
  *           description: User's password.
  *           example: Password01
+ *           writeOnly: true
  *     Register:
  *       allOf:
  *         - type: object
@@ -130,6 +131,10 @@ auth.post('/logout', authService.protectedRoute, (req, res) => {
  *     responses:
  *       200:
  *         description: Successfully registered.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Register'
  *       400:
  *         description: Invalid input.
  */
