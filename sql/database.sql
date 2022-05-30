@@ -9,10 +9,10 @@ CREATE TABLE "product" (
 
 CREATE TABLE "account" (
 	"id" SERIAL PRIMARY KEY,
-	"first_name" text NOT NULL,
-	"last_name" text NOT NULL,
+	"first_name" text,
+	"last_name" text,
 	"email" text UNIQUE NOT NULL,
-	"password_hash" text NOT NULL,
+	"password_hash" text,
 	"is_admin" boolean NOT NULL DEFAULT false
 );
 

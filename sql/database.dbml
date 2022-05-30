@@ -9,10 +9,10 @@ Table product {
 
 Table account {
 	id int [pk, increment]
-	first_name text [not null]
-	last_name text [not null]
+	first_name text
+	last_name text
 	email text [unique, not null]
-	password_hash text [not null]
+	password_hash text
 	is_admin boolean [not null, default: false]
 }
 
